@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from userapp.permissions import IsAuthenticatedCustom
 from .models import Club, UserClub
 from .serializers import UserClubSerializer
 
 # Create your views here.
 
 class ClubListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedCustom]
 
     def get(self, request):
         """사용자가 속한 클럽들을 조회"""

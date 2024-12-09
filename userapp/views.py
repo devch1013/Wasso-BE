@@ -1,11 +1,9 @@
-from django.contrib.auth import get_user_model
+from .models import User
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import requests
 from rest_framework_simplejwt.tokens import RefreshToken
-
-User = get_user_model()
 
 class KakaoLoginView(APIView):
     def post(self, request):

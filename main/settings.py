@@ -142,9 +142,9 @@ KAKAO_CLIENT_SECRET = os.getenv('KAKAO_CLIENT_SECRET')
 KAKAO_REDIRECT_URI = os.getenv('KAKAO_REDIRECT_URI')
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'userapp.authentication.CustomJWTAuthentication',
+    ],
 }
 
 # JWT 설정
@@ -165,3 +165,7 @@ SIMPLE_JWT = {
 
 DJANGO_BIND_ADDRESS = "0.0.0.0"
 DJANGO_BIND_PORT = "8000"
+
+AUTHENTICATION_BACKENDS = [
+    'userapp.backends.CustomAuthBackend',
+]

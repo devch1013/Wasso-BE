@@ -49,7 +49,7 @@ class EventQRCheckView(APIView):
             )
 
         # 출석 체크 로직
-        now = timezone.now()
+        now = timezone.localtime(timezone.now())
         
         if not (event.attendance_start_datetime <= now <= event.attendance_end_datetime):
             logger.warning(f"Attendance time expired - event_id: {event_id}, user: {request.user}, current_time: {now}")

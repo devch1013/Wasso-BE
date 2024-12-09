@@ -9,6 +9,9 @@ class EventListView(APIView):
 
     def get(self, request):
         """사용자의 upcoming events 조회"""
-        events = Event.objects.all()  # 필요한 필터링 추가 가능
+        club_id = request.query_params.get('clubId')
+        
+        events = Event.objects.all().filter(club__id=club_id)
+            
         serializer = EventSerializer(events, many=True, context={'request': request})
         return Response({"data": serializer.data})

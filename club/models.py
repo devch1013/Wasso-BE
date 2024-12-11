@@ -16,9 +16,10 @@ class Club(models.Model):
         db_table = 'clubs'
 
 class Position(Enum):
+    ALUMNI = 'ALUMNI'
     MEMBER = 'MEMBER'
-    MANAGER = 'MANAGER'
-    ADMIN = 'ADMIN'
+    STAFF = 'STAFF'
+    LEAD = 'LEAD'
     OWNER = 'OWNER'
 
     @classmethod
@@ -36,7 +37,7 @@ class Generation(models.Model):
     end_date = models.DateField(null=True, blank=True)
 
 
-class UserClub(models.Model):
+class UserGeneration(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.club.name} - {self.generation} - {self.role}"
     
@@ -50,6 +51,22 @@ class UserClub(models.Model):
         choices=Position.choices(), 
         default=Position.MEMBER.value
     )
+
+    class Meta:
+        db_table = 'user_generations'
+
+class UserClub(models.Model):
+    def __str__(self):
+        return f"{self.user.username} - {self.club.name} - {self.role}"
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    current_role = models.CharField(
+        max_length=10, 
+        choices=Position.choices(), 
+        default=Position.MEMBER.value
+    )
+    last_generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'user_clubs'

@@ -164,6 +164,8 @@ SIMPLE_JWT = {
 DJANGO_BIND_ADDRESS = "0.0.0.0"
 DJANGO_BIND_PORT = "8000"
 
+APPEND_SLASH = False
+
 # AUTHENTICATION_BACKENDS = [
 #     'userapp.backends.CustomAuthBackend',
 # ]

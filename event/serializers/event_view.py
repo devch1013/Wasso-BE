@@ -1,5 +1,20 @@
 from rest_framework import serializers
-from .models import Event, Attendance, AttendanceStatus
+from event.models import Event, Attendance, AttendanceStatus
+
+
+class EventCreateSerializer(serializers.ModelSerializer):
+    generation = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Event
+        fields = [
+            "id",
+            "title",
+            "description",
+            "start_datetime",
+            "end_datetime",
+            "generation",
+        ]  # 필요한 필드 추가
 
 
 class FloatDecimalField(serializers.DecimalField):

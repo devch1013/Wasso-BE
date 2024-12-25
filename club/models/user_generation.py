@@ -12,9 +12,8 @@ class UserGeneration(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
-    join_date = models.DateTimeField()
-    introduction = models.CharField(max_length=255, null=True, blank=True)
-    profile = models.CharField(max_length=255, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     role = models.CharField(
         max_length=10, choices=Position.choices, default=Position.MEMBER
     )

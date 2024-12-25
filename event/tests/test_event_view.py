@@ -1,23 +1,48 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from rest_framework import status
-from club.models import Club, UserClub, Position
+from ..models import Event, AttendanceType
+from club.models import Club, UserClub, Position, Generation
 from userapp.models import User
-from event.models import Event
+from datetime import date, timedelta, datetime
 
 
 class EventViewSetTests(APITestCase):
     def setUp(self):
         # 테스트에 필요한 데이터 설정
         self.user = User.objects.create_user(
-            username="testuser", password="testpass123"
+            username="testuser",
+            identifier="testuser",
         )
         self.club = Club.objects.create(name="Test Club")
+        self.generation = Generation.objects.create(
+            name="Test Generation",
+            club=self.club,
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=365),
+        )
         self.club_admin = UserClub.objects.create(
-            user=self.user, club=self.club, current_role=Position.OWNER
+            user=self.user,
+            club=self.club,
+            current_role=Position.OWNER,
+            last_generation=self.generation,
         )
         self.event = Event.objects.create(
-            title="Test Event", description="Test Description", club=self.club
+            generation=self.generation,
+            name="Test Event",
+            description="Test Description",
+            start_datetime=datetime.now(),
+            end_datetime=datetime.now() + timedelta(hours=1),
+            attendance_start_datetime=datetime.now(),
+            attendance_end_datetime=datetime.now() + timedelta(hours=1),
+            begin_minutes=10,
+            late_tolerance_minutes=15,
+            location="Test Location",
+            latitude=37.565815,
+            longitude=126.972366,
+            qr_code_url="https://example.com/qrcode",
+            qr_code="1234567890",
+            attendance_type=AttendanceType.BOTH,
         )
 
     def test_list_events(self):
@@ -36,9 +61,9 @@ class EventViewSetTests(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         event_data = {
-            "title": "New Event",
+            "name": "New Event",
             "description": "New Description",
-            "club": self.club.id,
+            "generation": self.generation.id,
         }
 
         url = reverse("event-list")
@@ -47,3 +72,5 @@ class EventViewSetTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["title"], "New Event")
         self.assertEqual(Event.objects.count(), 1)
+
+    # ... 나머지 테스트 메서드들

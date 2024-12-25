@@ -1,11 +1,11 @@
 from django.db import models
-from club.models import Club
+from club.models import Generation
 from .enums import AttendanceType
 
 
 class Event(models.Model):
-    club = models.ForeignKey(Club, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()

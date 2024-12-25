@@ -1,8 +1,9 @@
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
-from django.contrib.auth import get_user_model
-from club.models import Club, Generation, UserGeneration, UserClub, Position
+from rest_framework.test import APIClient, APITestCase
+
+from ..models import Club, Generation, Position, UserClub, UserGeneration
 
 User = get_user_model()
 
@@ -12,6 +13,7 @@ class ClubTestCase(APITestCase):
         # 테스트용 사용자 생성
         self.user = User.objects.create_user(
             email="test@example.com",
+            username="test1234",
             identifier="test1234",
         )
         self.client = APIClient()
@@ -33,7 +35,7 @@ class ClubTestCase(APITestCase):
             },
         }
 
-        response = self.client.post(self.create_url, data, format="json")
+        response = self.client.post(reverse("club-list"), data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Club.objects.count(), 1)
@@ -62,9 +64,14 @@ class ClubTestCase(APITestCase):
             last_generation=generation,
             current_role=Position.OWNER.value,
         )
+        UserGeneration.objects.create(
+            user=self.user,
+            generation=generation,
+            role=Position.OWNER.value,
+        )
 
         response = self.client.get(reverse("club-list"))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["club"]["name"], "Test Club")
+        self.assertEqual(response.data[0]["club_name"], "Test Club")

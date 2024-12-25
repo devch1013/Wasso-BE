@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from club.models import Club, Generation, UserClub, Position, UserGeneration
-from django.db import transaction
-from django.utils import timezone
+
+from club.models import Generation, Position, UserClub, UserGeneration
 
 
 class ClubSerializer(serializers.ModelSerializer):
@@ -10,6 +9,9 @@ class ClubSerializer(serializers.ModelSerializer):
     club_image_url = serializers.CharField(source="club.image_url")
     generation_name = serializers.CharField(source="last_generation.name")
     role = serializers.CharField(source="current_role")
+    is_active = serializers.SerializerMethodField()
+    start_date = serializers.SerializerMethodField()
+    end_date = serializers.SerializerMethodField()
 
     class Meta:
         model = UserClub
@@ -29,20 +31,20 @@ class ClubSerializer(serializers.ModelSerializer):
         return obj.current_role != Position.ALUMNI
 
     def get_start_date(self, obj: UserClub):
-        generation = (
-            Generation.objects.filter(club=obj.club, user=obj.user)
-            .order_by("start_date")
+        user_generation = (
+            UserGeneration.objects.filter(generation__club=obj.club, user=obj.user)
+            .order_by("generation__start_date")
             .first()
         )
-        return generation.start_date if generation else None
+        return user_generation.generation.start_date if user_generation else None
 
     def get_end_date(self, obj: UserClub):
-        generation = (
-            Generation.objects.filter(club=obj.club, user=obj.user)
-            .order_by("end_date")
+        user_generation = (
+            UserGeneration.objects.filter(generation__club=obj.club, user=obj.user)
+            .order_by("generation__end_date")
             .first()
         )
-        return generation.end_date if generation else None
+        return user_generation.generation.end_date if user_generation else None
 
 
 class UserGenerationSerializer(serializers.ModelSerializer):
@@ -64,34 +66,6 @@ class GenerationSerializer(serializers.ModelSerializer):
 
 class ClubCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
-    image_url = serializers.FileField(required=False)
+    image_url = serializers.CharField(max_length=255, required=False)
     description = serializers.CharField(max_length=255, required=False, allow_null=True)
     generation = GenerationSerializer()
-
-    @transaction.atomic
-    def create(self, validated_data):
-        generation_data = validated_data.pop("generation")
-
-        # 클럽 생성
-        club = Club.objects.create(**validated_data)
-
-        # 첫 번째 기수(generation) 생성
-        generation = Generation.objects.create(club=club, **generation_data)
-
-        # 생성자를 owner로 추가
-        user = self.context["request"].user
-        UserGeneration.objects.create(
-            user=user,
-            generation=generation,
-            join_date=timezone.now(),
-            role=Position.OWNER.value,
-        )
-
-        UserClub.objects.create(
-            user=user,
-            club=club,
-            last_generation=generation,
-            current_role=Position.OWNER.value,
-        )
-
-        return club

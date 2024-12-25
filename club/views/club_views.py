@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.utils import timezone
 from rest_framework.viewsets import ModelViewSet
 
 from club.models import Club, Generation, Position, UserClub, UserGeneration
@@ -22,11 +21,16 @@ class ClubViewSet(ModelViewSet):
 
         return user_clubs
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer: ClubCreateSerializer):
         """클럽 생성"""
         with transaction.atomic():
             # 클럽 생성
-            club = serializer.save()
+            # TODO: 서비스로 빼기
+            club = Club.objects.create(
+                name=serializer.validated_data["name"],
+                image_url=serializer.validated_data["image_url"],
+                description=serializer.validated_data["description"],
+            )
 
             # 첫 번째 기수(generation) 생성
             generation_data = serializer.validated_data["generation"]
@@ -36,7 +40,6 @@ class ClubViewSet(ModelViewSet):
             UserGeneration.objects.create(
                 user=self.request.user,
                 generation=generation,
-                join_date=timezone.now(),
                 role=Position.OWNER.value,
             )
 

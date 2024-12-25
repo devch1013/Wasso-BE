@@ -1,13 +1,10 @@
-from userapp.permissions import IsAuthenticatedCustom
-from club.models import Club, UserGeneration, Generation, Position, UserClub
-from club.serializers import ClubCreateSerializer, ClubSerializer
 from django.db import transaction
 from django.utils import timezone
-from rest_framework import generics
 from rest_framework.viewsets import ModelViewSet
-# Create your views here.
 
-generics.ListAPIView
+from club.models import Club, Generation, Position, UserClub, UserGeneration
+from club.serializers import ClubCreateSerializer, ClubSerializer
+from userapp.permissions import IsAuthenticatedCustom
 
 
 class ClubViewSet(ModelViewSet):

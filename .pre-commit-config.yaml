@@ -14,3 +14,8 @@ repos:
           "--exit-non-zero-on-fix",
         ]
       - id: ruff-format
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]

@@ -1,11 +1,13 @@
 from .club_serializers import (
-    ClubSerializer,
-    UserGenerationSerializer,
     ClubCreateSerializer,
+    ClubInfoSerializer,
+    ClubUpdateSerializer,
+    UserGenerationSerializer,
 )
 
 __all__ = [
-    ClubSerializer,
+    ClubInfoSerializer,
     UserGenerationSerializer,
     ClubCreateSerializer,
+    ClubUpdateSerializer,
 ]

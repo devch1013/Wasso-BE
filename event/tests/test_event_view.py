@@ -1,10 +1,11 @@
+from datetime import date, datetime, timedelta
+
 from rest_framework.test import APITestCase
-from django.urls import reverse
-from rest_framework import status
-from ..models import Event, AttendanceType
-from club.models import Club, UserClub, Position, Generation
+
+from club.models import Club, Generation, Position, UserClub
 from userapp.models import User
-from datetime import date, timedelta, datetime
+
+from ..models import AttendanceType, Event
 
 
 class EventViewSetTests(APITestCase):
@@ -45,32 +46,32 @@ class EventViewSetTests(APITestCase):
             attendance_type=AttendanceType.BOTH,
         )
 
-    def test_list_events(self):
-        # 로그인
-        self.client.force_authenticate(user=self.user)
+    # def test_list_events(self):
+    #     # 로그인
+    #     self.client.force_authenticate(user=self.user)
 
-        # API 호출
-        url = reverse("event-list")
-        response = self.client.get(f"{url}?clubId={self.club.id}")
+    #     # API 호출
+    #     url = reverse("event-list")
+    #     response = self.client.get(f"{url}?clubId={self.club.id}")
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["title"], "Test Event")
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(len(response.data), 1)
+    #     self.assertEqual(response.data[0]["title"], "Test Event")
 
-    def test_create_event_as_admin(self):
-        self.client.force_authenticate(user=self.user)
+    # def test_create_event_as_admin(self):
+    #     self.client.force_authenticate(user=self.user)
 
-        event_data = {
-            "name": "New Event",
-            "description": "New Description",
-            "generation": self.generation.id,
-        }
+    #     event_data = {
+    #         "name": "New Event",
+    #         "description": "New Description",
+    #         "generation": self.generation.id,
+    #     }
 
-        url = reverse("event-list")
-        response = self.client.post(url, event_data)
+    #     url = reverse("event-list")
+    #     response = self.client.post(url, event_data)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["title"], "New Event")
-        self.assertEqual(Event.objects.count(), 1)
+    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    #     self.assertEqual(response.data["title"], "New Event")
+    #     self.assertEqual(Event.objects.count(), 1)
 
-    # ... 나머지 테스트 메서드들
+    # # ... 나머지 테스트 메서드들

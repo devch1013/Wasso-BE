@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from functools import wraps
 
 from django.core.cache import cache
@@ -6,12 +7,16 @@ from loguru import logger
 from rest_framework.response import Response
 
 
-class CacheKey:
-    CLUB_LIST = "club_list"
-    CLUB_DETAIL = "club_detail"
+class CacheKey(Enum):
+    CLUB_LIST = ("club_list", False)
+    CLUB_DETAIL = ("club_detail", True)
+
+    def __init__(self, prefix, need_pk):
+        self.prefix = prefix
+        self.need_pk = need_pk
 
 
-def cache_response(timeout=60, key_prefix="view"):
+def cache_response(key_prefix: CacheKey, timeout=60):
     """
     DRF 뷰 메소드를 위한 캐시 데코레이터
 
@@ -33,9 +38,12 @@ def cache_response(timeout=60, key_prefix="view"):
 
             # URL 파라미터(pk 등)가 있으면 캐시 키에 추가
             params = "_".join(f"{k}_{v}" for k, v in kwargs.items())
-            cache_key = f"{key_prefix}:{user_id}"
+
             if params:
-                cache_key = f"{cache_key}:{params}"
+                cache_key = f"{key_prefix.prefix}:{params}"
+            else:
+                cache_key = f"{key_prefix.prefix}"
+            cache_key = f"{cache_key}:{user_id}"
 
             # 캐시된 데이터 확인
             cached_data = cache.get(cache_key)
@@ -64,3 +72,36 @@ def cache_response(timeout=60, key_prefix="view"):
 
 def delete_cache(key_prefix):
     cache.delete_pattern(f"{key_prefix}:*")
+
+
+def delete_cache_response(key_prefix: CacheKey):
+    """
+    DRF 뷰 메소드 실행 후 캐시를 삭제하는 데코레이터
+
+    Args:
+        key_prefix: 삭제할 캐시 키 접두사
+    """
+
+    def decorator(func):
+        @wraps(func)
+        def wrapper(view_instance, request, *args, **kwargs):
+            # 실제 뷰 함수 실행
+            response = func(view_instance, request, *args, **kwargs)
+
+            # URL 파라미터(pk 등)가 있으면 캐시 키에 추가
+            params = "_".join(f"{k}_{v}" for k, v in kwargs.items())
+
+            if key_prefix.need_pk:
+                cache_key = f"{key_prefix.prefix}:{params}"
+            else:
+                cache_key = f"{key_prefix.prefix}"
+
+            # 캐시 삭제
+            cache.delete_pattern(f"{cache_key}*")
+            logger.info(f"Deleted cache for pattern: {cache_key}*")
+
+            return response
+
+        return wrapper
+
+    return decorator

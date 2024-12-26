@@ -68,8 +68,20 @@ class ClubTestCase(APITestCase):
             },
         )
 
+        ClubService.create_club(
+            user=self.user,
+            name="Test Club2",
+            image_url="http://example.com/image.jpg",
+            description="Test Description",
+            generation_data={
+                "name": "1기",
+                "start_date": "2024-01-01",
+                "end_date": "2024-12-31",
+            },
+        )
+
         response = self.client.get(reverse("club-list"))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data), 2)
         self.assertEqual(response.data[0]["club_name"], "Test Club")

@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
-from club.models import Generation, Position, UserClub, UserGeneration
+from club.models import Club, Generation, Position, UserClub, UserGeneration
 
 
-class ClubSerializer(serializers.ModelSerializer):
+class ClubInfoSerializer(serializers.ModelSerializer):
     club_id = serializers.IntegerField(source="club.id")
     club_name = serializers.CharField(source="club.name")
     club_image_url = serializers.CharField(source="club.image_url")
@@ -47,6 +47,12 @@ class ClubSerializer(serializers.ModelSerializer):
         return user_generation.generation.end_date if user_generation else None
 
 
+class ClubUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Club
+        fields = ["image_url", "description"]
+
+
 class UserGenerationSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source="club.name")
     image_url = serializers.CharField(source="club.image_url")
@@ -66,6 +72,8 @@ class GenerationSerializer(serializers.ModelSerializer):
 
 class ClubCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
-    image_url = serializers.CharField(max_length=255, required=False)
+    image_url = serializers.CharField(
+        max_length=255, required=False, allow_null=True, allow_blank=True
+    )
     description = serializers.CharField(max_length=255, required=False, allow_null=True)
     generation = GenerationSerializer()

@@ -107,7 +107,7 @@ class ClubTestCase(APITestCase):
 
     def test_retrieve_club(self):
         """클럽 상세 조회 테스트"""
-        club = ClubService.create_club(
+        club, user_club = ClubService.create_club(
             user=self.user,
             name="Test Club",
             image_url="http://example.com/image.jpg",
@@ -124,7 +124,7 @@ class ClubTestCase(APITestCase):
 
     def test_delete_club(self):
         """클럽 삭제 테스트"""
-        club = ClubService.create_club(
+        club, user_club = ClubService.create_club(
             user=self.user,
             name="Test Club",
             image_url="http://example.com/image.jpg",
@@ -158,7 +158,7 @@ class ClubTestCase(APITestCase):
 
     def test_update_club(self):
         """클럽 수정 테스트"""
-        club = ClubService.create_club(
+        club, user_club = ClubService.create_club(
             user=self.user,
             name="Test Club",
             image_url="http://example.com/image.jpg",

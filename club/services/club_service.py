@@ -30,11 +30,11 @@ class ClubService:
             role=Position.OWNER.value,
         )
 
-        UserClub.objects.create(
+        user_club = UserClub.objects.create(
             user=user,
             club=club,
             last_generation=generation,
             current_role=Position.OWNER.value,
         )
 
-        return club
+        return club, user_club

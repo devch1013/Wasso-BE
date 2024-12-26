@@ -16,7 +16,6 @@ class ClubInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserClub
         fields = [
-            "id",
             "club_id",
             "club_name",
             "club_image_url",

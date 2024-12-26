@@ -1,4 +1,5 @@
 from loguru import logger
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -41,15 +42,21 @@ class ClubViewSet(ModelViewSet):
         return UserClub.objects.filter(user=self.request.user).order_by("club__name")
 
     @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
-    def perform_create(self, serializer: sz.ClubCreateSerializer):
+    def create(self, request, *args, **kwargs):
         """클럽 생성"""
-        ClubService.create_club(
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        club, user_club = ClubService.create_club(
             user=self.request.user,
             name=serializer.validated_data["name"],
             image_url=serializer.validated_data["image_url"],
             description=serializer.validated_data["description"],
             generation_data=serializer.validated_data["generation"],
         )
+
+        serializer = sz.ClubInfoSerializer(instance=user_club)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
     @delete_cache_response(key_prefix=CacheKey.CLUB_DETAIL)

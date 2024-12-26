@@ -43,6 +43,7 @@ class ClubViewSet(ModelViewSet):
 
     @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
     def create(self, request, *args, **kwargs):
+        # raise CustomException(ErrorCode.NOT_IMPLEMENTED)
         """클럽 생성"""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

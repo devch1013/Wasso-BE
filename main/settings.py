@@ -147,6 +147,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": ("main.json_renderer.CustomJSONRenderer",),
+    "EXCEPTION_HANDLER": "main.exception_handler.custom_exception_handler",
 }
 
 # JWT 설정

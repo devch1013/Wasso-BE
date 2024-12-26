@@ -1,13 +1,14 @@
-from .models import User
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
 import requests
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet, mixins
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .models import User
 
-class KakaoLoginView(APIView):
-    def post(self, request):
+
+class KakaoLoginView(mixins.CreateModelMixin, GenericViewSet):
+    def create(self, request, *args, **kwargs):
         kakao_token = request.query_params.get("kakao_token")
         if not kakao_token:
             return Response(
@@ -15,7 +16,7 @@ class KakaoLoginView(APIView):
             )
 
         # 카카오 API로 사용자 정보 가져오기
-        user_info = self.get_kakao_user_info(kakao_token)
+        user_info = self._get_kakao_user_info(kakao_token)
         if not user_info:
             return Response(
                 {"error": "Invalid Kakao token"}, status=status.HTTP_401_UNAUTHORIZED
@@ -42,7 +43,7 @@ class KakaoLoginView(APIView):
             }
         )
 
-    def get_kakao_user_info(self, access_token):
+    def _get_kakao_user_info(self, access_token):
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-type": "application/x-www-form-urlencoded;charset=utf-8",

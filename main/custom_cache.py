@@ -16,7 +16,7 @@ class CacheKey(Enum):
         self.need_pk = need_pk
 
 
-def cache_response(key_prefix: CacheKey, timeout=60):
+def cache_response(key_prefix: CacheKey, timeout=60 * 15):
     """
     DRF 뷰 메소드를 위한 캐시 데코레이터
 

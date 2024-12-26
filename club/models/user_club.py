@@ -1,13 +1,15 @@
 from django.db import models
+
 from userapp.models import User
+
 from .club import Club
-from .generation import Generation
 from .enums import Position
+from .generation import Generation
 
 
 class UserClub(models.Model):
     def __str__(self):
-        return f"{self.user.username} - {self.club.name} - {self.role}"
+        return f"{self.user.username} - {self.club.name} - {self.current_role}"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="user_clubs")

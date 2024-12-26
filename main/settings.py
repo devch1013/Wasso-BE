@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
-from pathlib import Path
-from dotenv import load_dotenv
+import sys
 from datetime import timedelta
+from pathlib import Path
+
+from dotenv import load_dotenv
+from loguru import logger
 
 load_dotenv()
 
@@ -164,8 +167,41 @@ SIMPLE_JWT = {
 DJANGO_BIND_ADDRESS = "0.0.0.0"
 DJANGO_BIND_PORT = "8000"
 
-APPEND_SLASH = False
-
 # AUTHENTICATION_BACKENDS = [
 #     'userapp.backends.CustomAuthBackend',
 # ]
+
+# Cache settings
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+# Cache time to live is 15 minutes
+CACHE_TTL = 60 * 15
+
+# Cache session settings
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+# Loguru Settings
+logger.remove()  # Remove default handler
+logger.add(
+    sys.stdout,
+    colorize=True,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+    level="DEBUG" if DEBUG else "INFO",
+)
+logger.add(
+    BASE_DIR / "logs" / "debug.log",
+    rotation="500 MB",
+    retention="10 days",
+    format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {name}:{function}:{line} - {message}",
+    level="DEBUG",
+    encoding="utf-8",
+)

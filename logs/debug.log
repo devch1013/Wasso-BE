@@ -1,0 +1,111 @@
+2024-12-26 14:26:11 | INFO | club.views.club_views:get_queryset:28 - cached_data: <QuerySet [<UserClub:  - Test Club - OWNER>]>
+2024-12-26 14:26:15 | INFO | club.views.club_views:get_queryset:28 - cached_data: <QuerySet [<UserClub:  - Test Club - OWNER>]>
+2024-12-26 14:26:17 | INFO | club.views.club_views:get_queryset:28 - cached_data: <QuerySet [<UserClub:  - Test Club - OWNER>]>
+2024-12-26 14:26:18 | INFO | club.views.club_views:get_queryset:28 - cached_data: <QuerySet [<UserClub:  - Test Club - OWNER>]>
+2024-12-26 14:26:19 | INFO | club.views.club_views:get_queryset:28 - cached_data: <QuerySet [<UserClub:  - Test Club - OWNER>]>
+2024-12-26 14:26:20 | INFO | club.views.club_views:get_queryset:28 - cached_data: <QuerySet [<UserClub:  - Test Club - OWNER>]>
+2024-12-26 15:35:54 | INFO | club.views.club_views:list:32 - request: <rest_framework.request.Request: GET '/clubs/'>
+2024-12-26 15:35:54 | INFO | club.views.club_views:get_queryset:43 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:35:56 | INFO | club.views.club_views:list:32 - request: <rest_framework.request.Request: GET '/clubs/'>
+2024-12-26 15:35:56 | INFO | club.views.club_views:get_queryset:43 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:35:57 | INFO | club.views.club_views:list:32 - request: <rest_framework.request.Request: GET '/clubs/'>
+2024-12-26 15:35:57 | INFO | club.views.club_views:get_queryset:43 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:36:28 | INFO | club.views.club_views:list:32 - request: <rest_framework.request.Request: GET '/clubs/'>
+2024-12-26 15:36:28 | INFO | club.views.club_views:get_queryset:43 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:36:33 | INFO | club.views.club_views:list:32 - request: <rest_framework.request.Request: GET '/clubs/'>
+2024-12-26 15:36:33 | INFO | club.views.club_views:get_queryset:43 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:36:33 | INFO | club.views.club_views:list:32 - request: <rest_framework.request.Request: GET '/clubs/'>
+2024-12-26 15:36:33 | INFO | club.views.club_views:get_queryset:43 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:36:34 | INFO | club.views.club_views:list:32 - request: <rest_framework.request.Request: GET '/clubs/'>
+2024-12-26 15:36:34 | INFO | club.views.club_views:get_queryset:43 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:05 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:07 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:08 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:09 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:10 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:11 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:11 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:12 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:13 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:38:14 | INFO | club.views.club_views:get_queryset:47 - user_clubs: <QuerySet [<UserClub:  - Test Club - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>, <UserClub:  - Test Club2 - OWNER>]>
+2024-12-26 15:39:02 | INFO | club.views.club_views:get_queryset:40 - Cached clubs for user 1
+2024-12-26 15:40:04 | INFO | club.views.club_views:get_queryset:35 - Retrieved clubs from cache for user 1
+2024-12-26 15:45:18 | INFO | club.views.club_views:get_queryset:35 - Retrieved clubs from cache for user 1
+2024-12-26 15:46:42 | INFO | club.views.club_views:get_queryset:35 - Retrieved clubs from cache for user 1
+2024-12-26 15:48:18 | INFO | club.views.club_views:get_queryset:35 - Retrieved clubs from cache for user 1
+2024-12-26 15:48:23 | INFO | club.views.club_views:get_queryset:35 - Retrieved clubs from cache for user 1
+2024-12-26 15:49:03 | INFO | club.views.club_views:get_queryset:36 - Retrieved clubs from cache for user 1
+2024-12-26 15:49:09 | INFO | club.views.club_views:get_queryset:36 - Retrieved clubs from cache for user 1
+2024-12-26 15:49:11 | INFO | club.views.club_views:get_queryset:36 - Retrieved clubs from cache for user 1
+2024-12-26 15:53:52 | INFO | club.views.club_views:get_queryset:57 - Retrieved clubs from cache for user 1
+2024-12-26 15:58:10 | INFO | club.views.club_views:get_queryset:76 - Cached clubs for user 1
+2024-12-26 16:00:20 | INFO | club.views.club_views:get_queryset:76 - Cached clubs for user 1
+2024-12-26 16:01:46 | INFO | club.views.club_views:get_queryset:71 - Retrieved clubs from cache for user 1
+2024-12-26 16:02:13 | INFO | club.views.club_views:get_queryset:71 - Retrieved clubs from cache for user 1
+2024-12-26 16:08:45 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_1
+2024-12-26 16:08:46 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_1
+2024-12-26 16:08:57 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: user_clubs_1
+2024-12-26 16:08:59 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: user_clubs_1
+2024-12-26 16:09:01 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_1
+2024-12-26 16:09:02 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_1
+2024-12-26 16:09:03 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_1
+2024-12-26 16:10:16 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_2
+2024-12-26 16:10:17 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_2
+2024-12-26 16:10:18 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_2
+2024-12-26 16:10:31 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_2
+2024-12-26 16:10:35 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_2
+2024-12-26 16:10:36 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_2
+2024-12-26 16:10:37 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_2
+2024-12-26 16:10:38 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_2
+2024-12-26 16:10:39 | INFO | main.custom_cache:wrapper:32 - Retrieved data from cache for key: club_detail_1_pk_2
+2024-12-26 16:11:24 | INFO | club.views.club_views:retrieve:27 - Retrieving club detail for user 1
+2024-12-26 16:11:24 | INFO | main.custom_cache:wrapper:45 - Cached data for key: club_detail_1_pk_2 in 0:00:00.032017 seconds
+2024-12-26 16:11:33 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000374 seconds
+2024-12-26 16:11:40 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000301 seconds
+2024-12-26 16:11:41 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000329 seconds
+2024-12-26 16:11:42 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000324 seconds
+2024-12-26 16:11:43 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000321 seconds
+2024-12-26 16:11:43 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000326 seconds
+2024-12-26 16:11:45 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000304 seconds
+2024-12-26 16:11:48 | INFO | main.custom_cache:wrapper:45 - Cached data for key: user_clubs_1 in 0:00:00.044169 seconds
+2024-12-26 16:11:52 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: user_clubs_1 in 0:00:00.000244 seconds
+2024-12-26 16:11:55 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: user_clubs_1 in 0:00:00.000256 seconds
+2024-12-26 16:12:06 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000659 seconds
+2024-12-26 16:12:07 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000322 seconds
+2024-12-26 16:12:12 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000321 seconds
+2024-12-26 16:12:13 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000292 seconds
+2024-12-26 16:12:15 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000290 seconds
+2024-12-26 16:12:55 | INFO | club.views.club_views:retrieve:27 - Retrieving club detail for user 1
+2024-12-26 16:12:55 | INFO | main.custom_cache:wrapper:45 - Cached data for key: club_detail_1_pk_2 in 0:00:00.007441 seconds
+2024-12-26 16:12:56 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000349 seconds
+2024-12-26 16:12:57 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000328 seconds
+2024-12-26 16:12:58 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000296 seconds
+2024-12-26 16:12:59 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000303 seconds
+2024-12-26 16:13:22 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000920 seconds
+2024-12-26 16:13:23 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000598 seconds
+2024-12-26 16:13:41 | INFO | club.views.club_views:retrieve:27 - Retrieving club detail for user 1
+2024-12-26 16:13:41 | INFO | main.custom_cache:wrapper:45 - Cached data for key: club_detail_1_pk_2 in 0:00:00.009907 seconds
+2024-12-26 16:13:45 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000349 seconds
+2024-12-26 16:13:49 | INFO | club.views.club_views:retrieve:27 - Retrieving club detail for user 1
+2024-12-26 16:13:49 | INFO | main.custom_cache:wrapper:45 - Cached data for key: club_detail_1_pk_2 in 0:00:00.006402 seconds
+2024-12-26 16:19:06 | INFO | club.views.club_views:retrieve:27 - Retrieving club detail for user 1
+2024-12-26 16:19:06 | INFO | main.custom_cache:wrapper:45 - Cached data for key: club_detail_1_pk_2 in 0:00:00.017544 seconds
+2024-12-26 16:19:07 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000341 seconds
+2024-12-26 16:19:08 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000321 seconds
+2024-12-26 16:19:09 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000336 seconds
+2024-12-26 16:19:10 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_detail_1_pk_2 in 0:00:00.000332 seconds
+2024-12-26 16:20:49 | INFO | main.custom_cache:wrapper:45 - Cached data for key: club_list_1 in 0:00:00.047167 seconds
+2024-12-26 16:20:53 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_list_1 in 0:00:00.000285 seconds
+2024-12-26 16:20:56 | INFO | main.custom_cache:wrapper:35 - Retrieved data from cache for key: club_list_1 in 0:00:00.000247 seconds
+2024-12-26 16:21:09 | INFO | main.custom_cache:wrapper:45 - Cached data for key: club_list:1 in 0:00:00.040938 seconds
+2024-12-26 16:23:46 | INFO | main.custom_cache:wrapper:45 - Cached data for key: club_list:1 in 0:00:00.050555 seconds
+2024-12-26 16:27:40 | INFO | main.custom_cache:wrapper:50 - Cached data for key: club_list:1 in 0:00:00.084348 seconds
+2024-12-26 16:27:43 | INFO | main.custom_cache:wrapper:40 - Retrieved data from cache for key: club_list:1 in 0:00:00.000303 seconds
+2024-12-26 16:27:44 | INFO | main.custom_cache:wrapper:40 - Retrieved data from cache for key: club_list:1 in 0:00:00.000278 seconds
+2024-12-26 16:27:46 | INFO | club.views.club_views:retrieve:27 - Retrieving club detail for user 1
+2024-12-26 16:27:46 | INFO | main.custom_cache:wrapper:50 - Cached data for key: club_detail:1:pk_2 in 0:00:00.017442 seconds
+2024-12-26 16:27:47 | INFO | main.custom_cache:wrapper:40 - Retrieved data from cache for key: club_detail:1:pk_2 in 0:00:00.000341 seconds
+2024-12-26 16:27:48 | INFO | main.custom_cache:wrapper:40 - Retrieved data from cache for key: club_detail:1:pk_2 in 0:00:00.000295 seconds
+2024-12-26 16:27:49 | INFO | main.custom_cache:wrapper:40 - Retrieved data from cache for key: club_detail:1:pk_2 in 0:00:00.000330 seconds
+2024-12-26 16:28:55 | INFO | club.views.club_views:retrieve:27 - Retrieving club detail for user 1
+2024-12-26 16:28:55 | INFO | main.custom_cache:wrapper:50 - Cached data for key: club_detail:1:pk_2 in 0:00:00.007871 seconds

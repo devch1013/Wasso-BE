@@ -1,8 +1,8 @@
-from django.db import transaction
 from rest_framework.viewsets import ModelViewSet
 
-from club.models import Club, Generation, Position, UserClub, UserGeneration
+from club.models import Club, UserClub
 from club.serializers import ClubCreateSerializer, ClubSerializer
+from club.services.club_service import ClubService
 from userapp.permissions import IsAuthenticatedCustom
 
 
@@ -23,29 +23,10 @@ class ClubViewSet(ModelViewSet):
 
     def perform_create(self, serializer: ClubCreateSerializer):
         """클럽 생성"""
-        with transaction.atomic():
-            # 클럽 생성
-            # TODO: 서비스로 빼기
-            club = Club.objects.create(
-                name=serializer.validated_data["name"],
-                image_url=serializer.validated_data["image_url"],
-                description=serializer.validated_data["description"],
-            )
-
-            # 첫 번째 기수(generation) 생성
-            generation_data = serializer.validated_data["generation"]
-            generation = Generation.objects.create(club=club, **generation_data)
-
-            # 생성자를 owner로 추가
-            UserGeneration.objects.create(
-                user=self.request.user,
-                generation=generation,
-                role=Position.OWNER.value,
-            )
-
-            UserClub.objects.create(
-                user=self.request.user,
-                club=club,
-                last_generation=generation,
-                current_role=Position.OWNER.value,
-            )
+        ClubService.create_club(
+            user=self.request.user,
+            name=serializer.validated_data["name"],
+            image_url=serializer.validated_data["image_url"],
+            description=serializer.validated_data["description"],
+            generation_data=serializer.validated_data["generation"],
+        )

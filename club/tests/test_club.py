@@ -3,6 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
+from club.services.club_service import ClubService
+
 from ..models import Club, Generation, Position, UserClub, UserGeneration
 
 User = get_user_model()
@@ -54,20 +56,16 @@ class ClubTestCase(APITestCase):
     def test_list_user_clubs(self):
         """사용자의 클럽 목록 조회 테스트"""
         # 테스트용 클럽 생성
-        club = Club.objects.create(name="Test Club", description="Test Description")
-        generation = Generation.objects.create(
-            club=club, name="1기", start_date="2024-01-01", end_date="2024-12-31"
-        )
-        UserClub.objects.create(
+        ClubService.create_club(
             user=self.user,
-            club=club,
-            last_generation=generation,
-            current_role=Position.OWNER.value,
-        )
-        UserGeneration.objects.create(
-            user=self.user,
-            generation=generation,
-            role=Position.OWNER.value,
+            name="Test Club",
+            image_url="http://example.com/image.jpg",
+            description="Test Description",
+            generation_data={
+                "name": "1기",
+                "start_date": "2024-01-01",
+                "end_date": "2024-12-31",
+            },
         )
 
         response = self.client.get(reverse("club-list"))

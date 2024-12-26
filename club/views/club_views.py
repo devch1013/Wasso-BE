@@ -54,4 +54,5 @@ class ClubViewSet(ModelViewSet):
     @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
     @delete_cache_response(key_prefix=CacheKey.CLUB_DETAIL)
     def perform_destroy(self, instance):
-        instance.delete()
+        logger.info(f"Deleting club {instance.club.id}")
+        instance.club.delete()

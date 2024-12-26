@@ -36,3 +36,5 @@ class ClubService:
             last_generation=generation,
             current_role=Position.OWNER.value,
         )
+
+        return club

@@ -4,7 +4,7 @@ from userapp.models import User
 
 from .club import Club
 from .enums import Position
-from .generation import Generation
+from .user_generation import UserGeneration
 
 
 class UserClub(models.Model):
@@ -16,10 +16,9 @@ class UserClub(models.Model):
     current_role = models.CharField(
         max_length=10, choices=Position.choices, default=Position.MEMBER
     )
-    last_generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
-    introduction = models.CharField(max_length=255, null=True, blank=True)
-    profile = models.CharField(max_length=255, null=True, blank=True)
-    profile_image_url = models.CharField(max_length=255, null=True, blank=True)
+    last_user_generation = models.ForeignKey(UserGeneration, on_delete=models.CASCADE)
+    introduction = models.TextField(null=True, blank=True)
+    profile_image_url = models.ImageField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

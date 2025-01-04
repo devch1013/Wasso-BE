@@ -1,7 +1,10 @@
-from . import views
 from rest_framework.routers import DefaultRouter
 
+from . import views
+
 router = DefaultRouter()
-router.register(r"clubs", views.ClubViewSet, basename="club")
+
+router.register("apply", views.ClubApplyViewSet, basename="apply")
+router.register("", views.ClubViewSet, basename="club")
 
 urlpatterns = router.urls

@@ -1,8 +1,9 @@
 from .club import Club
-from .generation import Generation
-from .user_generation import UserGeneration
-from .user_club import UserClub
+from .club_apply import ClubApply
 from .enums import Position
+from .generation import Generation
+from .user_club import UserClub
+from .user_generation import UserGeneration
 
 __all__ = [
     Club,
@@ -10,4 +11,5 @@ __all__ = [
     UserGeneration,
     UserClub,
     Position,
+    ClubApply,
 ]

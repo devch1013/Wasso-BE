@@ -5,6 +5,11 @@ from rest_framework import status
 
 class ErrorCode(Enum):
     NOT_IMPLEMENTED = ("서버 에러입니다", "SE001", status.HTTP_501_NOT_IMPLEMENTED)
+    CLUB_ALREADY_EXISTS = (
+        "이미 존재하는 클럽입니다",
+        "CE001",
+        status.HTTP_400_BAD_REQUEST,
+    )
 
     def __init__(self, message, code, status):
         self.message = message

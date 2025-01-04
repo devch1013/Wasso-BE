@@ -6,7 +6,9 @@ from club.models import Club, Generation, Position, UserClub, UserGeneration
 class ClubInfoSerializer(serializers.ModelSerializer):
     club_id = serializers.IntegerField(source="club.id")
     club_name = serializers.CharField(source="club.name")
-    club_image_url = serializers.CharField(source="club.image_url")
+    club_image_url = serializers.CharField(
+        source="club.image_url", required=False, allow_null=True, allow_blank=True
+    )
     generation_name = serializers.CharField(source="last_generation.name")
     role = serializers.CharField(source="current_role")
     is_active = serializers.SerializerMethodField()
@@ -72,7 +74,7 @@ class GenerationSerializer(serializers.ModelSerializer):
 class ClubCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     image_url = serializers.CharField(
-        max_length=255, required=False, allow_null=True, allow_blank=True
+        max_length=255, required=False, allow_null=True, allow_blank=True, default=None
     )
     description = serializers.CharField(max_length=255, required=False, allow_null=True)
     generation = GenerationSerializer()

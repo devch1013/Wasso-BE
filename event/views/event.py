@@ -1,9 +1,11 @@
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import PermissionDenied
-from ..models import Event
-import event.serializers as sz
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
+
+import event.serializers as sz
+
+from ..models import Event
 
 
 class EventViewSet(ModelViewSet):
@@ -17,7 +19,7 @@ class EventViewSet(ModelViewSet):
     def get_queryset(self):
         """사용자의 events 조회"""
         club_id = self.request.query_params.get("clubId")
-        return Event.objects.filter(club__id=club_id)
+        return Event.objects.filter(generation__club__id=club_id)
 
     def perform_create(self, serializer: serializers.ModelSerializer):
         """이벤트 생성 시 사용자 권한 확인"""

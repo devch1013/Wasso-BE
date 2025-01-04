@@ -18,7 +18,9 @@ class UserClub(models.Model):
     )
     last_user_generation = models.ForeignKey(UserGeneration, on_delete=models.CASCADE)
     introduction = models.TextField(null=True, blank=True)
-    profile_image_url = models.ImageField(null=True, blank=True)
+    profile_image_url = models.ImageField(
+        null=True, blank=True, upload_to="user_profile_images"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

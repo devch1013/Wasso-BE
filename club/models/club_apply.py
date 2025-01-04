@@ -7,7 +7,7 @@ from .generation import Generation
 
 class ClubApply(models.Model):
     def __str__(self):
-        return f"{self.user.username} - {self.club.name}"
+        return f"{self.user.username} - {self.generation.name}"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     generation = models.ForeignKey(Generation, on_delete=models.CASCADE)

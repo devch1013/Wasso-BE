@@ -10,7 +10,9 @@ class User(AbstractUser):
     password = models.CharField(max_length=255, null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
-    profile_image = models.URLField(max_length=255, null=True, blank=True)
+    profile_image = models.ImageField(
+        null=True, blank=True, upload_to="user_profile_images/"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

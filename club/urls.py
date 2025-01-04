@@ -4,6 +4,7 @@ from . import views
 
 router = DefaultRouter()
 
+router.register("generation", views.GenerationView, basename="generation")
 router.register("apply", views.ClubApplyViewSet, basename="apply")
 router.register("", views.ClubViewSet, basename="club")
 

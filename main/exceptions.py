@@ -23,6 +23,11 @@ class ErrorCode(Enum):
         "CE003",
         status.HTTP_400_BAD_REQUEST,
     )
+    ALREADY_APPLIED = (
+        "이미 신청한 기수입니다",
+        "CE004",
+        status.HTTP_400_BAD_REQUEST,
+    )
 
     def __init__(self, message, code, status):
         self.message = message

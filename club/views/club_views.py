@@ -6,7 +6,6 @@ from rest_framework.viewsets import ModelViewSet
 from club import serializers as sz
 from club.models import Club, UserClub
 from club.services.club_service import ClubService
-from main.custom_cache import CacheKey, cache_response, delete_cache_response
 from userapp.permissions import IsAuthenticatedCustom
 
 
@@ -20,16 +19,16 @@ class ClubViewSet(ModelViewSet):
             return sz.ClubUpdateSerializer
         return sz.ClubInfoSerializer
 
-    @cache_response(timeout=60, key_prefix=CacheKey.CLUB_LIST)
+    # @cache_response(timeout=60, key_prefix=CacheKey.CLUB_LIST)
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @cache_response(timeout=60, key_prefix=CacheKey.CLUB_DETAIL)
+    # @cache_response(timeout=60, key_prefix=CacheKey.CLUB_DETAIL)
     def retrieve(self, request, *args, **kwargs):
         logger.info(f"Retrieving club detail for user {request.user.id}")
         return super().retrieve(request, *args, **kwargs)
 
-    @delete_cache_response(key_prefix=CacheKey.CLUB_DETAIL)
+    # @delete_cache_response(key_prefix=CacheKey.CLUB_DETAIL)
     def update(self, request, *args, **kwargs):
         instance = Club.objects.get(id=kwargs["pk"])
         serializer = self.get_serializer(instance, data=request.data, partial=True)
@@ -41,7 +40,7 @@ class ClubViewSet(ModelViewSet):
         """사용자가 속한 클럽들을 조회"""
         return UserClub.objects.filter(user=self.request.user).order_by("club__name")
 
-    @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
+    # @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
     def create(self, request, *args, **kwargs):
         # raise CustomException(ErrorCode.NOT_IMPLEMENTED)
         """클럽 생성"""
@@ -59,8 +58,8 @@ class ClubViewSet(ModelViewSet):
         serializer = sz.ClubInfoSerializer(instance=user_club)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
-    @delete_cache_response(key_prefix=CacheKey.CLUB_DETAIL)
+    # @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
+    # @delete_cache_response(key_prefix=CacheKey.CLUB_DETAIL)
     def perform_destroy(self, instance):
         logger.info(f"Deleting club {instance.club.id}")
         instance.club.delete()

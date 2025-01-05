@@ -5,15 +5,24 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from ..models import User
+from ..service.auth import KakaoAuthService, NativeAuthService
 
 
-class KakaoLoginView(
+class SocialAuthView(
     mixins.CreateModelMixin,
     GenericViewSet,
 ):
     def create(self, request, *args, **kwargs):
-        kakao_token = request.query_params.get("kakao_token")
-        refresh = self._create_user(kakao_token)
+        provider = kwargs.get("provider")
+        service = self.get_service(provider)
+        if provider == "kakao":
+            code = request.query_params.get("code")
+            user = service.get_or_create_user(code)
+        elif provider == "native":
+            identifier = request.data.get("identifier")
+            password = request.data.get("password")
+            user = service.get_or_create_user(identifier, password)
+        refresh = service.get_token(user)
         return Response(
             {
                 "access_token": str(refresh.access_token),
@@ -59,3 +68,11 @@ class KakaoLoginView(
         # JWT 토큰 생성
         refresh = RefreshToken.for_user(user)
         return refresh
+
+    def get_service(self, provider: str):
+        if provider == "kakao":
+            return KakaoAuthService()
+        elif provider == "native":
+            return NativeAuthService()
+        else:
+            raise ValueError("Invalid provider")

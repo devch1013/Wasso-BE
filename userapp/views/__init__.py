@@ -1,7 +1,7 @@
-from .social_auth import KakaoLoginView
+from .social_auth import SocialAuthView
 from .user import UserView
 
 __all__ = [
-    "KakaoLoginView",
+    "SocialAuthView",
     "UserView",
 ]

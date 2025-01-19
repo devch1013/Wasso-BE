@@ -3,19 +3,20 @@ from rest_framework import serializers
 from event.models import Attendance, AttendanceStatus, Event
 
 
-class EventCreateSerializer(serializers.ModelSerializer):
-    generation = serializers.IntegerField(write_only=True)
+class EventCreateSerializer(serializers.Serializer):
+    club_id = serializers.IntegerField()
+    generation_id = serializers.IntegerField()
+    title = serializers.CharField()
+    description = serializers.CharField()
+    location = serializers.CharField()
 
-    class Meta:
-        model = Event
-        fields = [
-            "id",
-            "title",
-            "description",
-            "start_datetime",
-            "end_datetime",
-            "generation",
-        ]  # 필요한 필드 추가
+    images = serializers.ListField(child=serializers.ImageField(), required=False)
+    start_time = serializers.TimeField()
+    end_time = serializers.TimeField()
+    date = serializers.DateField()
+    start_minute = serializers.IntegerField()
+    late_minute = serializers.IntegerField()
+    fail_minute = serializers.IntegerField()
 
 
 class FloatDecimalField(serializers.DecimalField):

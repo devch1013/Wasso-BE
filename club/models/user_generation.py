@@ -20,3 +20,6 @@ class UserGeneration(models.Model):
 
     class Meta:
         db_table = "user_generations"
+
+    def is_admin(self):
+        return self.role in [Position.STAFF, Position.LEAD, Position.OWNER]

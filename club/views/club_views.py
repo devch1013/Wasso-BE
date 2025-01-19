@@ -1,5 +1,6 @@
 from loguru import logger
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -63,3 +64,7 @@ class ClubViewSet(ModelViewSet):
     def perform_destroy(self, instance):
         logger.info(f"Deleting club {instance.club.id}")
         instance.club.delete()
+
+    @action(detail=False, methods=["get"])
+    def upcoming(self, request, *args, **kwargs):
+        return Response({"message": "upcoming"})

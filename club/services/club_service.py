@@ -14,7 +14,7 @@ class ClubService:
     def create_club(
         user: User,
         name: str,
-        image_url: str,
+        image,
         description: str,
         generation_data: dict,
     ):
@@ -23,7 +23,7 @@ class ClubService:
 
         club = Club.objects.create(
             name=name,
-            image_url=image_url,
+            image=image,
             description=description,
         )
 
@@ -35,7 +35,7 @@ class ClubService:
         )
 
         # 생성자를 owner로 추가
-        UserGeneration.objects.create(
+        user_generation = UserGeneration.objects.create(
             user=user,
             generation=generation,
             role=Position.OWNER.value,
@@ -44,8 +44,7 @@ class ClubService:
         user_club = UserClub.objects.create(
             user=user,
             club=club,
-            last_generation=generation,
-            current_role=Position.OWNER.value,
+            last_user_generation=user_generation,
         )
 
         return club, user_club

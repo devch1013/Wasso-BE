@@ -50,7 +50,7 @@ class ClubViewSet(ModelViewSet):
         club, user_club = ClubService.create_club(
             user=self.request.user,
             name=serializer.validated_data["name"],
-            image_url=serializer.validated_data["image_url"],
+            image=serializer.validated_data["image"],
             description=serializer.validated_data["description"],
             generation_data=serializer.validated_data["generation"],
         )

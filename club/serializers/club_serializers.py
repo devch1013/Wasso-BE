@@ -7,8 +7,8 @@ from club.serializers.generation_serializers import GenerationInfoSerializer
 class ClubInfoSerializer(serializers.ModelSerializer):
     club_id = serializers.IntegerField(source="club.id")
     club_name = serializers.CharField(source="club.name")
-    club_image_url = serializers.CharField(
-        source="club.image_url", required=False, allow_null=True, allow_blank=True
+    club_image_url = serializers.ImageField(
+        source="club.image", required=False, allow_null=True
     )
     current_generation = GenerationInfoSerializer(
         source="last_user_generation.generation"
@@ -70,9 +70,7 @@ class GenerationSerializer(serializers.ModelSerializer):
 
 class ClubCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
-    image_url = serializers.CharField(
-        max_length=255, required=False, allow_null=True, allow_blank=True, default=None
-    )
+    image = serializers.ImageField(required=False, allow_null=True, default=None)
     description = serializers.CharField(max_length=255, required=False, allow_null=True)
     generation = GenerationSerializer()
 

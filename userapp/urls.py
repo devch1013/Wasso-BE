@@ -8,7 +8,7 @@ urlpatterns = [
         "", views.UserView.as_view({"get": "retrieve", "put": "update"}), name="user_me"
     ),
     path(
-        "<str:provider>/login",
+        "<str:provider>/login/",
         views.SocialAuthView.as_view({"post": "create"}),
         name="kakao_login",
     ),

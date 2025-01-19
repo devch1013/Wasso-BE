@@ -1,3 +1,4 @@
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -51,3 +52,10 @@ class EventViewSet(ModelViewSet):
             fail_minutes=serializer.validated_data.get("fail_minute"),
         )
         return Response({"message": "이벤트 생성 완료"})
+
+    @action(detail=False, methods=["get"])
+    def upcoming(self, request, *args, **kwargs):
+        generation_id = request.query_params.get("gid")
+        events = Event.objects.filter(generation__id=generation_id)
+        serializer = sz.UpcomingEventSerializer(events)
+        return Response(serializer.data)

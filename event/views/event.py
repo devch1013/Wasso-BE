@@ -14,7 +14,7 @@ class EventViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             return sz.EventCreateSerializer
-        return sz.EventSerializer
+        return sz.EventDetailSerializer
 
     def get_queryset(self):
         """사용자의 events 조회"""

@@ -7,11 +7,10 @@ class AttendanceType(models.TextChoices):
     BOTH = "BOTH", "Both"
 
 
-class AttendanceStatus(models.TextChoices):
-    PRESENT = "PRESENT", "Present"
-    LATE = "LATE", "Late"
-    ABSENT = "ABSENT", "Absent"
-    FAILED = "FAILED", "Failed"
+class AttendanceStatus(models.IntegerChoices):
+    PRESENT = 1, "출석"
+    LATE = 2, "지각"
+    ABSENT = 3, "결석"
 
 
 class AbsentApplyStatus(models.TextChoices):

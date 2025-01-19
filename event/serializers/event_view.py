@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from event.models import Event, Attendance, AttendanceStatus
+
+from event.models import Attendance, AttendanceStatus, Event
 
 
 class EventCreateSerializer(serializers.ModelSerializer):
@@ -22,7 +23,7 @@ class FloatDecimalField(serializers.DecimalField):
         return float(super().to_representation(value))
 
 
-class EventSerializer(serializers.ModelSerializer):
+class EventDetailSerializer(serializers.ModelSerializer):
     clubId = serializers.IntegerField(source="club_id")
     clubName = serializers.CharField(source="club.name")
     clubImageUrl = serializers.CharField(source="club.image_url")
@@ -66,3 +67,17 @@ class CheckQRCodeSerializer(serializers.Serializer):
     qr_code = serializers.CharField()
     latitude = FloatDecimalField(max_digits=10, decimal_places=8)
     longitude = FloatDecimalField(max_digits=11, decimal_places=8)
+
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ["id", "name", "start_datetime", "description"]
+
+    def get_hasAttended(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return Attendance.objects.filter(
+                event=obj, user=request.user, status=AttendanceStatus.PRESENT
+            ).exists()
+        return False

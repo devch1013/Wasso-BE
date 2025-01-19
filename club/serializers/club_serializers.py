@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from club.models import Club, Generation, Position, UserClub, UserGeneration
+from club.serializers.generation_serializers import GenerationInfoSerializer
 
 
 class ClubInfoSerializer(serializers.ModelSerializer):
@@ -9,13 +10,10 @@ class ClubInfoSerializer(serializers.ModelSerializer):
     club_image_url = serializers.CharField(
         source="club.image_url", required=False, allow_null=True, allow_blank=True
     )
-    generation_name = serializers.CharField(
-        source="last_user_generation.generation.name"
+    current_generation = GenerationInfoSerializer(
+        source="last_user_generation.generation"
     )
     role = serializers.CharField(source="last_user_generation.role")
-    is_active = serializers.SerializerMethodField()
-    start_date = serializers.SerializerMethodField()
-    end_date = serializers.SerializerMethodField()
 
     class Meta:
         model = UserClub
@@ -23,11 +21,8 @@ class ClubInfoSerializer(serializers.ModelSerializer):
             "club_id",
             "club_name",
             "club_image_url",
-            "is_active",
-            "generation_name",
+            "current_generation",
             "role",
-            "start_date",
-            "end_date",
         ]
 
     def get_is_active(self, obj: UserClub):

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from club import serializers as sz
-from club.models import Club, UserClub
+from club.models import Club, ClubApply, UserClub
 from club.services.club_service import ClubService
 from userapp.permissions import IsAuthenticatedCustom
 
@@ -18,6 +18,8 @@ class ClubViewSet(ModelViewSet):
             return sz.ClubCreateSerializer
         if self.action == "update":
             return sz.ClubUpdateSerializer
+        if self.action == "retrieve":
+            return sz.ClubDetailSerializer
         return sz.ClubInfoSerializer
 
     # @cache_response(timeout=60, key_prefix=CacheKey.CLUB_LIST)
@@ -40,6 +42,9 @@ class ClubViewSet(ModelViewSet):
     def get_queryset(self):
         """사용자가 속한 클럽들을 조회"""
         return UserClub.objects.filter(user=self.request.user).order_by("club__name")
+
+    def get_object(self):
+        return Club.objects.get(id=self.kwargs["pk"])
 
     # @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
     def create(self, request, *args, **kwargs):
@@ -65,6 +70,8 @@ class ClubViewSet(ModelViewSet):
         logger.info(f"Deleting club {instance.club.id}")
         instance.club.delete()
 
-    @action(detail=False, methods=["get"])
-    def upcoming(self, request, *args, **kwargs):
-        return Response({"message": "upcoming"})
+    @action(detail=True, methods=["get"])
+    def apply(self, request, *args, **kwargs):
+        club_apply = ClubApply.objects.filter(generation=kwargs["pk"])
+        serializer = sz.ClubApplySerializer(club_apply, many=True)
+        return Response(serializer.data)

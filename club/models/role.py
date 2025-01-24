@@ -4,6 +4,9 @@ from .club import Club
 
 
 class Role(models.Model):
+    def __str__(self):
+        return f"{self.club.name} - {self.name}"
+
     name = models.CharField(max_length=255)
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

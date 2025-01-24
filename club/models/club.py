@@ -26,6 +26,21 @@ class Club(models.Model):
     description = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    current_generation = models.ForeignKey(
+        "Generation",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="current_club",
+    )
+
+    default_role = models.ForeignKey(
+        "Role",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="default_club",
+    )
 
     class Meta:
         db_table = "clubs"

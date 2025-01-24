@@ -23,7 +23,7 @@ class NativeAuthService(AuthService):
             # 기존 사용자 찾기
             user = User.objects.get(identifier=identifier)
             # 비밀번호 확인
-            if not user.check_password(password):
+            if not user.password == password:
                 raise ValueError("잘못된 비밀번호입니다.")
             return user
         except User.DoesNotExist:

@@ -36,7 +36,10 @@ class ClubService:
 
         owner_role = Role.create_owner_role(club)
         Role.create_admin_role(club)
-        Role.create_member_role(club)
+        member_role = Role.create_member_role(club)
+
+        club.default_role = member_role
+        club.save()
 
         # 생성자를 owner로 추가
         user_generation = UserGeneration.objects.create(

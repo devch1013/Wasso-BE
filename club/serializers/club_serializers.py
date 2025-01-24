@@ -1,3 +1,4 @@
+from loguru import logger
 from rest_framework import serializers
 
 from club.models import Club, Generation, Position, Role, UserClub, UserGeneration
@@ -88,3 +89,64 @@ class ClubGenerationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Generation
         fields = ["id", "name", "club_name", "club_image"]
+
+
+class GenerationDetailSerializer(serializers.ModelSerializer):
+    invite_code = serializers.IntegerField()
+
+    class Meta:
+        model = Generation
+        fields = ["id", "name", "invite_code"]
+
+
+class ClubDetailSerializer(serializers.ModelSerializer):
+    profile_image = serializers.ImageField(
+        source="image", required=False, allow_null=True
+    )
+    my_role = serializers.SerializerMethodField()
+    current_generation = serializers.SerializerMethodField()
+    current_member_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Club
+        fields = [
+            "id",
+            "name",
+            "profile_image",
+            "my_role",
+            "current_generation",
+            "current_member_count",
+            "description",
+        ]
+
+    def get_my_role(self, obj):
+        request = self.context.get("request")
+        if not request or not request.user.is_authenticated:
+            return None
+
+        logger.info(f"request.user: {request.user}")
+        logger.info(f"obj: {obj}")
+        user_club = UserClub.objects.get(club=obj, user=request.user)
+        if not user_club:
+            return None
+        return (
+            user_club.last_user_generation.role.name
+            if user_club.last_user_generation
+            else None
+        )
+
+    def get_current_generation(self, obj):
+        current_gen = obj.current_generation
+        if not current_gen:
+            return None
+        return GenerationDetailSerializer(current_gen).data
+
+    def get_current_member_count(self, obj):
+        current_gen = obj.current_generation
+        if not current_gen:
+            return 0
+        return (
+            UserGeneration.objects.filter(generation=current_gen)
+            .exclude(role__name="ALUMNI")
+            .count()
+        )

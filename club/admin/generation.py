@@ -5,4 +5,4 @@ from club.models import Generation
 
 @admin.register(Generation)
 class GenerationAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["id", "name", "club"]

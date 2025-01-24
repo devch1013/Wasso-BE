@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from club.models import ClubApply
 from club.serializers.club_serializers import ClubGenerationSerializer
-from userapp.serializers.user import UserSimpleSerializer
+from userapp.serializers import UserSimpleSerializer
 
 
 class ClubApplySerializer(serializers.ModelSerializer):

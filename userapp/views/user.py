@@ -1,6 +1,6 @@
 from rest_framework.viewsets import GenericViewSet, mixins
 
-from ..serializers.user import UserSerializer
+from userapp.serializers.user_serializers import UserSerializer
 
 
 class UserView(

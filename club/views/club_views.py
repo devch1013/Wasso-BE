@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from club import serializers as sz
-from club.models import Club, ClubApply, UserClub
+from club.models import Club, ClubApply, Role, UserClub
 from club.services.club_service import ClubService
 from userapp.permissions import IsAuthenticatedCustom
 
@@ -75,3 +75,9 @@ class ClubViewSet(ModelViewSet):
         club_apply = ClubApply.objects.filter(generation=kwargs["pk"])
         serializer = sz.ClubApplySerializer(club_apply, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["get"])
+    def roles(self, request, *args, **kwargs):
+        roles = Role.objects.filter(club__id=kwargs["pk"])
+        serializer = sz.RoleSerializer(roles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

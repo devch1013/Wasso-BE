@@ -7,7 +7,7 @@ class EventCreateSerializer(serializers.Serializer):
     club_id = serializers.IntegerField()
     generation_id = serializers.IntegerField()
     title = serializers.CharField()
-    description = serializers.CharField()
+    description = serializers.CharField(required=False, allow_null=True)
     location = serializers.CharField()
 
     images = serializers.ListField(child=serializers.ImageField(), required=False)

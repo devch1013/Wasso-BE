@@ -1,7 +1,13 @@
 from rest_framework import serializers
 
-from club.models import Club, Generation, Position, UserClub, UserGeneration
+from club.models import Club, Generation, Position, Role, UserClub, UserGeneration
 from club.serializers.generation_serializers import GenerationInfoSerializer
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = "__all__"
 
 
 class ClubInfoSerializer(serializers.ModelSerializer):
@@ -13,7 +19,7 @@ class ClubInfoSerializer(serializers.ModelSerializer):
     current_generation = GenerationInfoSerializer(
         source="last_user_generation.generation"
     )
-    role = serializers.CharField(source="last_user_generation.role")
+    role = RoleSerializer(source="last_user_generation.role")
 
     class Meta:
         model = UserClub
@@ -77,8 +83,8 @@ class ClubCreateSerializer(serializers.Serializer):
 
 class ClubGenerationSerializer(serializers.ModelSerializer):
     club_name = serializers.CharField(source="club.name")
-    club_image_url = serializers.CharField(source="club.image_url")
+    club_image = serializers.ImageField(source="club.image")
 
     class Meta:
         model = Generation
-        fields = ["id", "name", "club_name", "club_image_url"]
+        fields = ["id", "name", "club_name", "club_image"]

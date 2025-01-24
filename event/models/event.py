@@ -22,7 +22,7 @@ def event_image_path(instance, filename):
 class Event(models.Model):
     generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True, blank=True)
     date = models.DateField(default=timezone.now)
     start_time = models.TimeField()
     end_time = models.TimeField()
@@ -30,8 +30,8 @@ class Event(models.Model):
     late_minutes = models.IntegerField()
     fail_minutes = models.IntegerField()
     location = models.CharField(max_length=255)
-    qr_code_url = models.CharField(max_length=255)
-    qr_code = models.CharField(max_length=15)
+    qr_code_url = models.CharField(max_length=255, null=True, blank=True)
+    qr_code = models.CharField(max_length=15, null=True, blank=True)
     images = ArrayField(
         models.ImageField(
             upload_to=event_image_path,

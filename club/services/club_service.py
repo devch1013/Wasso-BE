@@ -3,7 +3,7 @@ import string
 
 from django.db import transaction
 
-from club.models import Club, Generation, Position, UserClub, UserGeneration
+from club.models import Club, Generation, Role, UserClub, UserGeneration
 from main.exceptions import CustomException, ErrorCode
 from userapp.models import User
 
@@ -34,11 +34,15 @@ class ClubService:
             club=club, **generation_data, invite_code=invite_code
         )
 
+        owner_role = Role.create_owner_role(club)
+        Role.create_admin_role(club)
+        Role.create_member_role(club)
+
         # 생성자를 owner로 추가
         user_generation = UserGeneration.objects.create(
             user=user,
             generation=generation,
-            role=Position.OWNER.value,
+            role=owner_role,
         )
 
         user_club = UserClub.objects.create(

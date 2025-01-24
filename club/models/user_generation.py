@@ -2,8 +2,8 @@ from django.db import models
 
 from userapp.models import User
 
-from .enums import Position
 from .generation import Generation
+from .role import Role
 
 
 class UserGeneration(models.Model):
@@ -14,12 +14,10 @@ class UserGeneration(models.Model):
     generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    role = models.CharField(
-        max_length=10, choices=Position.choices, default=Position.MEMBER
-    )
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         db_table = "user_generations"
 
     def is_admin(self):
-        return self.role in [Position.STAFF, Position.LEAD, Position.OWNER]
+        return self.role.event_manage

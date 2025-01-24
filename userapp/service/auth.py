@@ -28,8 +28,7 @@ class NativeAuthService(AuthService):
             return user
         except User.DoesNotExist:
             # 새 사용자 생성
-            user = User.objects.create_user(
-                username="none",
+            user = User.objects.create(
                 identifier=identifier,
                 password=password,
             )

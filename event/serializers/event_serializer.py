@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.utils import timezone
 from rest_framework import serializers
+from storages.backends.s3boto3 import S3Boto3Storage
 
 from event.models import Attendance, Event
 
@@ -68,6 +69,38 @@ class UpcomingEventSerializer(serializers.Serializer):
 
 
 class EventDetailSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
+    attendance_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Event
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "description",
+            "date",
+            "start_time",
+            "end_time",
+            "location",
+            "start_minutes",
+            "late_minutes",
+            "fail_minutes",
+            "images",
+            "qr_code_url",
+            "qr_code",
+            "attendance_status",
+        ]
+
+    def get_images(self, obj):
+        if not obj.images:
+            return []
+        storage = S3Boto3Storage()
+        return [storage.url(image_path) for image_path in obj.images]
+
+    def get_attendance_status(self, obj):
+        user = self.context.get("request").user
+        try:
+            attendance = Attendance.objects.get(event=obj, user=user)
+            return attendance.status
+        except Attendance.DoesNotExist:
+            return 0

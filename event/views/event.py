@@ -17,6 +17,9 @@ class EventViewSet(ModelViewSet):
             return sz.EventCreateSerializer
         return sz.EventDetailSerializer
 
+    def get_object(self):
+        return Event.objects.get(id=self.kwargs.get("pk"))
+
     def get_queryset(self):
         """사용자의 events 조회"""
         club_id = self.request.query_params.get("clubId")

@@ -5,7 +5,10 @@ from rest_framework.viewsets import ModelViewSet
 
 from club.models import ClubApply, Generation, GenerationMapping
 from club.serializers.club_apply_serializers import ClubApplySerializer
-from club.serializers.member_serializers import MemberDetailSerializer, MemberSerializer
+from club.serializers.member_serializers import (
+    GenerationMappingSerializer,
+    MemberDetailSerializer,
+)
 
 
 class GenerationView(ModelViewSet):
@@ -24,8 +27,9 @@ class GenerationView(ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def members(self, request, *args, **kwargs):
+        print(self.get_object())
         members = GenerationMapping.objects.filter(generation=self.get_object())
-        serializer = MemberSerializer(members, many=True)
+        serializer = GenerationMappingSerializer(members, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])

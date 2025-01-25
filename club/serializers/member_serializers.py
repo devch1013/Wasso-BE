@@ -7,18 +7,21 @@ from userapp.serializers.user_serializers import UserSerializer
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    generation = GenerationInfoSerializer()
-    role = RoleSerializer()
     user = UserSerializer()
-    tags = serializers.SerializerMethodField()
-
-    def get_tags(self, obj: GenerationMapping):
-        user_club = Member.objects.get(user=obj.member, club=obj.generation.club)
-        return user_club.tags
 
     class Meta:
         model = Member
-        fields = ["id", "generation", "role", "user", "tags"]
+        fields = ["id", "user", "tags", "description"]
+
+
+class GenerationMappingSerializer(serializers.ModelSerializer):
+    generation = GenerationInfoSerializer()
+    role = RoleSerializer()
+    member = MemberSerializer()
+
+    class Meta:
+        model = GenerationMapping
+        fields = ["id", "generation", "role", "member"]
 
 
 class MemberRoleChangeRequestSerializer(serializers.Serializer):

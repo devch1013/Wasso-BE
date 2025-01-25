@@ -4,6 +4,7 @@ from .club_serializers import (
     ClubDetailSerializer,
     ClubInfoSerializer,
     ClubUpdateSerializer,
+    GenerationInfoSerializer,
     RoleSerializer,
     UserGenerationSerializer,
 )
@@ -16,4 +17,5 @@ __all__ = [
     ClubDetailSerializer,
     ClubApplySerializer,
     RoleSerializer,
+    GenerationInfoSerializer,
 ]

@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from club.models import UserGeneration
+from club.models import GenerationMapping
 
 
-@admin.register(UserGeneration)
+@admin.register(GenerationMapping)
 class UserGenerationAdmin(admin.ModelAdmin):
     pass

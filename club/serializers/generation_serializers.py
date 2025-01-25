@@ -6,4 +6,4 @@ from club.models import Generation
 class GenerationInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Generation
-        fields = ["id", "name"]
+        fields = "__all__"

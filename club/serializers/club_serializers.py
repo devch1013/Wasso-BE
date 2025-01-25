@@ -1,61 +1,9 @@
 from loguru import logger
 from rest_framework import serializers
 
-from club.models import Club, Generation, Position, Role, UserClub, UserGeneration
+from club.models import Club, Generation, GenerationMapping, Member
 from club.serializers.generation_serializers import GenerationInfoSerializer
-
-
-class RoleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Role
-        fields = "__all__"
-
-
-class ClubInfoSerializer(serializers.ModelSerializer):
-    club_id = serializers.IntegerField(source="club.id")
-    club_name = serializers.CharField(source="club.name")
-    club_image_url = serializers.ImageField(
-        source="club.image", required=False, allow_null=True
-    )
-    current_generation = GenerationInfoSerializer(
-        source="last_user_generation.generation"
-    )
-    role = RoleSerializer(source="last_user_generation.role")
-
-    class Meta:
-        model = UserClub
-        fields = [
-            "club_id",
-            "club_name",
-            "club_image_url",
-            "current_generation",
-            "role",
-        ]
-
-    def get_is_active(self, obj: UserClub):
-        return obj.last_user_generation.role != Position.ALUMNI
-
-    def get_start_date(self, obj: UserClub):
-        user_generation = (
-            UserGeneration.objects.filter(generation__club=obj.club, user=obj.user)
-            .order_by("generation__start_date")
-            .first()
-        )
-        return user_generation.generation.start_date if user_generation else None
-
-    def get_end_date(self, obj: UserClub):
-        user_generation = (
-            UserGeneration.objects.filter(generation__club=obj.club, user=obj.user)
-            .order_by("generation__end_date")
-            .first()
-        )
-        return user_generation.generation.end_date if user_generation else None
-
-
-class ClubUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Club
-        fields = ["image_url", "description"]
+from club.serializers.role_serializers import RoleSerializer
 
 
 class UserGenerationSerializer(serializers.ModelSerializer):
@@ -65,8 +13,84 @@ class UserGenerationSerializer(serializers.ModelSerializer):
     role = serializers.CharField(source="current_role")
 
     class Meta:
-        model = UserClub
+        model = Member
         fields = ["id", "name", "image_url", "role", "generation_name"]
+
+
+class ClubInfoSerializer(serializers.Serializer):
+    club_id = serializers.IntegerField(source="club.id")
+    club_name = serializers.CharField(source="club.name")
+    club_image = serializers.ImageField(source="club.image")
+    current_generation = GenerationInfoSerializer(
+        source="last_user_generation.generation"
+    )
+    is_member_activated = serializers.SerializerMethodField()
+    role = RoleSerializer(source="last_user_generation.role")
+    member_id = serializers.IntegerField(source="id")
+
+    class Meta:
+        model = Member
+        fields = [
+            "club_id",
+            "club_name",
+            "club_image",
+            "current_generation",
+            "is_member_activated",
+            "role",
+            "member_id",
+        ]
+
+    def get_is_member_activated(self, obj: Member):
+        return obj.last_user_generation.generation == obj.club.current_generation
+
+
+# class ClubInfoSerializer(serializers.ModelSerializer):
+#     user_club_id = serializers.IntegerField(source="id")
+#     club_id = serializers.IntegerField(source="club.id")
+#     club_name = serializers.CharField(source="club.name")
+#     club_image_url = serializers.ImageField(
+#         source="club.image", required=False, allow_null=True
+#     )
+#     current_generation = GenerationInfoSerializer(
+#         source="last_user_generation.generation"
+#     )
+#     user_generation = UserGenerationSerializer(source="last_user_generation")
+#     role = RoleSerializer(source="last_user_generation.role")
+
+#     class Meta:
+#         model = Member
+#         fields = [
+#             "user_club_id",
+#             "club_id",
+#             "club_name",
+#             "club_image_url",
+#             "current_generation",
+#             "user_generation",
+#             "role",
+#         ]
+
+
+#     def get_start_date(self, obj: Member):
+#         user_generation = (
+#             GenerationMapping.objects.filter(generation__club=obj.club, user=obj.user)
+#             .order_by("generation__start_date")
+#             .first()
+#         )
+#         return user_generation.generation.start_date if user_generation else None
+
+#     def get_end_date(self, obj: Member):
+#         user_generation = (
+#             GenerationMapping.objects.filter(generation__club=obj.club, user=obj.user)
+#             .order_by("generation__end_date")
+#             .first()
+#         )
+#         return user_generation.generation.end_date if user_generation else None
+
+
+class ClubUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Club
+        fields = ["image_url", "description"]
 
 
 class GenerationSerializer(serializers.ModelSerializer):
@@ -126,7 +150,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
         logger.info(f"request.user: {request.user}")
         logger.info(f"obj: {obj}")
-        user_club = UserClub.objects.get(club=obj, user=request.user)
+        user_club = Member.objects.get(club=obj, user=request.user)
         if not user_club:
             return None
         return (
@@ -146,7 +170,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         if not current_gen:
             return 0
         return (
-            UserGeneration.objects.filter(generation=current_gen)
+            GenerationMapping.objects.filter(generation=current_gen)
             .exclude(role__name="ALUMNI")
             .count()
         )

@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta
 
 from rest_framework.test import APITestCase
 
-from club.models import Club, Generation, Position, UserClub
+from club.models import Club, Generation, Member, Position
 from userapp.models import User
 
 from ..models import AttendanceType, Event
@@ -22,7 +22,7 @@ class EventViewSetTests(APITestCase):
             start_date=date.today(),
             end_date=date.today() + timedelta(days=365),
         )
-        self.club_admin = UserClub.objects.create(
+        self.club_admin = Member.objects.create(
             user=self.user,
             club=self.club,
             current_role=Position.OWNER,

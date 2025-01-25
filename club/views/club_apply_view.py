@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from club.models import ClubApply, Generation
-from club.models.user_generation import UserGeneration
+from club.models.generation_mapping import GenerationMapping
 from club.serializers.club_apply_serializers import (
     ClubApplyApproveSerializer,
     MyClubApplySerializer,
@@ -26,7 +26,7 @@ class ClubApplyViewSet(ModelViewSet):
         generation = Generation.objects.filter(invite_code=club_code).first()
         if not generation:
             raise CustomException(ErrorCode.GENERATION_NOT_FOUND)
-        if UserGeneration.objects.filter(
+        if GenerationMapping.objects.filter(
             user=request.user, generation=generation
         ).exists():
             raise CustomException(ErrorCode.ALREADY_APPLIED)

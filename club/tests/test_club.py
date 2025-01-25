@@ -5,7 +5,7 @@ from rest_framework.test import APIClient, APITestCase
 
 from club.services.club_service import ClubService
 
-from ..models import Club, Generation, Position, UserClub, UserGeneration
+from ..models import Club, Generation, GenerationMapping, Member, Position
 
 User = get_user_model()
 
@@ -42,15 +42,15 @@ class ClubTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Club.objects.count(), 1)
         self.assertEqual(Generation.objects.count(), 1)
-        self.assertEqual(UserGeneration.objects.count(), 1)
-        self.assertEqual(UserClub.objects.count(), 1)
+        self.assertEqual(GenerationMapping.objects.count(), 1)
+        self.assertEqual(Member.objects.count(), 1)
 
         # 생성된 클럽 확인
         club = Club.objects.first()
         self.assertEqual(club.name, "Test Club")
 
         # 사용자 권한 확인
-        user_club = UserClub.objects.first()
+        user_club = Member.objects.first()
         self.assertEqual(user_club.current_role, Position.OWNER.value)
 
     def test_create_club_invalid_data(self):
@@ -139,8 +139,8 @@ class ClubTestCase(APITestCase):
         # 삭제 전 관련 레코드 수 확인
         self.assertEqual(Club.objects.count(), 1)
         self.assertEqual(Generation.objects.count(), 1)
-        self.assertEqual(UserGeneration.objects.count(), 1)
-        self.assertEqual(UserClub.objects.count(), 1)
+        self.assertEqual(GenerationMapping.objects.count(), 1)
+        self.assertEqual(Member.objects.count(), 1)
 
         response = self.client.delete(reverse("club-detail", kwargs={"pk": club.id}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -148,8 +148,8 @@ class ClubTestCase(APITestCase):
         # 삭제 후 모든 관련 레코드 확인
         self.assertEqual(Club.objects.count(), 0)
         self.assertEqual(Generation.objects.count(), 0)
-        self.assertEqual(UserGeneration.objects.count(), 0)
-        self.assertEqual(UserClub.objects.count(), 0)
+        self.assertEqual(GenerationMapping.objects.count(), 0)
+        self.assertEqual(Member.objects.count(), 0)
 
     def test_delete_club_invalid_data(self):
         """클럽 삭제 테스트(유효하지 않은 데이터)"""

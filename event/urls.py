@@ -7,7 +7,6 @@ router = DefaultRouter()
 router.register(r"", views.EventViewSet, basename="event")
 
 urlpatterns = [
-    path("<int:event_id>", views.EventDetailView.as_view(), name="event-detail"),
     path(
         "<int:event_id>/qr-check",
         views.EventQRCheckView.as_view(),

@@ -1,13 +1,15 @@
-from .event_view import (
-    CheckQRCodeSerializer,
+from .attend_serializer import CheckQRCodeSerializer
+from .event_serializer import (
     EventCreateSerializer,
     EventDetailSerializer,
+    EventSerializer,
+    UpcomingEventSerializer,
 )
-from .upcoming_event_serializer import UpcomingEventSerializer
 
 __all__ = [
     EventCreateSerializer,
-    CheckQRCodeSerializer,
     EventDetailSerializer,
+    EventSerializer,
     UpcomingEventSerializer,
+    CheckQRCodeSerializer,
 ]

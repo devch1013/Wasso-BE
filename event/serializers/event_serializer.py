@@ -6,7 +6,23 @@ from rest_framework import serializers
 from event.models import Attendance, Event
 
 
-class EventItemSerializer(serializers.ModelSerializer):
+class EventCreateSerializer(serializers.Serializer):
+    club_id = serializers.IntegerField()
+    generation_id = serializers.IntegerField()
+    title = serializers.CharField()
+    description = serializers.CharField(required=False, allow_null=True)
+    location = serializers.CharField()
+
+    images = serializers.ListField(child=serializers.ImageField(), required=False)
+    start_time = serializers.TimeField()
+    end_time = serializers.TimeField()
+    date = serializers.DateField()
+    start_minute = serializers.IntegerField()
+    late_minute = serializers.IntegerField()
+    fail_minute = serializers.IntegerField()
+
+
+class EventSerializer(serializers.ModelSerializer):
     attendance_status = serializers.SerializerMethodField()
 
     class Meta:
@@ -39,13 +55,19 @@ class UpcomingEventSerializer(serializers.Serializer):
         yesterday = timezone.now().date() - timedelta(days=1)
         print(yesterday)
         past_events = [event for event in self.instance if event.date < yesterday]
-        return EventItemSerializer(
+        return EventSerializer(
             past_events, many=True, context={"user": self.context.get("user")}
         ).data
 
     def get_upcoming_events(self, obj):
         yesterday = timezone.now().date() - timedelta(days=1)
         upcoming_events = [event for event in self.instance if event.date >= yesterday]
-        return EventItemSerializer(
+        return EventSerializer(
             upcoming_events, many=True, context={"user": self.context.get("user")}
         ).data
+
+
+class EventDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = "__all__"

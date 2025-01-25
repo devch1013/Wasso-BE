@@ -11,12 +11,14 @@ class ClubInfoSerializer(serializers.Serializer):
     club_id = serializers.IntegerField(source="club.id")
     club_name = serializers.CharField(source="club.name")
     club_image = serializers.ImageField(source="club.image")
+    club_description = serializers.CharField(source="club.description")
     current_generation = GenerationInfoSerializer(
         source="last_user_generation.generation"
     )
     is_member_activated = serializers.SerializerMethodField()
     role = RoleSerializer(source="last_user_generation.role")
     member_id = serializers.IntegerField(source="id")
+    generation_mapping_id = serializers.IntegerField(source="last_user_generation.id")
 
     class Meta:
         model = Member
@@ -28,6 +30,7 @@ class ClubInfoSerializer(serializers.Serializer):
             "is_member_activated",
             "role",
             "member_id",
+            "generation_mapping_id",
         ]
 
     def get_is_member_activated(self, obj: Member):

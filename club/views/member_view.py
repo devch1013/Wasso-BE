@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from club.models import GenerationMapping, Member, Role
 from club.serializers.member_serializers import (
+    GenerationMappingSerializer,
     MemberDetailSerializer,
     MemberRoleChangeRequestSerializer,
     TagUpdateRequestSerializer,
@@ -13,7 +14,7 @@ from club.serializers.member_serializers import (
 
 class MemberView(ModelViewSet):
     queryset = GenerationMapping.objects.all()
-    serializer_class = MemberDetailSerializer
+    serializer_class = GenerationMappingSerializer
 
     def get_serializer(self, *args, **kwargs):
         if self.action == "create":
@@ -41,12 +42,9 @@ class MemberView(ModelViewSet):
     def update_tags(self, request, *args, **kwargs):
         serializer = TagUpdateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user_generation = GenerationMapping.objects.get(id=kwargs["pk"])
-        user_club = Member.objects.get(
-            user=user_generation.member, club=user_generation.generation.club
-        )
-        user_club.tags = serializer.validated_data["tags"]
-        user_club.save()
+        member = Member.objects.get(id=kwargs["pk"])
+        member.tags = serializer.validated_data["tags"]
+        member.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])

@@ -1,5 +1,8 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from storages.backends.s3boto3 import S3Boto3Storage
 
 
 class CustomUserManager(BaseUserManager):
@@ -17,6 +20,12 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(identifier, password, **extra_fields)
 
 
+def user_profile_image_path(instance, filename):
+    ext = filename.split(".")[-1]
+    filename = f"{uuid.uuid4()}.{ext}"
+    return f"user_profile_images/{filename}"
+
+
 class User(AbstractUser):
     identifier = models.CharField(max_length=255, unique=True, null=True)
     username = models.CharField(max_length=255, null=True)
@@ -24,7 +33,10 @@ class User(AbstractUser):
     email = models.EmailField(blank=True, null=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     profile_image = models.ImageField(
-        null=True, blank=True, upload_to="user_profile_images/"
+        null=True,
+        blank=True,
+        upload_to=user_profile_image_path,
+        storage=S3Boto3Storage(),
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

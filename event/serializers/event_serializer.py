@@ -4,7 +4,10 @@ from django.utils import timezone
 from rest_framework import serializers
 from storages.backends.s3boto3 import S3Boto3Storage
 
+from club.models import GenerationMapping
+from club.serializers.member_serializers import MemberSerializer
 from event.models import Attendance, Event
+from event.serializers.attend_serializer import AttendanceSerializer
 
 
 class EventCreateSerializer(serializers.Serializer):
@@ -42,7 +45,9 @@ class EventSerializer(serializers.ModelSerializer):
     def get_attendance_status(self, obj):
         user = self.context.get("user")
         try:
-            attendance = Attendance.objects.get(event=obj, user=user)
+            attendance = Attendance.objects.get(
+                event=obj, generation_mapping__member__user=user
+            )
             return attendance.status
         except Attendance.DoesNotExist:
             return 0
@@ -54,7 +59,6 @@ class UpcomingEventSerializer(serializers.Serializer):
 
     def get_past_events(self, obj):
         yesterday = timezone.now().date() - timedelta(days=1)
-        print(yesterday)
         past_events = [event for event in self.instance if event.date < yesterday]
         return EventSerializer(
             past_events, many=True, context={"user": self.context.get("user")}
@@ -100,7 +104,41 @@ class EventDetailSerializer(serializers.ModelSerializer):
     def get_attendance_status(self, obj):
         user = self.context.get("request").user
         try:
-            attendance = Attendance.objects.get(event=obj, user=user)
+            attendance = Attendance.objects.get(
+                event=obj, generation_mapping__member__user=user
+            )
             return attendance.status
         except Attendance.DoesNotExist:
             return 0
+
+
+class MemberAttendanceSerializer(serializers.ModelSerializer):
+    member = MemberSerializer()
+    attendance_status = serializers.SerializerMethodField()
+
+    class Meta:
+        model = GenerationMapping
+        fields = ["id", "member", "attendance_status"]
+
+    def get_attendance_status(self, obj):
+        event = self.context.get("event")
+        try:
+            attendance = Attendance.objects.get(event=event, generation_mapping=obj)
+            return AttendanceSerializer(attendance).data
+        except Attendance.DoesNotExist:
+            return AttendanceSerializer(Attendance(status=0)).data
+
+
+class EventAttendanceSerializer(serializers.ModelSerializer):
+    members = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Event
+        fields = ["id", "members"]
+
+    def get_members(self, obj):
+        return MemberAttendanceSerializer(
+            obj.generation.generationmapping_set.all(),
+            many=True,
+            context={"event": obj},
+        ).data

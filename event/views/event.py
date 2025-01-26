@@ -38,5 +38,11 @@ class EventViewSet(ModelViewSet):
     def upcoming(self, request, *args, **kwargs):
         generation_id = request.query_params.get("gid")
         events = Event.objects.filter(generation__id=generation_id)
-        serializer = sz.UpcomingEventSerializer(events)
+        serializer = sz.UpcomingEventSerializer(events, context={"user": request.user})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["get"])
+    def attendance(self, request, *args, **kwargs):
+        event = Event.objects.get(id=kwargs.get("pk"))
+        serializer = sz.EventAttendanceSerializer(event)
         return Response(serializer.data)

@@ -1,9 +1,12 @@
 import random
 import string
+import uuid
+from io import BytesIO
 from pathlib import Path
 from urllib.parse import urlparse
 
 import qrcode
+from django.core.files.base import ContentFile
 
 
 def generate_random_code(length: int = 15) -> str:
@@ -98,6 +101,40 @@ def test_generate_qr_code():
 
     print("QR 코드 생성 테스트 완료!")
     return True
+
+
+def generate_uuid_qr_for_imagefield() -> tuple[str, ContentFile]:
+    """
+    UUID QR 코드를 생성하고 Django ImageField에 적합한 형식으로 반환하는 함수
+
+    Returns:
+        tuple[str, ContentFile]: (생성된 UUID 문자열, QR 코드 이미지 ContentFile)
+    """
+    # UUID 생성
+    unique_id = str(uuid.uuid4())
+
+    # QR 코드 생성
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(unique_id)
+    qr.make(fit=True)
+
+    # QR 코드 이미지 생성
+    qr_image = qr.make_image(fill_color="black", back_color="white")
+
+    # PIL Image를 BytesIO로 변환
+    image_io = BytesIO()
+    qr_image.save(image_io, format="JPEG")
+    image_io.seek(0)
+
+    # ContentFile 생성
+    image_file = ContentFile(image_io.getvalue(), name=f"{unique_id}.jpg")
+
+    return unique_id, image_file
 
 
 if __name__ == "__main__":

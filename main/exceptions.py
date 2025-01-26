@@ -28,6 +28,21 @@ class ErrorCode(Enum):
         "CE004",
         status.HTTP_400_BAD_REQUEST,
     )
+    ALREADY_CHECKED = (
+        "이미 출석 체크를 완료하였습니다",
+        "CE005",
+        status.HTTP_400_BAD_REQUEST,
+    )
+    INVALID_TIME = (
+        "출석 체크 시간이 아닙니다",
+        "CE006",
+        status.HTTP_400_BAD_REQUEST,
+    )
+    INVALID_QR_CODE = (
+        "유효하지 않은 QR 코드입니다",
+        "CE007",
+        status.HTTP_400_BAD_REQUEST,
+    )
 
     def __init__(self, message, code, status):
         self.message = message

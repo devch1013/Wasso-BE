@@ -19,6 +19,10 @@ def event_image_path(instance, filename):
     return f"event_images/{filename}"
 
 
+def event_qr_code_path(instance, filename):
+    return f"event_qr_codes/{filename}"
+
+
 class Event(models.Model):
     generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
@@ -30,8 +34,10 @@ class Event(models.Model):
     late_minutes = models.IntegerField()
     fail_minutes = models.IntegerField()
     location = models.CharField(max_length=255)
-    qr_code_url = models.CharField(max_length=255, null=True, blank=True)
-    qr_code = models.CharField(max_length=15, null=True, blank=True)
+    qr_code_url = models.ImageField(
+        upload_to=event_qr_code_path, null=True, blank=True, storage=S3Boto3Storage()
+    )
+    qr_code = models.CharField(max_length=50, null=True, blank=True)
     images = ArrayField(
         models.ImageField(
             upload_to=event_image_path,

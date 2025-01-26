@@ -1,4 +1,4 @@
-from .attend_serializer import CheckQRCodeSerializer
+from .attend_serializer import AttendanceSerializer, CheckQRCodeSerializer
 from .event_serializer import (
     EventAttendanceSerializer,
     EventCreateSerializer,
@@ -14,4 +14,5 @@ __all__ = [
     UpcomingEventSerializer,
     CheckQRCodeSerializer,
     EventAttendanceSerializer,
+    AttendanceSerializer,
 ]

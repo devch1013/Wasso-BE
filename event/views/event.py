@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 import event.serializers as sz
 
 from ..models import Event
+from ..serializers import AttendanceSerializer
 from ..service.event_service import EventService
 
 
@@ -46,3 +47,12 @@ class EventViewSet(ModelViewSet):
         event = Event.objects.get(id=kwargs.get("pk"))
         serializer = sz.EventAttendanceSerializer(event)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["post"], url_path="qr-check")
+    def qr_check(self, request, *args, **kwargs):
+        event = Event.objects.get(id=kwargs.get("pk"))
+        serializer = sz.CheckQRCodeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        attendance = EventService.check_qr_code(serializer, event, request.user)
+        result = AttendanceSerializer(attendance).data
+        return Response(result)

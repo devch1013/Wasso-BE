@@ -23,6 +23,7 @@ django-extensions = "^3.2.3"
 pillow = "^11.1.0"
 boto3 = "^1.35.92"
 django-storages = "^1.14.4"
+qrcode = "^8.0"
 
 
 [build-system]

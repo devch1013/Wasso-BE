@@ -27,7 +27,7 @@ class ClubApplyViewSet(ModelViewSet):
         if not generation:
             raise CustomException(ErrorCode.GENERATION_NOT_FOUND)
         if GenerationMapping.objects.filter(
-            user=request.user, generation=generation
+            member__user=request.user, generation=generation
         ).exists():
             raise CustomException(ErrorCode.ALREADY_APPLIED)
         if ClubApply.objects.filter(user=request.user, generation=generation).exists():

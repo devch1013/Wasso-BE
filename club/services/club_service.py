@@ -39,6 +39,7 @@ class ClubService:
         member_role = Role.create_member_role(club)
 
         club.default_role = member_role
+        club.current_generation = generation
         club.save()
 
         member = Member.objects.create(

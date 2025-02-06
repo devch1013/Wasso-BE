@@ -2,7 +2,7 @@ from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from ..service.auth import KakaoAuthService, NativeAuthService
+from ..service.auth import GoogleAuthService, KakaoAuthService, NativeAuthService
 
 
 class SocialAuthView(
@@ -12,15 +12,15 @@ class SocialAuthView(
     def create(self, request, *args, **kwargs):
         provider = kwargs.get("provider")
         service = self.get_service(provider)
-        if provider == "kakao":
-            code = request.query_params.get("code")
-            user = service.get_or_create_user(code)
-        elif provider == "native":
+
+        if provider == "native":
             identifier = request.data.get("identifier")
             password = request.data.get("password")
             user = service.get_or_create_user(identifier, password)
+        else:
+            code = request.query_params.get("code")
+            user = service.get_or_create_user(code)
 
-        print(user)
         refresh = service.get_token(user)
         return Response(
             {
@@ -38,5 +38,7 @@ class SocialAuthView(
             return KakaoAuthService()
         elif provider == "native":
             return NativeAuthService()
+        elif provider == "google":
+            return GoogleAuthService()
         else:
             raise ValueError("Invalid provider")

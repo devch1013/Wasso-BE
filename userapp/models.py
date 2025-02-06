@@ -26,6 +26,12 @@ def user_profile_image_path(instance, filename):
     return f"user_profile_images/{filename}"
 
 
+class Provider(models.TextChoices):
+    KAKAO = "kakao", "Kakao"
+    GOOGLE = "google", "Google"
+    APPLE = "apple", "Apple"
+
+
 class User(AbstractUser):
     identifier = models.CharField(max_length=255, unique=True, null=True)
     username = models.CharField(max_length=255, null=True)
@@ -37,6 +43,9 @@ class User(AbstractUser):
         blank=True,
         upload_to=user_profile_image_path,
         storage=S3Boto3Storage(),
+    )
+    provider = models.CharField(
+        max_length=255, choices=Provider.choices, default=Provider.KAKAO
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

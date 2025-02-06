@@ -75,6 +75,7 @@ class UpcomingEventSerializer(serializers.Serializer):
 class EventDetailSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     attendance_status = serializers.SerializerMethodField()
+    qr_code_url = serializers.ImageField()
 
     class Meta:
         model = Event

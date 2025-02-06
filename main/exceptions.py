@@ -4,6 +4,8 @@ from rest_framework import status
 
 
 class ErrorCode(Enum):
+    ## 소셜로그인 관련 에러
+    INVALID_TOKEN = ("유효하지 않은 토큰입니다", "SE001", status.HTTP_401_UNAUTHORIZED)
     ## 공통 에러
     NOT_IMPLEMENTED = ("서버 에러입니다", "SE001", status.HTTP_501_NOT_IMPLEMENTED)
     PARAMS_MISSING = (

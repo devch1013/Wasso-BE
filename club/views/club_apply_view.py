@@ -3,14 +3,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from club.models import ClubApply, Generation
-from club.models.generation_mapping import GenerationMapping
+from club.models import ClubApply
 from club.serializers.club_apply_serializers import (
     ClubApplyApproveSerializer,
     MyClubApplySerializer,
 )
 from club.services.apply_service import ApplyService
-from main.exceptions import CustomException, ErrorCode
 from userapp.permissions import IsAuthenticatedCustom
 
 
@@ -21,18 +19,7 @@ class ClubApplyViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         club_code = request.query_params.get("club-code")
-        if not club_code:
-            raise CustomException(ErrorCode.PARAMS_MISSING)
-        generation = Generation.objects.filter(invite_code=club_code).first()
-        if not generation:
-            raise CustomException(ErrorCode.GENERATION_NOT_FOUND)
-        if GenerationMapping.objects.filter(
-            member__user=request.user, generation=generation
-        ).exists():
-            raise CustomException(ErrorCode.ALREADY_APPLIED)
-        if ClubApply.objects.filter(user=request.user, generation=generation).exists():
-            raise CustomException(ErrorCode.ALREADY_APPLIED)
-        ClubApply.objects.create(user=request.user, generation=generation)
+        ApplyService.apply(request.user, club_code)
         return Response(
             {"message": "Club apply created successfully"},
             status=status.HTTP_201_CREATED,

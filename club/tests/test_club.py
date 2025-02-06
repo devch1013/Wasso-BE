@@ -1,64 +1,68 @@
-from django.contrib.auth import get_user_model
+from unittest.mock import patch
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from club.services.club_service import ClubService
+from main.test_utils.image_utils import ImageTestUtils
+from userapp.models import Provider, User
 
-from ..models import Club, Generation, GenerationMapping, Member, Position
-
-User = get_user_model()
+from ..models import Club, Generation, GenerationMapping, Member, Role
 
 
 class ClubTestCase(APITestCase):
-    def setUp(self):
+    @patch("django.core.files.storage.default_storage.save")
+    def setUp(self, mock_storage):
+        # S3 저장 mock 설정
+        mock_storage.return_value = "test-image-path.jpg"
+
         # 테스트용 사용자 생성
         self.user = User.objects.create_user(
-            email="test@example.com",
-            username="test1234",
             identifier="test1234",
+            username="test1234",
+            provider=Provider.KAKAO,
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        # API 엔드포인트
-        self.create_url = reverse("club-list")
-
-    def test_create_club(self):
+    @patch("django.core.files.storage.default_storage.save")
+    def test_create_club(self, mock_storage):
         """클럽 생성 테스트"""
+        mock_storage.return_value = "test-image-path.jpg"
         data = {
             "name": "Test Club",
             "description": "Test Description",
-            "image_url": "http://example.com/image.jpg",
-            "generation": {
-                "name": "1기",
-                "start_date": "2024-01-01",
-                "end_date": "2024-12-31",
-            },
+            "image": ImageTestUtils.create_test_image(),
+            "generation.name": "1기",
+            "generation.start_date": "2024-01-01",
+            "generation.end_date": "2024-12-31",
         }
 
-        response = self.client.post(reverse("club-list"), data, format="json")
+        response = self.client.post(reverse("club-list"), data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Club.objects.count(), 1)
         self.assertEqual(Generation.objects.count(), 1)
         self.assertEqual(GenerationMapping.objects.count(), 1)
         self.assertEqual(Member.objects.count(), 1)
+        self.assertEqual(Role.objects.count(), 3)
 
         # 생성된 클럽 확인
         club = Club.objects.first()
         self.assertEqual(club.name, "Test Club")
 
         # 사용자 권한 확인
-        user_club = Member.objects.first()
-        self.assertEqual(user_club.current_role, Position.OWNER.value)
+        member = Member.objects.first()
+        self.assertEqual(member.last_user_generation.generation.name, "1기")
+        self.assertEqual(member.last_user_generation.role.name, "회장")
 
     def test_create_club_invalid_data(self):
         """클럽 생성 테스트(유효하지 않은 데이터)"""
         data = {
             "name": "",
             "description": "Test Description",
-            "image_url": "http://example.com/image.jpg",
+            "image": "image.jpg",
         }
 
         response = self.client.post(reverse("club-list"), data, format="json")
@@ -67,18 +71,20 @@ class ClubTestCase(APITestCase):
         data = {
             "name": "Hello",
             "description": "Test Description",
-            "image_url": "",
+            "image": "",
         }
         response = self.client.post(reverse("club-list"), data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_list_user_clubs(self):
+    @patch("django.core.files.storage.default_storage.save")
+    def test_list_user_clubs(self, mock_storage):
         """사용자의 클럽 목록 조회 테스트"""
+        mock_storage.return_value = "test-image-path.jpg"
         # 테스트용 클럽 생성
         ClubService.create_club(
             user=self.user,
             name="Test Club",
-            image_url="http://example.com/image.jpg",
+            image=ImageTestUtils.create_test_image(),
             description="Test Description",
             generation_data={
                 "name": "1기",
@@ -90,7 +96,7 @@ class ClubTestCase(APITestCase):
         ClubService.create_club(
             user=self.user,
             name="Test Club2",
-            image_url="http://example.com/image.jpg",
+            image=ImageTestUtils.create_test_image(),
             description="Test Description",
             generation_data={
                 "name": "1기",
@@ -110,7 +116,7 @@ class ClubTestCase(APITestCase):
         club, user_club = ClubService.create_club(
             user=self.user,
             name="Test Club",
-            image_url="http://example.com/image.jpg",
+            image=ImageTestUtils.create_test_image(),
             description="Test Description",
             generation_data={
                 "name": "1기",
@@ -120,14 +126,14 @@ class ClubTestCase(APITestCase):
         )
         response = self.client.get(reverse("club-detail", kwargs={"pk": club.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["club_name"], "Test Club")
+        self.assertEqual(response.data["name"], "Test Club")
 
     def test_delete_club(self):
         """클럽 삭제 테스트"""
         club, user_club = ClubService.create_club(
             user=self.user,
             name="Test Club",
-            image_url="http://example.com/image.jpg",
+            image=ImageTestUtils.create_test_image(),
             description="Test Description",
             generation_data={
                 "name": "1기",
@@ -161,7 +167,7 @@ class ClubTestCase(APITestCase):
         club, user_club = ClubService.create_club(
             user=self.user,
             name="Test Club",
-            image_url="http://example.com/image.jpg",
+            image=ImageTestUtils.create_test_image(),
             description="Test Description",
             generation_data={
                 "name": "1기",
@@ -172,7 +178,6 @@ class ClubTestCase(APITestCase):
 
         data = {
             "description": "Updated Description",
-            "image_url": "http://example.com/updated_image.jpg",
         }
 
         response = self.client.put(
@@ -180,10 +185,10 @@ class ClubTestCase(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["description"], "Updated Description")
-        self.assertEqual(
-            response.data["image_url"], "http://example.com/updated_image.jpg"
-        )
 
         club.refresh_from_db()
         self.assertEqual(club.description, "Updated Description")
-        self.assertEqual(club.image_url, "http://example.com/updated_image.jpg")
+
+    def test_get_applies(self):
+        """클럽 지원자 조회 테스트"""
+        pass

@@ -3,6 +3,7 @@ from django.test import TestCase
 from club.models import GenerationMapping
 from club.services.club_service import ClubService
 from main.exceptions import CustomException, ErrorCode
+from main.test_utils.image_utils import ImageTestUtils
 from userapp.models import Provider, User
 
 
@@ -12,12 +13,13 @@ class ClubServiceTest(TestCase):
         self.user = User.objects.create(identifier="testuser", provider=Provider.KAKAO)
         self.club_name = "Test Club"
         # Use a dummy image value (update if your image field requires a File object)
-        self.image = "dummy_image.png"
+        self.image = ImageTestUtils.create_test_image()
         self.description = "A club for testing."
         # Make sure to supply all required fields for Generation; adjust as needed.
         self.generation_data = {
             "name": "Generation 1",
-            # Add more generation-specific fields if needed.
+            "start_date": "2024-01-01",
+            "end_date": "2024-12-31",
         }
 
     def test_create_club_success(self):
@@ -34,7 +36,7 @@ class ClubServiceTest(TestCase):
         self.assertIsNotNone(club.id)
         self.assertEqual(club.name, self.club_name)
         self.assertEqual(club.description, self.description)
-        self.assertEqual(club.image, self.image)
+        self.assertTrue(club.image.url.startswith("https://"))
 
         # Generation assertions (the current_generation was set in the service)
         generation = club.current_generation
@@ -81,4 +83,4 @@ class ClubServiceTest(TestCase):
                 description=self.description,
                 generation_data=self.generation_data,
             )
-        self.assertEqual(context.exception.error_code, ErrorCode.CLUB_ALREADY_EXISTS)
+        self.assertEqual(context.exception.code, ErrorCode.CLUB_ALREADY_EXISTS.code)

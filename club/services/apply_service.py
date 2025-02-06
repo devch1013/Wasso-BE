@@ -1,10 +1,27 @@
 from django.db import transaction
 from django.utils import timezone
 
-from club.models import ClubApply, GenerationMapping, Member
+from club.models import ClubApply, Generation, GenerationMapping, Member
+from main.exceptions import CustomException, ErrorCode
+from userapp.models import User
 
 
 class ApplyService:
+    @staticmethod
+    def apply(user: User, club_code: str):
+        if not club_code:
+            raise CustomException(ErrorCode.PARAMS_MISSING)
+        generation = Generation.objects.filter(invite_code=club_code).first()
+        if not generation:
+            raise CustomException(ErrorCode.GENERATION_NOT_FOUND)
+        if GenerationMapping.objects.filter(
+            member__user=user, generation=generation
+        ).exists():
+            raise CustomException(ErrorCode.ALREADY_APPLIED)
+        if ClubApply.objects.filter(user=user, generation=generation).exists():
+            raise CustomException(ErrorCode.ALREADY_APPLIED)
+        ClubApply.objects.create(user=user, generation=generation)
+
     @staticmethod
     @transaction.atomic
     def approve_apply(apply_ids: list[int]):

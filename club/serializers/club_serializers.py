@@ -52,7 +52,7 @@ class ClubCreateSerializer(serializers.Serializer):
 class ClubUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
-        fields = ["image_url", "description"]
+        fields = ["image", "description"]
 
 
 class ClubGenerationSerializer(serializers.ModelSerializer):

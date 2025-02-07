@@ -19,3 +19,9 @@ class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
         fields = ["id", "status", "timestamp", "modified_at", "is_modified"]
+
+
+class ModifyAttendanceSerializer(serializers.Serializer):
+    event_id = serializers.IntegerField()
+    member_id = serializers.IntegerField()
+    status = serializers.IntegerField()

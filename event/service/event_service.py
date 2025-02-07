@@ -85,6 +85,18 @@ class EventService:
             raise CustomException(ErrorCode.INVALID_TIME)
 
     @staticmethod
-    def change_attendance_status(attendance: Attendance, status: AttendanceStatus):
-        attendance.status = status
-        attendance.save()
+    def change_attendance_status(event_id: int, member_id: int, status: int):
+        try:
+            attendance = Attendance.objects.get(
+                event__id=event_id, generation_mapping__member__id=member_id
+            )
+        except Attendance.DoesNotExist:
+            event = Event.objects.get(id=event_id)
+            generation_mapping = GenerationMapping.objects.get(
+                member__id=member_id, generation=event.generation
+            )
+            attendance = Attendance.objects.create(
+                event=event, generation_mapping=generation_mapping, status=status
+            )
+        attendance.modify_attendance(status)
+        return attendance

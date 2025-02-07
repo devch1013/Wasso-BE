@@ -4,8 +4,8 @@ from django.utils import timezone
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient, APITestCase
 
-from club.services.club_service import ClubService
-from event.models import AttendanceStatus, Event
+from club.services.club_service import ClubService, GenerationMapping
+from event.models import Attendance, AttendanceStatus, Event
 from userapp.models import User
 
 
@@ -59,3 +59,46 @@ class EventAttendanceViewTests(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["status"], AttendanceStatus.PRESENT.value)
+
+    def test_attendance_modify(self):
+        """apply 기록 없을 때 변경"""
+        response = self.client.put(
+            reverse("event-attendance-modify"),
+            data={
+                "event_id": self.event.id,
+                "member_id": self.member.id,
+                "status": AttendanceStatus.LATE.value,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], AttendanceStatus.LATE.value)
+        self.assertEqual(response.data["is_modified"], True)
+
+    def test_attendance_modify_with_apply(self):
+        """apply 기록 있을 때 변경"""
+        generation_mapping = GenerationMapping.objects.get(
+            member=self.member, generation=self.event.generation
+        )
+        attendance = Attendance.objects.create(
+            event=self.event,
+            generation_mapping=generation_mapping,
+            status=AttendanceStatus.PRESENT,
+        )
+
+        self.assertEqual(attendance.status, AttendanceStatus.PRESENT.value)
+        self.assertEqual(attendance.is_modified, False)
+        response = self.client.put(
+            reverse("event-attendance-modify"),
+            data={
+                "event_id": self.event.id,
+                "member_id": self.member.id,
+                "status": AttendanceStatus.LATE.value,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], AttendanceStatus.LATE.value)
+        self.assertEqual(response.data["is_modified"], True)
+
+        attendance.refresh_from_db()
+        self.assertEqual(attendance.status, AttendanceStatus.LATE.value)
+        self.assertEqual(attendance.is_modified, True)

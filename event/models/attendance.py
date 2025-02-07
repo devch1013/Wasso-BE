@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from club.models.generation_mapping import GenerationMapping
 
@@ -25,3 +26,9 @@ class Attendance(models.Model):
 
     class Meta:
         db_table = "attendances"
+
+    def modify_attendance(self, status: int):
+        self.status = AttendanceStatus(status)
+        self.is_modified = True
+        self.modified_at = timezone.localtime(timezone.now())
+        self.save()

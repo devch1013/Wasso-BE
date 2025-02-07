@@ -82,3 +82,8 @@ class EventService:
             return AttendanceStatus.ABSENT
         else:
             raise CustomException(ErrorCode.INVALID_TIME)
+
+    @staticmethod
+    def change_attendance_status(attendance: Attendance, status: AttendanceStatus):
+        attendance.status = status
+        attendance.save()

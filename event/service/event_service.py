@@ -55,6 +55,7 @@ class EventService:
             raise CustomException(ErrorCode.ALREADY_CHECKED)
         except Attendance.DoesNotExist:
             status = EventService.check_attendance_status(event)
+            print(status)
             attendance = Attendance.objects.create(
                 event=event,
                 generation_mapping=generation_mapping,
@@ -73,7 +74,7 @@ class EventService:
         late_time = start_date_time + timedelta(minutes=event.late_minutes)
         early_time = start_date_time + timedelta(minutes=event.start_minutes)
         fail_time = start_date_time + timedelta(minutes=event.fail_minutes)
-        current_time = timezone.now()
+        current_time = timezone.localtime(timezone.now())
         if current_time < late_time and current_time >= early_time:
             return AttendanceStatus.PRESENT
         elif current_time >= late_time and current_time < fail_time:

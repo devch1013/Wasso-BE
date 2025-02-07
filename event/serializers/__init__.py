@@ -8,6 +8,7 @@ from .event_serializer import (
     EventCreateSerializer,
     EventDetailSerializer,
     EventSerializer,
+    EventUpdateSerializer,
     UpcomingEventSerializer,
 )
 
@@ -20,4 +21,5 @@ __all__ = [
     EventAttendanceSerializer,
     AttendanceSerializer,
     ModifyAttendanceSerializer,
+    EventUpdateSerializer,
 ]

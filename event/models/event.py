@@ -1,4 +1,5 @@
 import uuid
+from urllib.parse import urlparse
 
 from django.contrib.postgres.fields import ArrayField
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -69,3 +70,34 @@ class Event(models.Model):
             self.images = s3_urls
 
         super().save(*args, **kwargs)
+
+    def update_images(self, new_images: list, deleted_images: list):
+        """
+        기존 이미지 리스트에 새로운 이미지들을 추가합니다.
+        :param new_images: 새로 추가할 이미지 파일 리스트
+        """
+        if deleted_images is None:
+            deleted_images = []
+        if new_images is None:
+            new_images = []
+
+        # URL에서 path 부분만 추출 (도메인 제거)
+        deleted_images = [urlparse(image).path.lstrip("/") for image in deleted_images]
+
+        # 기존 이미지 URL 리스트 보존
+        existing_images = self.images or []
+        existing_images = [
+            image for image in existing_images if image not in deleted_images
+        ]
+
+        # 새로운 이미지들을 S3에 업로드하고 URL 얻기
+        s3_urls = []
+        storage = S3Boto3Storage()
+        for image in new_images:
+            if isinstance(image, InMemoryUploadedFile):
+                image_name = event_image_path(self, image.name)
+                storage.save(image_name, image)
+                s3_urls.append(image_name)
+
+        # 기존 이미지 URL들과 새로운 이미지 URL들을 합치기
+        self.images = existing_images + s3_urls

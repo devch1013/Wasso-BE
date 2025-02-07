@@ -35,6 +35,15 @@ class EventViewSet(ModelViewSet):
 
         return Response({"message": "이벤트 생성 완료"})
 
+    def update(self, request, *args, **kwargs):
+        print(request.data)
+        serializer = sz.EventUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.request.user
+        EventService.update_event(serializer, user, kwargs.get("pk"))
+
+        return Response({"message": "이벤트 수정 완료"})
+
     @action(detail=False, methods=["get"])
     def upcoming(self, request, *args, **kwargs):
         generation_id = request.query_params.get("gid")

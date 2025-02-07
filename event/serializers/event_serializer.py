@@ -26,6 +26,24 @@ class EventCreateSerializer(serializers.Serializer):
     fail_minute = serializers.IntegerField()
 
 
+class EventUpdateSerializer(serializers.Serializer):
+    title = serializers.CharField(required=False, allow_null=True)
+    description = serializers.CharField(required=False, allow_null=True)
+    location = serializers.CharField(required=False, allow_null=True)
+    additional_images = serializers.ListField(
+        child=serializers.ImageField(), required=False, allow_null=True
+    )
+    deleted_images = serializers.ListField(
+        child=serializers.CharField(), required=False, allow_null=True
+    )
+    start_time = serializers.TimeField(required=False, allow_null=True)
+    end_time = serializers.TimeField(required=False, allow_null=True)
+    date = serializers.DateField(required=False, allow_null=True)
+    start_minute = serializers.IntegerField(required=False, allow_null=True)
+    late_minute = serializers.IntegerField(required=False, allow_null=True)
+    fail_minute = serializers.IntegerField(required=False, allow_null=True)
+
+
 class EventSerializer(serializers.ModelSerializer):
     attendance_status = serializers.SerializerMethodField()
 
@@ -114,12 +132,13 @@ class EventDetailSerializer(serializers.ModelSerializer):
 
 
 class MemberAttendanceSerializer(serializers.ModelSerializer):
+    member_id = serializers.IntegerField(source="member.id")
     member = MemberSerializer()
     attendance_status = serializers.SerializerMethodField()
 
     class Meta:
         model = GenerationMapping
-        fields = ["id", "member", "attendance_status"]
+        fields = ["member_id", "member", "attendance_status"]
 
     def get_attendance_status(self, obj):
         event = self.context.get("event")

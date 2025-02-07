@@ -9,7 +9,11 @@ from userapp.models import User
 from utils.qr_code import generate_uuid_qr_for_imagefield
 
 from ..models import Attendance, AttendanceStatus, Event
-from ..serializers import CheckQRCodeSerializer, EventCreateSerializer
+from ..serializers import (
+    CheckQRCodeSerializer,
+    EventCreateSerializer,
+    EventUpdateSerializer,
+)
 
 
 class EventService:
@@ -42,6 +46,38 @@ class EventService:
             qr_code=qr_code,
             qr_code_url=qr_file,
         )
+
+    @staticmethod
+    def update_event(data: EventUpdateSerializer, user, event_id):
+        # TODO: user가 이벤트 관리자인지 확인
+        event = Event.objects.get(id=event_id)
+
+        if data.validated_data.get("title") is not None:
+            event.title = data.validated_data.get("title")
+        if data.validated_data.get("description") is not None:
+            event.description = data.validated_data.get("description")
+        if data.validated_data.get("location") is not None:
+            event.location = data.validated_data.get("location")
+
+        additional_images = data.validated_data.get("additional_images")
+        deleted_images = data.validated_data.get("deleted_images")
+
+        event.update_images(additional_images, deleted_images)
+
+        if data.validated_data.get("start_time") is not None:
+            event.start_time = data.validated_data.get("start_time")
+        if data.validated_data.get("end_time") is not None:
+            event.end_time = data.validated_data.get("end_time")
+        if data.validated_data.get("date") is not None:
+            event.date = data.validated_data.get("date")
+        if data.validated_data.get("start_minute") is not None:
+            event.start_minute = data.validated_data.get("start_minute")
+        if data.validated_data.get("late_minute") is not None:
+            event.late_minute = data.validated_data.get("late_minute")
+        if data.validated_data.get("fail_minute") is not None:
+            event.fail_minute = data.validated_data.get("fail_minute")
+
+        event.save()
 
     @staticmethod
     def check_qr_code(serializer: CheckQRCodeSerializer, event: Event, user: User):

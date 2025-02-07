@@ -13,12 +13,12 @@ class ClubInfoSerializer(serializers.Serializer):
     club_image = serializers.ImageField(source="club.image")
     club_description = serializers.CharField(source="club.description")
     current_generation = GenerationInfoSerializer(
-        source="last_user_generation.generation"
+        source="get_current_generation.generation"
     )
     is_member_activated = serializers.SerializerMethodField()
-    role = RoleSerializer(source="last_user_generation.role")
+    role = RoleSerializer(source="get_current_generation.role")
     member_id = serializers.IntegerField(source="id")
-    generation_mapping_id = serializers.IntegerField(source="last_user_generation.id")
+    generation_mapping_id = serializers.IntegerField(source="get_current_generation.id")
 
     class Meta:
         model = Member
@@ -34,7 +34,7 @@ class ClubInfoSerializer(serializers.Serializer):
         ]
 
     def get_is_member_activated(self, obj: Member):
-        return obj.last_user_generation.generation == obj.club.current_generation
+        return obj.get_current_generation().generation == obj.club.current_generation
 
 
 class ClubCreateSerializer(serializers.Serializer):
@@ -99,12 +99,12 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
         logger.info(f"request.user: {request.user}")
         logger.info(f"obj: {obj}")
-        user_club = Member.objects.get(club=obj, user=request.user)
-        if not user_club:
+        member = Member.objects.get(club=obj, user=request.user)
+        if not member:
             return None
         return (
-            user_club.last_user_generation.role.name
-            if user_club.last_user_generation
+            member.get_current_generation().role.name
+            if member.get_current_generation()
             else None
         )
 

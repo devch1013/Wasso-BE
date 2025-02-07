@@ -54,8 +54,8 @@ class ClubTestCase(APITestCase):
 
         # 사용자 권한 확인
         member = Member.objects.first()
-        self.assertEqual(member.last_user_generation.generation.name, "1기")
-        self.assertEqual(member.last_user_generation.role.name, "회장")
+        self.assertEqual(member.get_current_generation().generation.name, "1기")
+        self.assertEqual(member.get_current_generation().role.name, "회장")
 
     def test_create_club_invalid_data(self):
         """클럽 생성 테스트(유효하지 않은 데이터)"""

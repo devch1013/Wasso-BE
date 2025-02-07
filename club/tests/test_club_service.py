@@ -54,7 +54,7 @@ class ClubServiceTest(TestCase):
         self.assertIsNotNone(member.id)
         self.assertEqual(member.user, self.user)
         self.assertEqual(member.club, club)
-        self.assertEqual(member.last_user_generation.generation, generation)
+        self.assertEqual(member.get_current_generation().generation, generation)
 
         # Check that there's a generation mapping (the creator was set as owner)
         owner_mappings = GenerationMapping.objects.filter(

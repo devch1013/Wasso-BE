@@ -48,13 +48,11 @@ class ClubService:
         )
 
         # 생성자를 owner로 추가
-        user_generation = GenerationMapping.objects.create(
+        GenerationMapping.objects.create(
             member=member,
             generation=generation,
             role=owner_role,
+            is_current=True,
         )
-
-        member.last_user_generation = user_generation
-        member.save()
 
         return club, member

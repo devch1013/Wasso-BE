@@ -12,12 +12,6 @@ class Member(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="members")
-    last_user_generation = models.ForeignKey(
-        "GenerationMapping",
-        on_delete=models.CASCADE,
-        related_name="linked_member",
-        null=True,
-    )
     description = models.TextField(null=True, blank=True)
     tags = ArrayField(
         models.CharField(max_length=100), blank=True, null=True, default=list
@@ -25,6 +19,9 @@ class Member(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_current_generation(self):
+        return self.generationmapping_set.filter(is_current=True).first()
 
     class Meta:
         db_table = "member"

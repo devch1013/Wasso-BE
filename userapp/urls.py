@@ -12,5 +12,10 @@ urlpatterns = [
         views.SocialAuthView.as_view({"post": "create"}),
         name="kakao_login",
     ),
+    path(
+        "withdraw/",
+        views.SocialAuthView.as_view({"delete": "withdraw"}),
+        name="withdraw",
+    ),
     path("refresh", TokenRefreshView.as_view(), name="token_refresh"),
 ]

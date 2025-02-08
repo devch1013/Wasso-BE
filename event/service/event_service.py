@@ -52,7 +52,7 @@ class EventService:
     def update_event(data: EventUpdateSerializer, user, event_id):
         # TODO: user가 이벤트 관리자인지 확인
         event = Event.objects.get(id=event_id)
-
+        print(data.validated_data)
         if data.validated_data.get("title") is not None:
             event.title = data.validated_data.get("title")
         if data.validated_data.get("description") is not None:
@@ -74,12 +74,13 @@ class EventService:
             event.end_time = data.validated_data.get("end_time")
         if data.validated_data.get("date") is not None:
             event.date = data.validated_data.get("date")
-        if data.validated_data.get("start_minute") is not None:
-            event.start_minute = data.validated_data.get("start_minute")
-        if data.validated_data.get("late_minute") is not None:
-            event.late_minute = data.validated_data.get("late_minute")
-        if data.validated_data.get("fail_minute") is not None:
-            event.fail_minute = data.validated_data.get("fail_minute")
+        if data.validated_data.get("start_minutes") is not None:
+            print(data.validated_data.get("start_minutes"))
+            event.start_minutes = data.validated_data.get("start_minutes")
+        if data.validated_data.get("late_minutes") is not None:
+            event.late_minutes = data.validated_data.get("late_minutes")
+        if data.validated_data.get("fail_minutes") is not None:
+            event.fail_minutes = data.validated_data.get("fail_minutes")
 
         event.save()
 

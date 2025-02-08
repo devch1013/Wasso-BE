@@ -47,6 +47,7 @@ class User(AbstractUser):
     provider = models.CharField(
         max_length=255, choices=Provider.choices, default=Provider.KAKAO
     )
+    fcm_token = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

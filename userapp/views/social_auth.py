@@ -1,4 +1,6 @@
-from rest_framework import mixins
+from rest_framework import mixins, status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -6,6 +8,7 @@ from ..service.auth import GoogleAuthService, KakaoAuthService, NativeAuthServic
 
 
 class SocialAuthView(
+    mixins.DestroyModelMixin,
     mixins.CreateModelMixin,
     GenericViewSet,
 ):
@@ -19,7 +22,8 @@ class SocialAuthView(
             user = service.get_or_create_user(identifier, password)
         else:
             code = request.query_params.get("code")
-            user = service.get_or_create_user(code)
+            fcmToken = request.query_params.get("fcmToken")
+            user = service.get_or_create_user(code, fcmToken)
 
         refresh = service.get_token(user)
         return Response(
@@ -42,3 +46,13 @@ class SocialAuthView(
             return GoogleAuthService()
         else:
             raise ValueError("Invalid provider")
+
+    @action(detail=False, methods=["DELETE"], permission_classes=[IsAuthenticated])
+    def withdraw(self, request, *args, **kwargs):
+        user = request.user
+        print(user)
+        user.delete()
+        return Response(
+            {"message": "User deleted successfully"},
+            status=status.HTTP_200_OK,
+        )

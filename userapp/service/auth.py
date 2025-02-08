@@ -36,8 +36,8 @@ class NativeAuthService(AuthService):
 
 
 class KakaoAuthService(AuthService):
-    def get_or_create_user(self, identifier: str, password: str = None):
-        return self._create_user(identifier)
+    def get_or_create_user(self, identifier: str, fcmToken: str = None):
+        return self._create_user(identifier, fcmToken)
 
     def _get_kakao_user_info(self, access_token):
         headers = {
@@ -49,7 +49,7 @@ class KakaoAuthService(AuthService):
             return response.json()
         return None
 
-    def _create_user(self, kakao_token):
+    def _create_user(self, kakao_token, fcmToken):
         if not kakao_token:
             raise CustomException(ErrorCode.INVALID_TOKEN)
 
@@ -63,6 +63,7 @@ class KakaoAuthService(AuthService):
             identifier=str(user_info["id"]),
             defaults={
                 "username": user_info.get("properties", {}).get("nickname", ""),
+                "fcmToken": fcmToken,
             },
         )
 
@@ -70,8 +71,8 @@ class KakaoAuthService(AuthService):
 
 
 class GoogleAuthService(AuthService):
-    def get_or_create_user(self, identifier: str, password: str = None):
-        return self._create_user(identifier)
+    def get_or_create_user(self, identifier: str, fcmToken: str = None):
+        return self._create_user(identifier, fcmToken)
 
     def _get_google_user_info(self, access_token):
         headers = {
@@ -84,7 +85,7 @@ class GoogleAuthService(AuthService):
             return response.json()
         return None
 
-    def _create_user(self, google_token):
+    def _create_user(self, google_token, fcmToken):
         print(google_token)
         if not google_token:
             raise CustomException(ErrorCode.INVALID_TOKEN)
@@ -100,6 +101,7 @@ class GoogleAuthService(AuthService):
             defaults={
                 "username": user_info.get("name", ""),
                 "email": user_info.get("email", ""),
+                "fcmToken": fcmToken,
             },
         )
 

@@ -30,7 +30,11 @@ class MemberRoleChangeRequestSerializer(serializers.Serializer):
 
 
 class TagUpdateRequestSerializer(serializers.Serializer):
-    tags = serializers.ListField(child=serializers.CharField())
+    tag = serializers.CharField()
+
+
+class DescriptionUpdateRequestSerializer(serializers.Serializer):
+    description = serializers.CharField()
 
 
 class MemberDetailSerializer(serializers.ModelSerializer):

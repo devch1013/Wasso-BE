@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from club.models import GenerationMapping, Member, Role
 from club.serializers.member_serializers import (
+    DescriptionUpdateRequestSerializer,
     GenerationMappingSerializer,
     MemberDetailSerializer,
     MemberRoleChangeRequestSerializer,
@@ -38,12 +39,30 @@ class MemberView(ModelViewSet):
         user_generation.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"], url_path="tags")
-    def update_tags(self, request, *args, **kwargs):
+    @action(detail=True, methods=["post"], url_path="add-tag")
+    def add_tag(self, request, *args, **kwargs):
         serializer = TagUpdateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         member = Member.objects.get(id=kwargs["pk"])
-        member.tags = serializer.validated_data["tags"]
+        member.tags.append(serializer.validated_data["tag"])
+        member.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"], url_path="remove-tag")
+    def remove_tag(self, request, *args, **kwargs):
+        serializer = TagUpdateRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        member = Member.objects.get(id=kwargs["pk"])
+        member.tags.remove(serializer.validated_data["tag"])
+        member.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"], url_path="update-description")
+    def update_description(self, request, *args, **kwargs):
+        serializer = DescriptionUpdateRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        member = Member.objects.get(id=kwargs["pk"])
+        member.description = serializer.validated_data["description"]
         member.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 

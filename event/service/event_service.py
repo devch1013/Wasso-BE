@@ -36,6 +36,7 @@ class EventService:
             title=data.validated_data.get("title"),
             description=data.validated_data.get("description"),
             location=data.validated_data.get("location"),
+            location_link=data.validated_data.get("location_link"),
             images=data.validated_data.get("images"),
             date=data.validated_data.get("date"),
             start_time=data.validated_data.get("start_time"),
@@ -63,6 +64,9 @@ class EventService:
         deleted_images = data.validated_data.get("deleted_images")
 
         event.update_images(additional_images, deleted_images)
+
+        if data.validated_data.get("location_link") is not None:
+            event.location_link = data.validated_data.get("location_link")
 
         if data.validated_data.get("start_time") is not None:
             event.start_time = data.validated_data.get("start_time")

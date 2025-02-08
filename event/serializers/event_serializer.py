@@ -16,6 +16,7 @@ class EventCreateSerializer(serializers.Serializer):
     title = serializers.CharField()
     description = serializers.CharField(required=False, allow_null=True)
     location = serializers.CharField()
+    location_link = serializers.CharField(required=False, allow_null=True)
 
     images = serializers.ListField(child=serializers.ImageField(), required=False)
     start_time = serializers.TimeField()
@@ -30,6 +31,7 @@ class EventUpdateSerializer(serializers.Serializer):
     title = serializers.CharField(required=False, allow_null=True)
     description = serializers.CharField(required=False, allow_null=True)
     location = serializers.CharField(required=False, allow_null=True)
+    location_link = serializers.CharField(required=False, allow_null=True)
     additional_images = serializers.ListField(
         child=serializers.ImageField(), required=False, allow_null=True
     )
@@ -57,6 +59,7 @@ class EventSerializer(serializers.ModelSerializer):
             "start_time",
             "end_time",
             "location",
+            "location_link",
             "attendance_status",
         ]
 
@@ -105,6 +108,7 @@ class EventDetailSerializer(serializers.ModelSerializer):
             "start_time",
             "end_time",
             "location",
+            "location_link",
             "start_minutes",
             "late_minutes",
             "fail_minutes",

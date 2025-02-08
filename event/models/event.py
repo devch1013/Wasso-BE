@@ -35,6 +35,7 @@ class Event(models.Model):
     late_minutes = models.IntegerField()
     fail_minutes = models.IntegerField()
     location = models.CharField(max_length=255)
+    location_link = models.CharField(max_length=255, null=True, blank=True)
     qr_code_url = models.ImageField(
         upload_to=event_qr_code_path, null=True, blank=True, storage=S3Boto3Storage()
     )

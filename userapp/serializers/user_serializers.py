@@ -15,3 +15,9 @@ class UserSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["username", "profile_image"]
+
+
+class UserPushSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["push_allow"]

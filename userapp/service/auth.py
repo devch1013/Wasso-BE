@@ -63,9 +63,12 @@ class KakaoAuthService(AuthService):
             identifier=str(user_info["id"]),
             defaults={
                 "username": user_info.get("properties", {}).get("nickname", ""),
-                "fcmToken": fcmToken,
             },
         )
+
+        if fcmToken:
+            user.fcm_token = fcmToken
+            user.save()
 
         return user
 
@@ -96,13 +99,16 @@ class GoogleAuthService(AuthService):
             raise CustomException(ErrorCode.INVALID_TOKEN)
 
         # 사용자 생성 또는 조회
-        user, _ = User.objects.get_or_create(
+        user, is_created = User.objects.get_or_create(
             identifier=user_info["sub"],  # Google의 고유 사용자 ID
             defaults={
                 "username": user_info.get("name", ""),
                 "email": user_info.get("email", ""),
-                "fcmToken": fcmToken,
             },
         )
+
+        if fcmToken:
+            user.fcm_token = fcmToken
+            user.save()
 
         return user

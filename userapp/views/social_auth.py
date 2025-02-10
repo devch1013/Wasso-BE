@@ -4,6 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from main.component.fcm_component import FCMComponent
+
 from ..service.auth import GoogleAuthService, KakaoAuthService, NativeAuthService
 
 
@@ -23,6 +25,7 @@ class SocialAuthView(
         else:
             code = request.query_params.get("code")
             fcmToken = request.query_params.get("fcmToken")
+            print("fcmToken", fcmToken)
             user = service.get_or_create_user(code, fcmToken)
 
         refresh = service.get_token(user)
@@ -56,3 +59,15 @@ class SocialAuthView(
             {"message": "User deleted successfully"},
             status=status.HTTP_200_OK,
         )
+
+    @action(detail=False, methods=["post"])
+    def send_notification(self, request):
+        fcm = FCMComponent()
+
+        fcm.send_notification(
+            token="fWIuzhlnRhulm-AytVbrH2:APA91bFM9XdYKLpAwMpYPk0kmL3km0aXTUOANLHYfomFe7U5I4RibLFvvzXoBFOHZLZwp4U3k5skPKKhzDrExThSFoE_rnrpdSz4_x70ZyGAdnsfichgQGE",
+            title="Test Title",
+            body="Test Message Body",
+            data={"deeplink": "wasso://app/event/checkin/6"},
+        )
+        return Response({"message": "Notification sent successfully"})

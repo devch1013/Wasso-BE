@@ -6,7 +6,12 @@ from rest_framework.viewsets import GenericViewSet
 
 from main.component.fcm_component import FCMComponent
 
-from ..service.auth import GoogleAuthService, KakaoAuthService, NativeAuthService
+from ..service.auth import (
+    AppleAuthService,
+    GoogleAuthService,
+    KakaoAuthService,
+    NativeAuthService,
+)
 
 
 class SocialAuthView(
@@ -47,13 +52,17 @@ class SocialAuthView(
             return NativeAuthService()
         elif provider == "google":
             return GoogleAuthService()
+        elif provider == "apple":
+            return AppleAuthService()
         else:
             raise ValueError("Invalid provider")
 
     @action(detail=False, methods=["DELETE"], permission_classes=[IsAuthenticated])
     def withdraw(self, request, *args, **kwargs):
         user = request.user
-        print(user)
+        if user.provider == "apple":
+            service = AppleAuthService()
+            service.revoke_apple_token(user.identifier)
         user.delete()
         return Response(
             {"message": "User deleted successfully"},
@@ -65,7 +74,7 @@ class SocialAuthView(
         fcm = FCMComponent()
 
         fcm.send_notification(
-            token="fWIuzhlnRhulm-AytVbrH2:APA91bFM9XdYKLpAwMpYPk0kmL3km0aXTUOANLHYfomFe7U5I4RibLFvvzXoBFOHZLZwp4U3k5skPKKhzDrExThSFoE_rnrpdSz4_x70ZyGAdnsfichgQGE",
+            token="eF9nhyo5SueS-yFehISYOD:APA91bGC3Oo2SnSm51zvX1BZXdvnGHkrozROi-c_iNZ-FXii-FIKkwj3jYbZky_OFrF951zSA443iONBVlh99VWYp8RngNwCmxVWYxfAytuGamZJ47LyROY",
             title="Test Title",
             body="Test Message Body",
             data={"deeplink": "wasso://app/event/checkin/6"},

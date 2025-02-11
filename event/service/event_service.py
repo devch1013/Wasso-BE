@@ -41,9 +41,9 @@ class EventService:
             date=data.validated_data.get("date"),
             start_time=data.validated_data.get("start_time"),
             end_time=data.validated_data.get("end_time"),
-            start_minutes=data.validated_data.get("start_minute"),
-            late_minutes=data.validated_data.get("late_minute"),
-            fail_minutes=data.validated_data.get("fail_minute"),
+            start_minutes=data.validated_data.get("start_minutes"),
+            late_minutes=data.validated_data.get("late_minutes"),
+            fail_minutes=data.validated_data.get("fail_minutes"),
             qr_code=qr_code,
             qr_code_url=qr_file,
         )

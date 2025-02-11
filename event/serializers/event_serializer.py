@@ -41,9 +41,9 @@ class EventUpdateSerializer(serializers.Serializer):
     start_time = serializers.TimeField(required=False, allow_null=True)
     end_time = serializers.TimeField(required=False, allow_null=True)
     date = serializers.DateField(required=False, allow_null=True)
-    start_minutes = serializers.IntegerField()
-    late_minutes = serializers.IntegerField()
-    fail_minutes = serializers.IntegerField()
+    start_minutes = serializers.IntegerField(required=False, allow_null=True)
+    late_minutes = serializers.IntegerField(required=False, allow_null=True)
+    fail_minutes = serializers.IntegerField(required=False, allow_null=True)
 
 
 class EventSerializer(serializers.ModelSerializer):

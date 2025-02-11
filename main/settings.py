@@ -20,6 +20,9 @@ from loguru import logger
 
 load_dotenv()
 
+from main.sub_settings.apple_settings import *  # noqa
+from main.sub_settings.fcm_settings import *  # noqa
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

@@ -57,11 +57,11 @@ class EventViewSet(ModelViewSet):
         serializer = sz.EventAttendanceSerializer(event)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["post"], url_path="qr-check")
+    @action(detail=False, methods=["post"], url_path="qr-check")
     def qr_check(self, request, *args, **kwargs):
-        event = Event.objects.get(id=kwargs.get("pk"))
         serializer = sz.CheckQRCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        event = Event.objects.get(id=serializer.data.get("event_id"))
         attendance = EventService.check_qr_code(serializer, event, request.user)
         result = AttendanceSerializer(attendance).data
         return Response(result)

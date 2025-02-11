@@ -6,7 +6,7 @@ from django.utils import timezone
 from rest_framework.test import APIClient, APITestCase
 
 from club.services.club_service import ClubService
-from event.models import Event
+from event.models import AttendanceStatus, Event
 from main.test_utils.image_utils import ImageTestUtils
 from userapp.models import User
 
@@ -51,9 +51,9 @@ class EventViewSetTests(APITestCase):
             "date": "2018-01-01",
             "start_time": "10:00",
             "end_time": "11:00",
-            "start_minute": 0,
-            "late_minute": 10,
-            "fail_minute": 30,
+            "start_minutes": 0,
+            "late_minutes": 10,
+            "fail_minutes": 30,
         }
         response = self.client.post(reverse("event-list"), data, format="multipart")
         self.assertEqual(response.status_code, 200)
@@ -101,3 +101,39 @@ class EventViewSetTests(APITestCase):
         self.assertEqual(Event.objects.first().description, "Updated Event Description")
         self.assertEqual(Event.objects.first().location, "Updated Location")
         self.assertEqual(len(Event.objects.first().images), 2)
+
+    @patch("django.core.files.storage.default_storage.save")
+    def test_attendance_check(self, mock_storage):
+        """정상 출석 체크"""
+        mock_storage.return_value = "test-image-path.jpg"
+
+        now = timezone.localtime(timezone.now())
+        end_time = (now + timedelta(hours=1)).time()
+
+        event = Event.objects.create(
+            title="Test Event",
+            description="Test Event Description",
+            location="Test Location",
+            images=[ImageTestUtils.create_test_image()],
+            generation=self.club.current_generation,
+            date=now.date(),
+            start_time=now.time(),
+            end_time=end_time,
+            start_minutes=-10,
+            late_minutes=10,
+            fail_minutes=30,
+            qr_code="123456",
+            qr_code_url=None,
+        )
+
+        response = self.client.post(
+            reverse("event-qr-check", kwargs={"pk": event.id}),
+            data={
+                "event_id": event.id,
+                "qr_code": event.qr_code,
+                "latitude": 35.123456,
+                "longitude": 129.123456,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], AttendanceStatus.PRESENT.value)

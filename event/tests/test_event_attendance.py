@@ -47,19 +47,6 @@ class EventAttendanceViewTests(APITestCase):
             qr_code="123456",
         )
 
-    def test_attendance_check(self):
-        response = self.client.post(
-            reverse("event-attendance-list"),
-            data={
-                "event_id": self.event.id,
-                "qr_code": self.event.qr_code,
-                "latitude": 35.123456,
-                "longitude": 129.123456,
-            },
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["status"], AttendanceStatus.PRESENT.value)
-
     def test_attendance_modify(self):
         """apply 기록 없을 때 변경"""
         response = self.client.put(

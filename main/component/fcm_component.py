@@ -23,12 +23,27 @@ class FCMComponent:
             bool: 전송 성공 여부
         """
         try:
-            print(token)
-            # 메시지 생성
+            # 토큰 유효성 검사
+            if not token:
+                print("FCM 토큰이 없습니다.")
+                return False
+
+            # APNS 설정을 포함한 메시지 생성
             message = messaging.Message(
                 notification=messaging.Notification(
                     title=title,
                     body=body,
+                ),
+                apns=messaging.APNSConfig(
+                    headers={"apns-priority": "10"},
+                    payload=messaging.APNSPayload(
+                        aps=messaging.Aps(
+                            sound="default",
+                            badge=1,
+                            content_available=True,
+                            mutable_content=True,
+                        )
+                    ),
                 ),
                 data=data if data else {},
                 token=token if isinstance(token, str) else None,
@@ -36,10 +51,14 @@ class FCMComponent:
 
             # 메시지 전송
             response = messaging.send(message)
-            print("response", response)
-            return True if response else False
+            print(f"FCM 알림 전송 성공: {response}")
+            return True
 
+        except messaging.UnregisteredError:
+            print("등록되지 않은 토큰입니다.")
+            return False
         except Exception as e:
+            print(e)
             print(f"FCM 알림 전송 실패: {str(e)}")
             return False
 
@@ -59,11 +78,27 @@ class FCMComponent:
             Dict: 성공 및 실패 결과
         """
         try:
-            # 메시지 생성
+            # 토큰 유효성 검사
+            if not tokens:
+                print("FCM 토큰 리스트가 비어있습니다.")
+                return {"success_count": 0, "failure_count": 0}
+
+            # APNS 설정을 포함한 멀티캐스트 메시지 생성
             message = messaging.MulticastMessage(
                 notification=messaging.Notification(
                     title=title,
                     body=body,
+                ),
+                apns=messaging.APNSConfig(
+                    headers={"apns-priority": "10"},
+                    payload=messaging.APNSPayload(
+                        aps=messaging.Aps(
+                            sound="default",
+                            badge=1,
+                            content_available=True,
+                            mutable_content=True,
+                        )
+                    ),
                 ),
                 data=data if data else {},
                 tokens=tokens,

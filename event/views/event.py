@@ -59,6 +59,9 @@ class EventViewSet(ModelViewSet):
 
     @action(detail=False, methods=["post"], url_path="qr-check")
     def qr_check(self, request, *args, **kwargs):
+        print(request.data)
+        request.data["latitude"] = round(float(request.data["latitude"]), 8)
+        request.data["longitude"] = round(float(request.data["longitude"]), 8)
         serializer = sz.CheckQRCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         event = Event.objects.get(id=serializer.data.get("event_id"))

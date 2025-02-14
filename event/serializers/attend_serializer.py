@@ -5,7 +5,7 @@ from event.models import Attendance
 
 class FloatDecimalField(serializers.DecimalField):
     def to_representation(self, value):
-        return float(super().to_representation(value))
+        return round(float(super().to_representation(value)), self.decimal_places)
 
 
 class CheckQRCodeSerializer(serializers.Serializer):

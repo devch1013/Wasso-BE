@@ -7,7 +7,7 @@ from rest_framework.test import APIClient, APITestCase
 
 from api.club.services.club_service import ClubService
 from api.event.models import AttendanceStatus, Event
-from config.test_utils.image_utils import ImageTestUtils
+from common.test_utils.image_utils import ImageTestUtils
 from api.userapp.models import User
 
 
@@ -38,6 +38,7 @@ class EventViewSetTests(APITestCase):
 
     @patch("django.core.files.storage.default_storage.save")
     def test_create_event(self, mock_storage):
+        """이벤트 생성"""
         mock_storage.return_value = "test-image-path.jpg"
         data = {
             "club_id": self.club.id,
@@ -65,6 +66,7 @@ class EventViewSetTests(APITestCase):
 
     @patch("django.core.files.storage.default_storage.save")
     def test_update_event(self, mock_storage):
+        """이벤트 수정"""
         mock_storage.return_value = "test-image-path.jpg"
 
         event = Event.objects.create(
@@ -127,7 +129,7 @@ class EventViewSetTests(APITestCase):
         )
 
         response = self.client.post(
-            reverse("event-qr-check", kwargs={"pk": event.id}),
+            reverse("event-attendance", kwargs={"event_id": event.id}),
             data={
                 "event_id": event.id,
                 "qr_code": event.qr_code,

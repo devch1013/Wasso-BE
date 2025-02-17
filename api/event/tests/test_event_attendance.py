@@ -32,7 +32,7 @@ class EventAttendanceViewTests(APITestCase):
             },
         )
 
-        self.event = Event.objects.create(
+        self.event: Event = Event.objects.create(
             generation=self.club.current_generation,
             title="Test Event",
             description="Test Event Description",
@@ -50,7 +50,7 @@ class EventAttendanceViewTests(APITestCase):
     def test_attendance_modify(self):
         """apply 기록 없을 때 변경"""
         response = self.client.put(
-            reverse("event-attendance-modify"),
+            reverse("event-attendance", kwargs={"event_id": self.event.id}),
             data={
                 "event_id": self.event.id,
                 "member_id": self.member.id,
@@ -75,7 +75,7 @@ class EventAttendanceViewTests(APITestCase):
         self.assertEqual(attendance.status, AttendanceStatus.PRESENT.value)
         self.assertEqual(attendance.is_modified, False)
         response = self.client.put(
-            reverse("event-attendance-modify"),
+            reverse("event-attendance", kwargs={"event_id": self.event.id}),
             data={
                 "event_id": self.event.id,
                 "member_id": self.member.id,

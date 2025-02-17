@@ -12,16 +12,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 import sys
-from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
 from loguru import logger
 
 load_dotenv()
-
-from config.sub_settings.apple_settings import *  # noqa
-from config.sub_settings.fcm_settings import *  # noqa
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +37,19 @@ ALLOWED_HOSTS = ["192.168.0.194", "pch-home-server3143.iptime.org", "localhost"]
 AUTH_USER_MODEL = "userapp.User"
 # Application definition
 
+LOCAL_APPS = [
+    "api.userapp",
+    "api.club",
+    "api.event",
+]
+
+THIRD_PARTY_APPS = [
+    "storages",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "django_extensions",
+]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -48,13 +57,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "storages",
-    "api.userapp",
-    "api.club",
-    "api.event",
-    "rest_framework",
-    "rest_framework_simplejwt",
-    "django_extensions",
+    *LOCAL_APPS,
+    *THIRD_PARTY_APPS,
 ]
 
 MIDDLEWARE = [
@@ -155,21 +159,7 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "config.exception_handler.custom_exception_handler",
 }
 
-# JWT 설정
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": True,
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
-    "VERIFYING_KEY": None,
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-}
+
 
 DJANGO_BIND_ADDRESS = "0.0.0.0"
 DJANGO_BIND_PORT = "8000"
@@ -222,18 +212,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-AWS_S3_REGION_NAME = os.getenv("AWS_REGION")
-AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
-FILE_SERVER_URL = os.getenv("FILE_SERVER_URL")
-AWS_S3_CUSTOM_DOMAIN = "wasso.ecrdev.com"
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERIFY = True
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
-# S3 Settings
-AWS_S3_ADDRESSING_STYLE = "virtual"
-AWS_S3_SIGNATURE_VERSION = "s3v4"
-AWS_QUERYSTRING_AUTH = False  # URL에 인증 파라미터 제거
+from config.settings.apple_settings import *  # noqa
+from config.settings.fcm_settings import *  # noqa
+from config.settings.jwt_settings import *  # noqa
+from config.settings.aws_settings import *  # noqa

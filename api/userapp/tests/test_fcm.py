@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from config.component.fcm_component import FCMComponent
+from common.component.fcm_component import FCMComponent
 
 
 class TestFCMComponent(TestCase):

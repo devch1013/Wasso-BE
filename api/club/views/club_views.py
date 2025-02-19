@@ -34,6 +34,7 @@ class ClubViewSet(ModelViewSet):
 
     # @delete_cache_response(key_prefix=CacheKey.CLUB_DETAIL)
     def update(self, request, *args, **kwargs):
+        """동아리 정보 수정"""
         instance = Club.objects.get(id=kwargs["pk"])
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)

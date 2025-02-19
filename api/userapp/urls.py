@@ -5,7 +5,7 @@ from . import views
 
 urlpatterns = [
     path(
-        "", views.UserView.as_view({"get": "retrieve", "put": "update"}), name="user_me"
+        "", views.UserView.as_view({"get": "retrieve", "put": "update"}), name="user-me"
     ),
     path(
         "push/",
@@ -20,7 +20,7 @@ urlpatterns = [
     path(
         "<str:provider>/login/",
         views.SocialAuthView.as_view({"post": "create"}),
-        name="kakao_login",
+        name="social-login",
     ),
     path(
         "withdraw/",

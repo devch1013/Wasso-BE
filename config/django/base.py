@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.0.194", "pch-home-server3143.iptime.org", "localhost"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 AUTH_USER_MODEL = "userapp.User"
 # Application definition

@@ -146,3 +146,12 @@ class EventService:
         for generation_mapping in generation_mappings:
             EventService.change_attendance_status(event.id, generation_mapping.member.id, AttendanceStatus.PRESENT)
         
+    @staticmethod
+    def get_me(event: Event, user: User):
+        generation_mapping = GenerationMapping.objects.get(
+            member__user=user, generation=event.generation
+        )
+        try:
+            return Attendance.objects.get(event=event, generation_mapping=generation_mapping)
+        except Attendance.DoesNotExist:
+            return Attendance(status=AttendanceStatus.UNCHECKED)

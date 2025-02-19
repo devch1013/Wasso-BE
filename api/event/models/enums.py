@@ -8,6 +8,7 @@ class AttendanceType(models.TextChoices):
 
 
 class AttendanceStatus(models.IntegerChoices):
+    UNCHECKED = 0, "미출석"
     PRESENT = 1, "출석"
     LATE = 2, "지각"
     ABSENT = 3, "결석"

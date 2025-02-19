@@ -11,7 +11,7 @@ from ..serializers import (
     EventAttendanceSerializer,
 )
 from ..service.event_service import EventService
-
+from common.responses.simple_response import SimpleResponse
 logger = logging.getLogger(__name__)
 
 
@@ -36,7 +36,7 @@ class EventAttendanceView(
         serializer = ModifyAttendanceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         attendance = EventService.change_attendance_status(
-            serializer.validated_data["event_id"],
+            kwargs.get(self.lookup_field),
             serializer.validated_data["member_id"],
             serializer.validated_data["status"],
         )
@@ -56,3 +56,8 @@ class EventAttendanceView(
         event = Event.objects.get(id=kwargs.get("pk"))
         attendance = EventService.check_qr_code(serializer, event, request.user)
         return Response(AttendanceSerializer(attendance).data)
+    
+    def attendance_all(self, request, *args, **kwargs):
+        event = Event.objects.get(id=kwargs.get(self.lookup_field))
+        EventService.attend_all(event)
+        return SimpleResponse(message="출석 처리 완료")

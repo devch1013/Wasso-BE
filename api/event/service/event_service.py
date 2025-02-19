@@ -139,3 +139,10 @@ class EventService:
             )
         attendance.modify_attendance(status)
         return attendance
+    
+    @staticmethod
+    def attend_all(event: Event):
+        generation_mappings = GenerationMapping.objects.filter(generation=event.generation)
+        for generation_mapping in generation_mappings:
+            EventService.change_attendance_status(event.id, generation_mapping.member.id, AttendanceStatus.PRESENT)
+        

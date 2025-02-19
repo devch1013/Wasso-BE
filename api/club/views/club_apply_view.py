@@ -1,13 +1,19 @@
 from rest_framework import status
 from rest_framework.viewsets import GenericViewSet
-
+from rest_framework import mixins
 from api.club.services.apply_service import ApplyService
 from api.userapp.permissions import IsAuthenticatedCustom
 from common.responses.simple_response import SimpleResponse
 from common.exceptions import CustomException, ErrorCode
+from api.club.serializers.club_apply_serializers import MyClubApplySerializer
+from api.club.models import ClubApply
 
-class ClubApplyViewSet(GenericViewSet):
+class ClubApplyViewSet(mixins.ListModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticatedCustom]
+    serializer_class = MyClubApplySerializer
+
+    def get_queryset(self):
+        return ClubApply.objects.filter(user=self.request.user, accepted=False)
 
     def apply(self, request, *args, **kwargs):
         club_code = request.query_params.get("club-code")

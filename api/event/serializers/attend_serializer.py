@@ -22,6 +22,5 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 
 class ModifyAttendanceSerializer(serializers.Serializer):
-    event_id = serializers.IntegerField()
     member_id = serializers.IntegerField()
     status = serializers.IntegerField()

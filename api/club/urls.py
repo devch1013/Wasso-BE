@@ -10,5 +10,5 @@ router.register("", views.ClubViewSet, basename="club")
 
 urlpatterns = [
     path("apply/<int:apply_id>/", views.ClubApplyViewSet.as_view({"post": "approve", "delete": "reject"}), name="apply-detail"),
-    path("apply/", views.ClubApplyViewSet.as_view({"post": "apply"}), name="apply-list"),
+    path("apply/", views.ClubApplyViewSet.as_view({"post": "apply", "get": "list"}), name="apply-list"),
 ] + router.urls

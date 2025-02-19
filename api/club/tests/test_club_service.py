@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from api.club.models import GenerationMapping
 from api.club.services.club_service import ClubService
-from config.exceptions import CustomException, ErrorCode
+from common.exceptions import CustomException, ErrorCode
 from common.test_utils.image_utils import ImageTestUtils
 from api.userapp.models import Provider, User
 

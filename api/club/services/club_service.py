@@ -4,7 +4,7 @@ import string
 from django.db import transaction
 
 from api.club.models import Club, Generation, GenerationMapping, Member, Role
-from config.exceptions import CustomException, ErrorCode
+from common.exceptions import CustomException, ErrorCode
 from api.userapp.models import User
 
 

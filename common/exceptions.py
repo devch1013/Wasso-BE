@@ -45,6 +45,11 @@ class ErrorCode(Enum):
         "CE007",
         status.HTTP_400_BAD_REQUEST,
     )
+    APPLY_NOT_FOUND = (
+        "존재하지 않는 가입 신청입니다",
+        "CE008",
+        status.HTTP_400_BAD_REQUEST,
+    )
 
     def __init__(self, message, code, status):
         self.message = message

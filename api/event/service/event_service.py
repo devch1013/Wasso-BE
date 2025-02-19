@@ -4,7 +4,7 @@ from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
 from api.club.models import Generation, GenerationMapping
-from config.exceptions import CustomException, ErrorCode
+from common.exceptions import CustomException, ErrorCode
 from api.userapp.models import User
 from common.utils.qr_code import generate_uuid_qr_for_imagefield
 

@@ -21,7 +21,3 @@ class MyClubApplySerializer(serializers.ModelSerializer):
     class Meta:
         model = ClubApply
         fields = ["id", "generation", "created_at"]
-
-
-class ClubApplyApproveSerializer(serializers.Serializer):
-    apply_id = serializers.ListField(child=serializers.IntegerField())

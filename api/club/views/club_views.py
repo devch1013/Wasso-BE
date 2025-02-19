@@ -24,11 +24,12 @@ class ClubViewSet(ModelViewSet):
 
     # @cache_response(timeout=60, key_prefix=CacheKey.CLUB_LIST)
     def list(self, request, *args, **kwargs):
+        """사용자가 속한 클럽들을 조회"""
         return super().list(request, *args, **kwargs)
 
     # @cache_response(timeout=60, key_prefix=CacheKey.CLUB_DETAIL)
     def retrieve(self, request, *args, **kwargs):
-        logger.info(f"Retrieving club detail for user {request.user.id}")
+        """클럽 상세 조회"""
         return super().retrieve(request, *args, **kwargs)
 
     # @delete_cache_response(key_prefix=CacheKey.CLUB_DETAIL)
@@ -40,7 +41,6 @@ class ClubViewSet(ModelViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        """사용자가 속한 클럽들을 조회"""
         return Member.objects.filter(user=self.request.user).order_by("club__name")
 
     def get_object(self):
@@ -71,19 +71,22 @@ class ClubViewSet(ModelViewSet):
         instance.delete()
 
     @action(detail=True, methods=["get"])
-    def apply(self, request, *args, **kwargs):
+    def applies(self, request, *args, **kwargs):
+        """클럽 가입 신청 목록 조회"""
         club_apply = ClubApply.objects.filter(generation=kwargs["pk"])
         serializer = sz.ClubApplySerializer(club_apply, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["get"])
     def roles(self, request, *args, **kwargs):
+        """클럽 역할 목록 조회"""
         roles = Role.objects.filter(club__id=kwargs["pk"])
         serializer = sz.RoleSerializer(roles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])
-    def generation(self, request, *args, **kwargs):
+    def generations(self, request, *args, **kwargs):
+        """클럽 기수 목록 조회"""
         generation = Generation.objects.filter(club__id=kwargs["pk"]).order_by(
             "start_date"
         )

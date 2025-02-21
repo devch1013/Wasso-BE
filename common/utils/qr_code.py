@@ -151,7 +151,7 @@ if __name__ == "__main__":
 
     # URL QR 코드 생성 예시
     try:
-        url = "https://www.example.com"
+        url = "wasso://event/1"
         url_qr_path = generate_url_qr_code(url)
         print(f"URL QR 코드가 생성되었습니다: {url_qr_path}")
     except ValueError as e:

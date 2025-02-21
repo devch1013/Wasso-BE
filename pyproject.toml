@@ -1,9 +1,10 @@
 [tool.poetry]
-name = "checkin"
+name = "wasso"
 version = "0.1.0"
 description = ""
 authors = ["devch1013 <devch1013@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -27,6 +28,7 @@ qrcode = "^8.0"
 firebase-admin = "^6.6.0"
 python-jose = "^3.3.0"
 cryptography = "^44.0.0"
+gunicorn = "^23.0.0"
 
 
 [build-system]

@@ -29,27 +29,14 @@ class ApplyService:
         if not club_apply:
             raise CustomException(ErrorCode.APPLY_NOT_FOUND)
 
-        if Member.objects.filter(
-            user=club_apply.user, club=club_apply.generation.club
-        ).exists():
-            raise CustomException(ErrorCode.ALREADY_APPLIED)
-
-        member = Member.objects.create(
-            user=club_apply.user,
-            club=club_apply.generation.club,
-        )
-
-        GenerationMapping.objects.create(
-            member=member,
-            generation=club_apply.generation,
-            role=club_apply.generation.club.default_role,
-            is_current=True,
+        member, generation_mapping = ApplyService.join_generation(
+            club_apply.user, club_apply.generation
         )
 
         club_apply.accepted = True
         club_apply.accepted_at = timezone.now()
         club_apply.save()
-        return club_apply
+        return member, generation_mapping
 
     @staticmethod
     def reject_apply(apply_id: int):
@@ -57,3 +44,24 @@ class ApplyService:
         if not club_apply:
             raise CustomException(ErrorCode.APPLY_NOT_FOUND)
         club_apply.delete()
+        
+    @staticmethod
+    def join_generation(user: User, generation: Generation):
+        if Member.objects.filter(
+            user=user, club=generation.club
+        ).exists():
+            raise CustomException(ErrorCode.ALREADY_APPLIED)
+
+        member = Member.objects.create(
+            user=user,
+            club=generation.club,
+        )
+
+        generation_mapping = GenerationMapping.objects.create(
+            member=member,
+            generation=generation,
+            role=generation.club.default_role,
+            is_current=True,
+        )
+
+        return member, generation_mapping

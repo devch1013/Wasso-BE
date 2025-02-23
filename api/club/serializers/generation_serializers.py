@@ -10,6 +10,7 @@ class GenerationInfoSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class GenerationStatsSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
     username = serializers.CharField(source="member.user.username")
     present_count = serializers.IntegerField()
     late_count = serializers.IntegerField()

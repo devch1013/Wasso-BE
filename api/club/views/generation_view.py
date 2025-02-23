@@ -10,7 +10,7 @@ from api.club.serializers.member_serializers import (
 )
 from api.club.serializers.generation_serializers import GenerationStatsSerializer
 from api.club.services.generation_service import GenerationService
-
+from common.utils.google_sheet import create_attendance_sheet
 class GenerationView(ModelViewSet):
     queryset = Generation.objects.all()
 
@@ -42,3 +42,10 @@ class GenerationView(ModelViewSet):
         stats = GenerationService.get_generation_stats(generation.id)
         serializer = GenerationStatsSerializer(stats, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=["get"], url_path="stats/google-sheet")
+    def google_sheet(self, request, *args, **kwargs):
+        """구글 시트 연동"""
+        generation = self.get_object()
+        url = create_attendance_sheet(generation.id)
+        return Response({"url": url}, status=status.HTTP_200_OK)

@@ -71,3 +71,14 @@ class Role(models.Model):
         role.attendance_manage = False
         role.save()
         return role
+
+    def is_superuser(self):
+        return (
+            self.role_manage
+            and self.event_manage
+            and self.member_manage
+            and self.signup_accept
+            and self.club_info_manage
+            and self.generation_change
+            and self.attendance_manage
+        )

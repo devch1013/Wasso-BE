@@ -8,7 +8,7 @@ from api.club.services.club_service import ClubService
 from common.test_utils.image_utils import ImageTestUtils
 from api.userapp.models import Provider, User
 
-from ..models import Club, Generation, GenerationMapping, Member, Role, ClubApply
+from ..models import Club, Generation, GenMember, Member, Role, ClubApply
 
 
 class ClubTestCase(APITestCase):
@@ -44,7 +44,7 @@ class ClubTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Club.objects.count(), 1)
         self.assertEqual(Generation.objects.count(), 1)
-        self.assertEqual(GenerationMapping.objects.count(), 1)
+        self.assertEqual(GenMember.objects.count(), 1)
         self.assertEqual(Member.objects.count(), 1)
         self.assertEqual(Role.objects.count(), 3)
 
@@ -145,7 +145,7 @@ class ClubTestCase(APITestCase):
         # 삭제 전 관련 레코드 수 확인
         self.assertEqual(Club.objects.count(), 1)
         self.assertEqual(Generation.objects.count(), 1)
-        self.assertEqual(GenerationMapping.objects.count(), 1)
+        self.assertEqual(GenMember.objects.count(), 1)
         self.assertEqual(Member.objects.count(), 1)
 
         response = self.client.delete(reverse("club-detail", kwargs={"pk": club.id}))
@@ -154,7 +154,7 @@ class ClubTestCase(APITestCase):
         # 삭제 후 모든 관련 레코드 확인
         self.assertEqual(Club.objects.count(), 0)
         self.assertEqual(Generation.objects.count(), 0)
-        self.assertEqual(GenerationMapping.objects.count(), 0)
+        self.assertEqual(GenMember.objects.count(), 0)
         self.assertEqual(Member.objects.count(), 0)
 
     def test_delete_club_invalid_data(self):

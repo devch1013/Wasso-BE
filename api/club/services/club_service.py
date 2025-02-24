@@ -3,7 +3,7 @@ import string
 
 from django.db import transaction
 
-from api.club.models import Club, Generation, GenerationMapping, Member, Role
+from api.club.models import Club, Generation, GenMember, Member, Role
 from common.exceptions import CustomException, ErrorCode
 from api.userapp.models import User
 
@@ -48,7 +48,7 @@ class ClubService:
         )
 
         # 생성자를 owner로 추가
-        GenerationMapping.objects.create(
+        GenMember.objects.create(
             member=member,
             generation=generation,
             role=owner_role,

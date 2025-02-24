@@ -1,14 +1,14 @@
 from django.db import models
 from django.utils import timezone
 
-from api.club.models.generation_mapping import GenerationMapping
+from api.club.models.generation_mapping import GenMember
 
 from .enums import AttendanceStatus
 from .event import Event
 
 
 class Attendance(models.Model):
-    generation_mapping = models.ForeignKey(GenerationMapping, on_delete=models.CASCADE)
+    generation_mapping = models.ForeignKey(GenMember, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     status = models.IntegerField(
         choices=AttendanceStatus.choices,

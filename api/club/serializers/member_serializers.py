@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.club.models import GenerationMapping, Member
+from api.club.models import GenMember, Member
 from api.club.serializers.club_serializers import RoleSerializer
 from api.club.serializers.generation_serializers import GenerationInfoSerializer
 from api.userapp.serializers.user_serializers import UserSerializer
@@ -20,7 +20,7 @@ class GenerationMappingSerializer(serializers.ModelSerializer):
     member = MemberSerializer()
 
     class Meta:
-        model = GenerationMapping
+        model = GenMember
         fields = ["id", "generation", "role", "member"]
 
 
@@ -43,13 +43,13 @@ class MemberDetailSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     user_club = serializers.SerializerMethodField()
 
-    def get_user_club(self, obj: GenerationMapping):
+    def get_user_club(self, obj: GenMember):
         return UserClubSerializer(
             instance=Member.objects.get(user=obj.member, club=obj.generation.club)
         ).data
 
     class Meta:
-        model = GenerationMapping
+        model = GenMember
         fields = ["id", "generation", "role", "user", "user_club"]
 
 

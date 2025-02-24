@@ -6,7 +6,7 @@ from rest_framework.test import APIClient, APITestCase
 from unittest.mock import patch
 from common.test_utils.image_utils import ImageTestUtils
 
-from api.club.services.club_service import ClubService, GenerationMapping
+from api.club.services.club_service import ClubService, GenMember
 from api.event.models import Attendance, AttendanceStatus, Event
 from api.userapp.models import User
 
@@ -101,7 +101,7 @@ class EventAttendanceViewTests(APITestCase):
 
     def test_attendance_modify_with_apply(self):
         """apply 기록 있을 때 변경"""
-        generation_mapping = GenerationMapping.objects.get(
+        generation_mapping = GenMember.objects.get(
             member=self.member, generation=self.event.generation
         )
         attendance = Attendance.objects.create(

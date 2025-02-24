@@ -1,7 +1,7 @@
 from loguru import logger
 from rest_framework import serializers
 
-from api.club.models import Club, Generation, GenerationMapping, Member
+from api.club.models import Club, Generation, GenMember, Member
 from api.club.serializers.generation_serializers import GenerationInfoSerializer
 from api.club.serializers.role_serializers import RoleSerializer
 
@@ -119,7 +119,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         if not current_gen:
             return 0
         return (
-            GenerationMapping.objects.filter(generation=current_gen)
+            GenMember.objects.filter(generation=current_gen)
             .exclude(role__name="ALUMNI")
             .count()
         )

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
-from api.club.models import Club, Generation, GenerationMapping, Member
+from api.club.models import Club, Generation, GenMember, Member
 from api.event.models import Event, Attendance, AttendanceStatus
 from common.utils.google_sheet import create_attendance_sheet
 
@@ -27,11 +27,11 @@ class GoogleSheetTest(TestCase):
         self.member2 = Member.objects.create(user=self.user2, club=self.club)
         
         # GenerationMapping 생성
-        self.mapping1 = GenerationMapping.objects.create(
+        self.mapping1 = GenMember.objects.create(
             member=self.member1,
             generation=self.generation
         )
-        self.mapping2 = GenerationMapping.objects.create(
+        self.mapping2 = GenMember.objects.create(
             member=self.member2,
             generation=self.generation
         )

@@ -5,7 +5,7 @@ from django.urls import reverse
 from api.club.services.club_service import ClubService
 from common.test_utils.image_utils import ImageTestUtils
 from unittest.mock import patch
-from api.club.models import ClubApply, GenerationMapping
+from api.club.models import ClubApply, GenMember
 
 
 class ClubApplyViewTest(APITestCase):
@@ -60,7 +60,7 @@ class ClubApplyViewTest(APITestCase):
 
         self.club.refresh_from_db()
         self.assertEqual(self.club.members.count(), 2)
-        generationMapping = GenerationMapping.objects.filter(
+        generationMapping = GenMember.objects.filter(
             member__user=self.user2, generation=self.club.current_generation
         ).first()
         self.assertEqual(

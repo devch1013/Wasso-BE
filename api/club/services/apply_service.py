@@ -6,6 +6,7 @@ from common.exceptions import CustomException, ErrorCode
 from api.userapp.models import User
 from common.component.user_selector import UserSelector
 from common.component.fcm_component import FCMComponent
+from common.component.notification_template import NotificationTemplate
 from loguru import logger
 
 fcm_component = FCMComponent()
@@ -32,8 +33,8 @@ class ApplyService:
         )
         result = fcm_component.send_to_users(
             notice_users,
-            "동아리 가입 신청",
-            f"{user.username}님이 {generation.club.name} 동아리에 가입을 요청했습니다.",
+            NotificationTemplate.CLUB_APPLY.get_title(),
+            NotificationTemplate.CLUB_APPLY.get_body(username = user.username),
         )
         logger.info(result)
 
@@ -54,8 +55,8 @@ class ApplyService:
         
         fcm_component.send_to_user(
             club_apply.user,
-            f"[{club_apply.generation.club.name}] 가입 신청",
-            f"{club_apply.generation.club.name} 가입이 수락되었습니다.",
+            NotificationTemplate.CLUB_APPLY_ACCEPT.get_title(club_name = club_apply.generation.club.name),
+            NotificationTemplate.CLUB_APPLY_ACCEPT.get_body(club_name = club_apply.generation.club.name),
         )
         
         return member, generation_mapping
@@ -68,8 +69,8 @@ class ApplyService:
         club_apply.delete()
         fcm_component.send_to_user(
             club_apply.user,
-            f"[{club_apply.generation.club.name}] 가입 신청",
-            f"{club_apply.generation.club.name} 가입이 거절되었습니다.",
+            NotificationTemplate.CLUB_APPLY_REJECT.get_title(club_name = club_apply.generation.club.name),
+            NotificationTemplate.CLUB_APPLY_REJECT.get_body(club_name = club_apply.generation.club.name),
         )
         
     @staticmethod

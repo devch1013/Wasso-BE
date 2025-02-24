@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 
-from api.club.models import ClubApply, Generation, GenerationMapping, Member
+from api.club.models import ClubApply, Generation, GenMember, Member
 from common.exceptions import CustomException, ErrorCode
 from api.userapp.models import User
 from common.component.user_selector import UserSelector
@@ -19,7 +19,7 @@ class ApplyService:
         generation = Generation.objects.filter(invite_code=club_code).first()
         if not generation:
             raise CustomException(ErrorCode.GENERATION_NOT_FOUND)
-        if GenerationMapping.objects.filter(
+        if GenMember.objects.filter(
             member__user=user, generation=generation
         ).exists():
             raise CustomException(ErrorCode.ALREADY_APPLIED)
@@ -85,7 +85,7 @@ class ApplyService:
             club=generation.club,
         )
 
-        generation_mapping = GenerationMapping.objects.create(
+        generation_mapping = GenMember.objects.create(
             member=member,
             generation=generation,
             role=generation.club.default_role,

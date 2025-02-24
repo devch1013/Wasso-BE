@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
-from api.club.models import Generation, GenerationMapping
+from api.club.models import Generation, GenMember
 from common.exceptions import CustomException, ErrorCode
 from api.userapp.models import User
 from common.utils.qr_code import generate_uuid_qr_for_imagefield
@@ -25,11 +25,11 @@ class EventService:
         generation_id = data.validated_data.get("generation_id")
         # 사용자가 클럽의 관리자인지 확인
         try:
-            if not GenerationMapping.objects.get(
+            if not GenMember.objects.get(
                 member__user=user, generation__id=generation_id
             ).is_admin():
                 raise PermissionDenied("클럽 관리자만 이벤트를 생성할 수 있습니다.")
-        except GenerationMapping.DoesNotExist:
+        except GenMember.DoesNotExist:
             raise PermissionDenied("클럽 관리자만 이벤트를 생성할 수 있습니다.")
         generation = Generation.objects.get(id=generation_id)
         qr_code, qr_file = generate_uuid_qr_for_imagefield()
@@ -96,7 +96,7 @@ class EventService:
     def check_qr_code(serializer: CheckQRCodeSerializer, event: Event, user: User):
         if serializer.validated_data.get("qr_code") != event.qr_code:
             raise CustomException(ErrorCode.INVALID_QR_CODE)
-        generation_mapping = GenerationMapping.objects.get(
+        generation_mapping = GenMember.objects.get(
             member__user=user, generation=event.generation
         )
         try:
@@ -141,7 +141,7 @@ class EventService:
             )
         except Attendance.DoesNotExist:
             event = Event.objects.get(id=event_id)
-            generation_mapping = GenerationMapping.objects.get(
+            generation_mapping = GenMember.objects.get(
                 member__id=member_id, generation=event.generation
             )
             attendance = Attendance.objects.create(
@@ -157,7 +157,7 @@ class EventService:
 
     @staticmethod
     def attend_all(event: Event):
-        generation_mappings = GenerationMapping.objects.filter(
+        generation_mappings = GenMember.objects.filter(
             generation=event.generation
         )
         for generation_mapping in generation_mappings:
@@ -167,7 +167,7 @@ class EventService:
 
     @staticmethod
     def get_me(event: Event, user: User):
-        generation_mapping = GenerationMapping.objects.get(
+        generation_mapping = GenMember.objects.get(
             member__user=user, generation=event.generation
         )
         try:

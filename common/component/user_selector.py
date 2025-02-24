@@ -1,4 +1,4 @@
-from api.club.models import Generation, GenerationMapping
+from api.club.models import Generation, GenMember
 
 
 class UserSelector:
@@ -18,7 +18,7 @@ class UserSelector:
     ):
         
         # Get all generation mappings for the given generation
-        mappings = GenerationMapping.objects.filter(
+        mappings = GenMember.objects.filter(
             generation=generation,
             is_current=True
         ).select_related('member__user', 'role')
@@ -52,7 +52,7 @@ class UserSelector:
 
     @staticmethod
     def get_users_by_generation(generation: Generation):
-        mappings = GenerationMapping.objects.filter(
+        mappings = GenMember.objects.filter(
             generation=generation
         ).select_related('member__user')
         return [mapping.member.user for mapping in mappings]

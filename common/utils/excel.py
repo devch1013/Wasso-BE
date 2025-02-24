@@ -2,7 +2,7 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font
 from openpyxl.utils import get_column_letter
 
-from api.club.models import Generation, GenerationMapping
+from api.club.models import Generation, GenMember
 from api.event.models import Attendance, Event, AttendanceStatus
 from django.conf import settings
 import os
@@ -29,7 +29,7 @@ def create_attendance_excel(generation_id: int) -> str:
     # 데이터 가져오기
     generation = Generation.objects.select_related('club').get(id=generation_id)
     events = Event.objects.filter(generation=generation).order_by('date', 'start_time')
-    generation_mappings = GenerationMapping.objects.filter(
+    generation_mappings = GenMember.objects.filter(
         generation=generation
     ).select_related('member__user')
     attendances = Attendance.objects.filter(

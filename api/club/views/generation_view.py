@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.club.models import ClubApply, Generation, GenerationMapping
+from api.club.models import ClubApply, Generation, GenMember
 from api.event.models import Event
 from api.event.serializers.event_serializer import EventSerializer
 from api.club.serializers.club_apply_serializers import ClubApplySerializer
@@ -33,7 +33,7 @@ class GenerationView(ModelViewSet):
     @action(detail=True, methods=["get"])
     def members(self, request, *args, **kwargs):
         """기수별 회원 정보"""
-        members = GenerationMapping.objects.filter(generation=self.get_object()).order_by("member__user__username")
+        members = GenMember.objects.filter(generation=self.get_object()).order_by("member__user__username")
         serializer = GenerationMappingSerializer(members, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

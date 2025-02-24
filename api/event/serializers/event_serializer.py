@@ -4,7 +4,7 @@ from django.utils import timezone
 from rest_framework import serializers
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from api.club.models import GenerationMapping
+from api.club.models import GenMember
 from api.club.serializers.member_serializers import MemberSerializer
 from api.event.models import Attendance, Event
 from api.event.serializers.attend_serializer import AttendanceSerializer
@@ -141,7 +141,7 @@ class MemberAttendanceSerializer(serializers.ModelSerializer):
     attendance_status = serializers.SerializerMethodField()
 
     class Meta:
-        model = GenerationMapping
+        model = GenMember
         fields = ["member_id", "member", "attendance_status"]
 
     def get_attendance_status(self, obj):

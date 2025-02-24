@@ -1,7 +1,7 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from api.club.models import Generation, GenerationMapping
+from api.club.models import Generation, GenMember
 from api.event.models import Attendance, Event, AttendanceStatus
 
 def create_attendance_sheet(generation_id: int) -> str:
@@ -27,7 +27,7 @@ def create_attendance_sheet(generation_id: int) -> str:
     # 데이터 가져오기
     generation = Generation.objects.select_related('club').get(id=generation_id)
     events = Event.objects.filter(generation=generation).order_by('date', 'start_time')
-    generation_mappings = GenerationMapping.objects.filter(
+    generation_mappings = GenMember.objects.filter(
         generation=generation
     ).select_related('member__user')
     attendances = Attendance.objects.filter(

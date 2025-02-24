@@ -1,16 +1,16 @@
 from django.db.models import Count, Case, When, IntegerField
 from django.db.models import F
 
-from api.club.models import GenerationMapping, Generation
+from api.club.models import GenMember, Generation
 
 
 class GenerationService:
     @staticmethod
-    def get_generation_stats(generation_id: int) -> list[GenerationMapping]:
+    def get_generation_stats(generation_id: int) -> list[GenMember]:
         generation = Generation.objects.get(id=generation_id)
         
         # Get all generation mappings and their members
-        stats = GenerationMapping.objects.filter(
+        stats = GenMember.objects.filter(
             generation=generation
         ).select_related('member__user').prefetch_related('attendance_set').annotate(
             present_count=Count(

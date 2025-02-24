@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.club.models import GenerationMapping, Member, Role
+from api.club.models import GenMember, Member, Role
 from api.club.serializers.member_serializers import (
     DescriptionUpdateRequestSerializer,
     GenerationMappingSerializer,
@@ -14,7 +14,7 @@ from api.club.serializers.member_serializers import (
 
 
 class MemberView(ModelViewSet):
-    queryset = GenerationMapping.objects.all()
+    queryset = GenMember.objects.all()
     serializer_class = GenerationMappingSerializer
 
     def get_serializer(self, *args, **kwargs):
@@ -23,7 +23,7 @@ class MemberView(ModelViewSet):
         return super().get_serializer(*args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
-        queryset = GenerationMapping.objects.get(id=kwargs["pk"])
+        queryset = GenMember.objects.get(id=kwargs["pk"])
         serializer = self.get_serializer(queryset)
         return Response(serializer.data)
 
@@ -32,7 +32,7 @@ class MemberView(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         requested_role = Role.objects.get(id=serializer.validated_data["role_id"])
-        user_generation = GenerationMapping.objects.get(
+        user_generation = GenMember.objects.get(
             id=serializer.validated_data["user_generation_id"]
         )
         user_generation.role = requested_role

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from api.club.models import Generation
-from api.club.models import GenerationMapping
+from api.club.models import GenMember
 
 class GenerationInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,6 +16,6 @@ class GenerationStatsSerializer(serializers.Serializer):
     absent_count = serializers.IntegerField()
     
     class Meta:
-        model = GenerationMapping
+        model = GenMember
         fields = ["id", "username", "present_count", "late_count", "absent_count"]
 

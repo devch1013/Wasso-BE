@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from api.club.models import GenerationMapping
+from api.club.models import GenMember
 from api.club.services.club_service import ClubService
 from common.exceptions import CustomException, ErrorCode
 from common.test_utils.image_utils import ImageTestUtils
@@ -57,7 +57,7 @@ class ClubServiceTest(TestCase):
         self.assertEqual(member.get_current_generation().generation, generation)
 
         # Check that there's a generation mapping (the creator was set as owner)
-        owner_mappings = GenerationMapping.objects.filter(
+        owner_mappings = GenMember.objects.filter(
             member=member, generation=generation
         )
         self.assertEqual(owner_mappings.count(), 1)

@@ -118,8 +118,10 @@ class FCMComponent:
             return {"success_count": 0, "failure_count": len(tokens)}
 
     def send_to_users(self, users: List[User], title: str, body: str, data: Dict = None):
-        tokens = [user.fcm_token for user in users if user.fcm_token]
+        tokens = [user.fcm_token for user in users if user.fcm_token and user.push_allow]
         return self.send_multicast_notification(tokens, title, body, data)
     
     def send_to_user(self, user: User, title: str, body: str, data: Dict = None):
+        if not user.push_allow:
+            return
         return self.send_notification(user.fcm_token, title, body, data)

@@ -4,9 +4,9 @@ from . import views
 
 router = DefaultRouter()
 
-router.register("generation", views.GenerationView, basename="generation")
-router.register("member", views.MemberView, basename="member")
-router.register("", views.ClubViewSet, basename="club")
+router.register("generations", views.GenerationView, basename="generations")
+router.register("members", views.MemberView, basename="members")
+router.register("", views.ClubViewSet, basename="clubs")
 
 urlpatterns = [
     path("apply/<int:apply_id>/", views.ClubApplyViewSet.as_view({"post": "approve", "delete": "reject"}), name="apply-detail"),

@@ -9,8 +9,6 @@ from common.utils.google_sheet import create_attendance_sheet
 
 from api.userapp.models import User
 
-from loguru import logger
-
 class GoogleSheetTest(TestCase):
     def setUp(self):
         # 테스트 데이터 생성
@@ -112,26 +110,25 @@ class GoogleSheetTest(TestCase):
         
         # 데이터 형식 검증 - 수정된 부분
         mock_calls = mock_service.mock_calls
-        logger.info(f"All mock calls: {mock_calls}")
         
         # update 호출에서 사용된 인자 찾기
         for call in mock_calls:
             if 'values().update' in str(call):
-                logger.info(f"Update call: {call}")
+                # logger.info(f"Update call: {call}")
                 # call[2]는 kwargs를 포함
                 values = call[2]['body']['values']
                 
                 # 헤더 검증
-                self.assertEqual(values[0][0], '이름')
+                self.assertEqual(values[0][0], '이름(총 2명)')
                 self.assertEqual(values[0][1], '01/15 첫 번째 모임')
                 self.assertEqual(values[0][2], '01/22 두 번째 모임')
                 
                 # 데이터 검증
-                self.assertEqual(values[1][0], '테스트 유저1')
+                self.assertEqual(values[1][0], 'test_user1')
                 self.assertEqual(values[1][1], '출석')
                 self.assertEqual(values[1][2], '지각')
                 
-                self.assertEqual(values[2][0], '테스트 유저2')
+                self.assertEqual(values[2][0], 'test_user2')
                 self.assertEqual(values[2][1], '결석')
                 self.assertEqual(values[2][2], '출석')
                 break

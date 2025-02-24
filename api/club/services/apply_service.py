@@ -8,6 +8,8 @@ from common.component.user_selector import UserSelector
 from common.component.fcm_component import FCMComponent
 from loguru import logger
 
+fcm_component = FCMComponent()
+
 class ApplyService:
     @staticmethod
     def apply(user: User, club_code: str):
@@ -28,11 +30,10 @@ class ApplyService:
             generation=generation,
             signup_accept=True,
         )
-        fcm_component = FCMComponent()
         result = fcm_component.send_to_users(
             notice_users,
-            "새로운 가입 요청",
-            "새로운 가입 요청이 있습니다.",
+            "동아리 가입 신청",
+            f"{user.username}님이 {generation.club.name} 동아리에 가입을 요청했습니다.",
         )
         logger.info(result)
 
@@ -50,6 +51,13 @@ class ApplyService:
         club_apply.accepted = True
         club_apply.accepted_at = timezone.now()
         club_apply.save()
+        
+        fcm_component.send_to_user(
+            club_apply.user,
+            f"[{club_apply.generation.club.name}] 가입 신청",
+            f"{club_apply.generation.club.name} 가입이 수락되었습니다.",
+        )
+        
         return member, generation_mapping
 
     @staticmethod
@@ -58,6 +66,11 @@ class ApplyService:
         if not club_apply:
             raise CustomException(ErrorCode.APPLY_NOT_FOUND)
         club_apply.delete()
+        fcm_component.send_to_user(
+            club_apply.user,
+            f"[{club_apply.generation.club.name}] 가입 신청",
+            f"{club_apply.generation.club.name} 가입이 거절되었습니다.",
+        )
         
     @staticmethod
     def join_generation(user: User, generation: Generation):

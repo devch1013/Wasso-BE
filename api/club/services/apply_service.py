@@ -4,7 +4,9 @@ from django.utils import timezone
 from api.club.models import ClubApply, Generation, GenerationMapping, Member
 from common.exceptions import CustomException, ErrorCode
 from api.userapp.models import User
-
+from common.component.user_selector import UserSelector
+from common.component.fcm_component import FCMComponent
+from loguru import logger
 
 class ApplyService:
     @staticmethod
@@ -21,6 +23,18 @@ class ApplyService:
         if ClubApply.objects.filter(user=user, generation=generation).exists():
             raise CustomException(ErrorCode.ALREADY_APPLIED)
         ClubApply.objects.create(user=user, generation=generation)
+        
+        notice_users = UserSelector.get_users_by_role(
+            generation=generation,
+            signup_accept=True,
+        )
+        fcm_component = FCMComponent()
+        result = fcm_component.send_to_users(
+            notice_users,
+            "새로운 가입 요청",
+            "새로운 가입 요청이 있습니다.",
+        )
+        logger.info(result)
 
     @staticmethod
     @transaction.atomic

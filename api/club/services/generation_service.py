@@ -35,3 +35,5 @@ class GenerationService:
         ).order_by('member_name')
         
         return stats
+    
+    

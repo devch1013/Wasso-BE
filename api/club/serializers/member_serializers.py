@@ -22,6 +22,7 @@ class GenerationMappingSerializer(serializers.ModelSerializer):
     class Meta:
         model = GenerationMapping
         fields = ["id", "generation", "role", "member"]
+        ordering = ["member__user__username"]
 
 
 class MemberRoleChangeRequestSerializer(serializers.Serializer):

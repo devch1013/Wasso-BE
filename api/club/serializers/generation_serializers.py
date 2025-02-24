@@ -3,7 +3,6 @@ from rest_framework import serializers
 from api.club.models import Generation
 from api.club.models import GenerationMapping
 
-
 class GenerationInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Generation
@@ -19,3 +18,4 @@ class GenerationStatsSerializer(serializers.Serializer):
     class Meta:
         model = GenerationMapping
         fields = ["id", "username", "present_count", "late_count", "absent_count"]
+

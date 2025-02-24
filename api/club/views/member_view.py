@@ -39,7 +39,7 @@ class MemberView(ModelViewSet):
         user_generation.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"], url_path="add-tag")
+    @action(detail=True, methods=["put"], url_path="tag")
     def add_tag(self, request, *args, **kwargs):
         serializer = TagUpdateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -48,7 +48,7 @@ class MemberView(ModelViewSet):
         member.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"], url_path="remove-tag")
+    @action(detail=True, methods=["delete"], url_path="tag")
     def remove_tag(self, request, *args, **kwargs):
         serializer = TagUpdateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -57,7 +57,7 @@ class MemberView(ModelViewSet):
         member.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"], url_path="update-description")
+    @action(detail=True, methods=["put"], url_path="description")
     def update_description(self, request, *args, **kwargs):
         serializer = DescriptionUpdateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

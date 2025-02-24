@@ -7,6 +7,7 @@ from api.club.models import Generation, GenerationMapping
 from common.exceptions import CustomException, ErrorCode
 from api.userapp.models import User
 from common.utils.qr_code import generate_uuid_qr_for_imagefield
+from common.component import NotificationTemplate, FCMComponent, UserSelector
 
 from ..models import Attendance, AttendanceStatus, Event
 from ..serializers import (
@@ -14,6 +15,8 @@ from ..serializers import (
     EventCreateSerializer,
     EventUpdateSerializer,
 )
+
+fcm_component = FCMComponent()
 
 
 class EventService:
@@ -46,6 +49,13 @@ class EventService:
             fail_minutes=data.validated_data.get("fail_minutes"),
             qr_code=qr_code,
             qr_code_url=qr_file,
+        )
+
+        users = UserSelector.get_users_by_generation(generation)
+        fcm_component.send_to_users(
+            users,
+            NotificationTemplate.EVENT_CREATE.get_title(),
+            NotificationTemplate.EVENT_CREATE.get_body(club_name=generation.club.name),
         )
 
     @staticmethod
@@ -138,20 +148,31 @@ class EventService:
                 event=event, generation_mapping=generation_mapping, status=status
             )
         attendance.modify_attendance(status)
+        fcm_component.send_to_user(
+            attendance.generation_mapping.member.user,
+            NotificationTemplate.ATTENDANCE_CHANGE.get_title(),
+            NotificationTemplate.ATTENDANCE_CHANGE.get_body(event_name=attendance.event.title, attendance_status=AttendanceStatus(status).label),
+        )
         return attendance
-    
+
     @staticmethod
     def attend_all(event: Event):
-        generation_mappings = GenerationMapping.objects.filter(generation=event.generation)
+        generation_mappings = GenerationMapping.objects.filter(
+            generation=event.generation
+        )
         for generation_mapping in generation_mappings:
-            EventService.change_attendance_status(event.id, generation_mapping.member.id, AttendanceStatus.PRESENT)
-        
+            EventService.change_attendance_status(
+                event.id, generation_mapping.member.id, AttendanceStatus.PRESENT
+            )
+
     @staticmethod
     def get_me(event: Event, user: User):
         generation_mapping = GenerationMapping.objects.get(
             member__user=user, generation=event.generation
         )
         try:
-            return Attendance.objects.get(event=event, generation_mapping=generation_mapping)
+            return Attendance.objects.get(
+                event=event, generation_mapping=generation_mapping
+            )
         except Attendance.DoesNotExist:
             return Attendance(status=AttendanceStatus.UNCHECKED)

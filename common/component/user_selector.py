@@ -50,4 +50,10 @@ class UserSelector:
         # Return list of users
         return [mapping.member.user for mapping in mappings]
 
+    @staticmethod
+    def get_users_by_generation(generation: Generation):
+        mappings = GenerationMapping.objects.filter(
+            generation=generation
+        ).select_related('member__user')
+        return [mapping.member.user for mapping in mappings]
         

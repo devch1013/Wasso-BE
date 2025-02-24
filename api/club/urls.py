@@ -6,6 +6,7 @@ router = DefaultRouter()
 
 router.register("generations", views.GenerationView, basename="generations")
 router.register("members", views.MemberView, basename="members")
+router.register("gen-members", views.GenMemberView, basename="gen-members")
 router.register("", views.ClubViewSet, basename="clubs")
 
 urlpatterns = [

@@ -6,6 +6,7 @@ class NotificationTemplate(Enum):
     CLUB_APPLY_REJECT = ("[{club_name}] 동아리 가입 신청", "{club_name} 가입이 거절되었습니다.")
     EVENT_CREATE = ("새로운 활동이 등록되었습니다.", "[{club_name}]에 새로운 활동이 등록되었습니다.")
     ATTENDANCE_CHANGE = ("출석 상태가 변경되었습니다.", "[{event_name}] 활동의 출석 상태가 {attendance_status}으로 변경되었습니다.")
+    MEMBER_ROLE_CHANGE = ("동아리의 권한이 변경되었습니다.", "[{club_name}] 동아리의 권한이 {role_name}으로 변경되었습니다.")
     
     def __init__(self, title: str, body: str) -> None:
         self._title = title

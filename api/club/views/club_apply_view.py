@@ -8,7 +8,6 @@ from common.exceptions import CustomException, ErrorCode
 from api.club.serializers.club_apply_serializers import MyClubApplySerializer
 from api.club.models import ClubApply
 
-from loguru import logger
 from common.component.fcm_component import FCMComponent
 from common.component.user_selector import UserSelector
 from api.club.models import Generation

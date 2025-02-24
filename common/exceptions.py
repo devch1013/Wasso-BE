@@ -50,6 +50,16 @@ class ErrorCode(Enum):
         "CE008",
         status.HTTP_400_BAD_REQUEST,
     )
+    ROLE_NOT_FOUND = (
+        "존재하지 않는 역할입니다",
+        "CE009",
+        status.HTTP_400_BAD_REQUEST,
+    )
+    OWNER_ROLE_MUST_BE_MORE_THAN_ONE = (
+        "모든 권한을 가진 역할은 최소 한 개 이상 존재해야 합니다",
+        "CE010",
+        status.HTTP_400_BAD_REQUEST,
+    )
 
     def __init__(self, message, code, status):
         self.message = message

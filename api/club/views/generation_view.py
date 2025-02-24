@@ -40,7 +40,7 @@ class GenerationView(ModelViewSet):
     @action(detail=True, methods=["get"])
     def events(self, request, *args, **kwargs):
         """기수별 이벤트 정보"""
-        events = Event.objects.filter(generation=self.get_object())
+        events = Event.objects.filter(generation=self.get_object()).order_by("date")
         serializer = EventSerializer(events, context={"user": request.user}, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

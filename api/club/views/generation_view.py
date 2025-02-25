@@ -10,11 +10,16 @@ from api.club.serializers.club_apply_serializers import ClubApplySerializer
 from api.club.serializers.member_serializers import (
     GenerationMappingSerializer,
 )
-from api.club.serializers.generation_serializers import GenerationStatsSerializer
+from api.club.serializers.generation_serializers import (
+    GenerationStatsSerializer,
+    NotionIdSerializer,
+)
 from api.club.services.generation_service import GenerationService
 from common.utils.google_sheet import create_attendance_sheet
-from common.utils.notion import NotionAttendanceManager
 from common.utils.excel import create_attendance_excel
+import os
+
+
 class GenerationView(ModelViewSet):
     queryset = Generation.objects.all()
 
@@ -33,45 +38,63 @@ class GenerationView(ModelViewSet):
     @action(detail=True, methods=["get"])
     def members(self, request, *args, **kwargs):
         """기수별 회원 정보"""
-        members = GenMember.objects.filter(generation=self.get_object()).order_by("member__user__username")
+        members = GenMember.objects.filter(generation=self.get_object()).order_by(
+            "member__user__username"
+        )
         serializer = GenerationMappingSerializer(members, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     @action(detail=True, methods=["get"])
     def events(self, request, *args, **kwargs):
         """기수별 이벤트 정보"""
         events = Event.objects.filter(generation=self.get_object()).order_by("date")
         serializer = EventSerializer(events, context={"user": request.user}, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     @action(detail=True, methods=["get"])
     def stats(self, request, *args, **kwargs):
         """기수 출석 통계"""
         generation = self.get_object()
-        
+
         # Get all generation mappings and their members
         stats = GenerationService.get_generation_stats(generation.id)
         serializer = GenerationStatsSerializer(stats, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     @action(detail=True, methods=["get"], url_path="stats/google-sheet")
     def google_sheet(self, request, *args, **kwargs):
         """구글 시트 연동"""
         generation = self.get_object()
-        url = create_attendance_sheet(generation.id)
+        url = create_attendance_sheet(generation)
         return Response({"url": url}, status=status.HTTP_200_OK)
-    
-    @action(detail=True, methods=["get"], url_path="stats/notion")
+
+    @action(detail=True, methods=["get", "post"], url_path="stats/notion")
     def notion(self, request, *args, **kwargs):
         """노션 연동"""
-        generation = self.get_object()
-        notion_db = NotionAttendanceManager(notion_parent_page_id="1a37549e7ac480a8b877fbee5e16ad33")
-        notion_db.update_attendance_database(generation.id, database_id="1a37549e7ac480baaa62cd7bd819b510")
-        return Response({"url": "url"}, status=status.HTTP_200_OK)
+        if request.method == "GET":
+            generation: Generation = self.get_object()
+            return Response(
+                {
+                    "notion_page_id": generation.club.notion_page_id,
+                    "notion_database_id": generation.club.notion_database_id,
+                },
+                status=status.HTTP_200_OK,
+            )
+        elif request.method == "POST":
+            serializer = NotionIdSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            result = GenerationService.update_notion(
+                self.get_object(),
+                serializer.validated_data["notion_database_url"],
+                user=request.user
+            )
+            return Response(result, status=status.HTTP_202_ACCEPTED)
 
     @action(detail=True, methods=["get"], url_path="stats/excel")
     def excel(self, request, *args, **kwargs):
         """엑셀 연동"""
         generation = self.get_object()
-        file_path = create_attendance_excel(generation.id)
-        return Response({"url": file_path}, status=status.HTTP_200_OK)
+        file_path = create_attendance_excel(generation)
+        return Response(
+            {"url": os.getenv("FILE_SERVER_URL") + file_path}, status=status.HTTP_200_OK
+        )

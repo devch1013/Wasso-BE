@@ -5,18 +5,19 @@ from openpyxl.utils import get_column_letter
 from api.club.models import Generation, GenMember
 from api.event.models import Attendance, Event, AttendanceStatus
 from django.conf import settings
-import os
 from django.utils import timezone
+import boto3
+from io import BytesIO
 
-def create_attendance_excel(generation_id: int) -> str:
+def create_attendance_excel(generation: Generation) -> str:
     """
-    특정 기수의 출석 정보를 엑셀 파일로 생성하고 서버에 저장합니다.
+    특정 기수의 출석 정보를 엑셀 파일로 생성하고 S3에 업로드합니다.
     
     Args:
-        generation_id: Generation 모델의 ID
+        generation: Generation 모델
     
     Returns:
-        생성된 엑셀 파일의 경로
+        생성된 엑셀 파일의 S3 URL
     """
     # 색상 정의
     HEADER_FILL = PatternFill(start_color='E6E6E6', end_color='E6E6E6', fill_type='solid')
@@ -27,7 +28,6 @@ def create_attendance_excel(generation_id: int) -> str:
     BOLD_FONT = Font(bold=True)
 
     # 데이터 가져오기
-    generation = Generation.objects.select_related('club').get(id=generation_id)
     events = Event.objects.filter(generation=generation).order_by('date', 'start_time')
     generation_mappings = GenMember.objects.filter(
         generation=generation
@@ -107,15 +107,31 @@ def create_attendance_excel(generation_id: int) -> str:
     for col in range(1, len(headers) + 1):
         ws.column_dimensions[get_column_letter(col)].width = 15
 
-    # 파일 저장 경로 생성
-    excel_dir = os.path.join(settings.MEDIA_ROOT, 'excel')
-    os.makedirs(excel_dir, exist_ok=True)
-    
-    generation = Generation.objects.select_related('club').get(id=generation_id)
+    # 파일 이름 생성
     filename = f"{generation.club.name}_{generation.name}_출석정보_{timezone.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-    file_path = os.path.join(excel_dir, filename)
     
-    # 엑셀 파일 저장
-    wb.save(file_path)
+    # 엑셀 파일을 메모리에 저장
+    excel_file = BytesIO()
+    wb.save(excel_file)
+    excel_file.seek(0)
     
-    return file_path
+    # S3에 업로드
+    s3_client = boto3.client(
+        "s3",
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_S3_REGION_NAME,
+    )
+
+    # S3 경로 설정 (excel 폴더 아래에 저장)
+    s3_path = f'excel/{filename}'
+    
+    # S3에 업로드
+    s3_client.upload_fileobj(
+        excel_file, 
+        settings.AWS_STORAGE_BUCKET_NAME, 
+        s3_path,
+        ExtraArgs={'ContentType': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}
+    )
+    
+    return s3_path

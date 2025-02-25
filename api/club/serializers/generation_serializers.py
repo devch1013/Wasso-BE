@@ -19,3 +19,5 @@ class GenerationStatsSerializer(serializers.Serializer):
         model = GenMember
         fields = ["id", "username", "present_count", "late_count", "absent_count"]
 
+class NotionIdSerializer(serializers.Serializer):
+    notion_database_url = serializers.CharField(required=False, allow_null=True)

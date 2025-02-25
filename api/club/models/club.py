@@ -41,6 +41,7 @@ class Club(models.Model):
         blank=True,
         related_name="default_club",
     )
+    notion_database_id = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         db_table = "clubs"

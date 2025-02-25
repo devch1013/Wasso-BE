@@ -5,20 +5,19 @@ from api.club.models import Generation, Member
 from api.event.models import Event, Attendance, AttendanceStatus
 import os
 class NotionAttendanceManager:
-    def __init__(self, notion_parent_page_id: str):
+    def __init__(self):
         self.headers = {
             "Authorization": f"Bearer {os.getenv('NOTION_TOKEN')}",
             "Content-Type": "application/json",
             "Notion-Version": "2022-06-28"
         }
-        self.parent_page_id = notion_parent_page_id
         self.base_url = "https://api.notion.com/v1"
 
-    def _create_database(self, title: str, properties: Dict) -> str:
+    def _create_database(self, notion_parent_page_id: str, title: str, properties: Dict) -> str:
         """Create a new Notion database"""
         url = f"{self.base_url}/databases"
         payload = {
-            "parent": {"page_id": self.parent_page_id},
+            "parent": {"page_id": notion_parent_page_id},
             "title": [{"type": "text", "text": {"content": title}}],
             "properties": properties
         }
@@ -64,13 +63,12 @@ class NotionAttendanceManager:
         response = requests.patch(url, headers=self.headers, json=payload)
         response.raise_for_status()
 
-    def update_attendance_database(self, generation_id: int, database_id: str = None):
+    def update_attendance_database(self, generation: Generation, page_id: str, database_id: str = None):
         """
         Main function to create/update attendance database for a generation
         If database_id is provided, updates existing database instead of creating new one
         """
         # Get required data from Django models
-        generation = Generation.objects.get(id=generation_id)
         club = generation.club
         events = Event.objects.filter(generation=generation).order_by('date', 'start_time')
         members = Member.objects.filter(
@@ -105,7 +103,7 @@ class NotionAttendanceManager:
             self._delete_database_pages(database_id)
         else:
             # Create new database
-            database_id = self._create_database(db_title, properties)
+            database_id = self._create_database(page_id, db_title, properties)
 
         # Prepare and update rows
         rows = []

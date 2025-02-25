@@ -19,6 +19,7 @@ from common.utils.google_sheet import create_attendance_sheet
 from common.utils.excel import create_attendance_excel
 import os
 
+
 class GenerationView(ModelViewSet):
     queryset = Generation.objects.all()
 
@@ -67,21 +68,33 @@ class GenerationView(ModelViewSet):
         url = create_attendance_sheet(generation)
         return Response({"url": url}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"], url_path="stats/notion")
+    @action(detail=True, methods=["get", "post"], url_path="stats/notion")
     def notion(self, request, *args, **kwargs):
         """노션 연동"""
-        serializer = NotionIdSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        GenerationService.update_notion(
-            self.get_object(),
-            serializer.validated_data["notion_page_id"],
-            serializer.validated_data["notion_database_id"],
-        )
-        return Response({"url": "url"}, status=status.HTTP_200_OK)
+        if request.method == "GET":
+            generation: Generation = self.get_object()
+            return Response(
+                {
+                    "notion_page_id": generation.club.notion_page_id,
+                    "notion_database_id": generation.club.notion_database_id,
+                },
+                status=status.HTTP_200_OK,
+            )
+        elif request.method == "POST":
+            serializer = NotionIdSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            result = GenerationService.update_notion(
+                self.get_object(),
+                serializer.validated_data["notion_database_url"],
+                user=request.user
+            )
+            return Response(result, status=status.HTTP_202_ACCEPTED)
 
     @action(detail=True, methods=["get"], url_path="stats/excel")
     def excel(self, request, *args, **kwargs):
         """엑셀 연동"""
         generation = self.get_object()
         file_path = create_attendance_excel(generation)
-        return Response({"url": os.getenv("FILE_SERVER_URL") + file_path}, status=status.HTTP_200_OK)
+        return Response(
+            {"url": os.getenv("FILE_SERVER_URL") + file_path}, status=status.HTTP_200_OK
+        )

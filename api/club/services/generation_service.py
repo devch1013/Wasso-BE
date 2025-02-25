@@ -3,6 +3,7 @@ from django.db.models import F
 
 from api.club.models import GenMember, Generation
 from common.utils.notion import NotionAttendanceManager
+from api.userapp.models import User
 
 
 class GenerationService:
@@ -43,11 +44,24 @@ class GenerationService:
 
     @staticmethod
     def update_notion(
-        generation: Generation, notion_page_id: str, notion_database_id: str
+        generation: Generation, notion_database_id: str, user: User = None
     ):
+        # Extract database_id from Notion URL if full URL is provided
+        if notion_database_id.startswith('https://'):
+            # Extract the ID part from the URL
+            # Format: https://www.notion.so/username/database_id?v=...
+            parts = notion_database_id.split('/')
+            for part in parts:
+                if '?' in part:
+                    notion_database_id = part.split('?')[0]
+                    break
+                elif len(part) == 32 or '-' in part and len(part.replace('-', '')) == 32:
+                    notion_database_id = part
+                    break
+        
         notion_db = NotionAttendanceManager()
-        notion_db.update_attendance_database(
+        return notion_db.update_attendance_database_async(
             generation,
-            page_id=notion_page_id,
             database_id=notion_database_id,
+            user=user
         )

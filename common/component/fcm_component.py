@@ -25,7 +25,12 @@ class FCMComponent:
         try:
             # 토큰 유효성 검사
             if not token:
-                print("FCM 토큰이 없습니다.")
+                logger.warning("FCM 토큰이 없습니다.")
+                return False
+
+            # 토큰 형식 검증
+            if not isinstance(token, str) or len(token) < 32:
+                logger.warning(f"유효하지 않은 토큰 형식입니다: {token}")
                 return False
 
             # APNS 설정을 포함한 메시지 생성
@@ -51,15 +56,14 @@ class FCMComponent:
 
             # 메시지 전송
             response = messaging.send(message)
-            print(f"FCM 알림 전송 성공: {response}")
+            logger.info(f"FCM 알림 전송 성공: {response}")
             return True
 
-        except messaging.UnregisteredError:
-            print("등록되지 않은 토큰입니다.")
+        except messaging.UnregisteredError as e:
+            logger.error(f"등록되지 않은 토큰입니다: {token}")
             return False
         except Exception as e:
-            print(e)
-            print(f"FCM 알림 전송 실패: {str(e)}")
+            logger.error(f"FCM 알림 전송 실패 - 토큰: {token}, 에러: {str(e)}")
             return False
 
     def send_multicast_notification(

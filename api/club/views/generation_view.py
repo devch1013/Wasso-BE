@@ -13,6 +13,7 @@ from api.club.serializers.member_serializers import (
 from api.club.serializers.generation_serializers import (
     GenerationStatsSerializer,
     NotionIdSerializer,
+    SimpleGenerationSerializer,
 )
 from api.club.services.generation_service import GenerationService
 from common.utils.google_sheet import create_attendance_sheet
@@ -26,6 +27,8 @@ class GenerationView(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "apply":
             return ClubApplySerializer
+        elif self.action == "update":
+            return SimpleGenerationSerializer
         return None
 
     @action(detail=True, methods=["get"])

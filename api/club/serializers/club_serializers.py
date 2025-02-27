@@ -2,7 +2,7 @@ from loguru import logger
 from rest_framework import serializers
 
 from api.club.models import Club, Generation, GenMember, Member
-from api.club.serializers.generation_serializers import GenerationInfoSerializer
+from api.club.serializers.generation_serializers import GenerationInfoSerializer, SimpleGenerationSerializer
 from api.club.serializers.role_serializers import RoleSerializer
 
 
@@ -38,15 +38,11 @@ class ClubInfoSerializer(serializers.Serializer):
 
 
 class ClubCreateSerializer(serializers.Serializer):
-    class GenerationSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Generation
-            fields = ["name", "start_date", "end_date"]
 
     name = serializers.CharField(max_length=255)
     image = serializers.ImageField(required=False, allow_null=True, default=None)
     description = serializers.CharField(max_length=255, required=False, allow_null=True)
-    generation = GenerationSerializer()
+    generation = SimpleGenerationSerializer()
 
 
 class ClubUpdateSerializer(serializers.ModelSerializer):
@@ -112,7 +108,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         current_gen = obj.current_generation
         if not current_gen:
             return None
-        return GenerationDetailSerializer(current_gen).data
+        return GenerationInfoSerializer(current_gen).data
 
     def get_current_member_count(self, obj):
         current_gen = obj.current_generation

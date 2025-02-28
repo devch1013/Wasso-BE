@@ -3,6 +3,12 @@ from rest_framework import serializers
 from api.club.models import Generation
 from api.club.models import GenMember
 
+
+class SimpleGenerationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Generation
+        fields = ["name", "start_date", "end_date"]
+
 class GenerationInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Generation

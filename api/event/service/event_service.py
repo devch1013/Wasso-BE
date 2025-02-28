@@ -104,13 +104,12 @@ class EventService:
             raise CustomException(ErrorCode.ALREADY_CHECKED)
         except Attendance.DoesNotExist:
             status = EventService.check_attendance_status(event)
-            print(status)
             attendance = Attendance.objects.create(
                 event=event,
                 generation_mapping=generation_mapping,
                 status=status,
-                latitude=serializer.validated_data.get("latitude"),
-                longitude=serializer.validated_data.get("longitude"),
+                latitude=serializer.validated_data.get("latitude", None),
+                longitude=serializer.validated_data.get("longitude", None),
             )
             return attendance
 

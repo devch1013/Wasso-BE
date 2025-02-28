@@ -39,22 +39,20 @@ class MemberView(ModelViewSet):
         user_generation.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["put"], url_path="tag")
+    @action(detail=True, methods=["put", "delete"], url_path="tag")
     def add_tag(self, request, *args, **kwargs):
-        serializer = TagUpdateRequestSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        member = Member.objects.get(id=kwargs["pk"])
-        member.tags.append(serializer.validated_data["tag"])
-        member.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=["delete"], url_path="tag")
-    def remove_tag(self, request, *args, **kwargs):
-        serializer = TagUpdateRequestSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        member = Member.objects.get(id=kwargs["pk"])
-        member.tags.remove(serializer.validated_data["tag"])
-        member.save()
+        if request.method == "PUT":
+            serializer = TagUpdateRequestSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            member = Member.objects.get(id=kwargs["pk"])
+            member.tags.append(serializer.validated_data["tag"])
+            member.save()
+        elif request.method == "DELETE":
+            serializer = TagUpdateRequestSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            member = Member.objects.get(id=kwargs["pk"])
+            member.tags.remove(serializer.validated_data["tag"])
+            member.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["put"], url_path="description")

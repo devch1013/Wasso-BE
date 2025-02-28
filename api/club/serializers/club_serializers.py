@@ -2,7 +2,7 @@ from loguru import logger
 from rest_framework import serializers
 
 from api.club.models import Club, Generation, GenMember, Member
-from api.club.serializers.generation_serializers import GenerationInfoSerializer
+from api.club.serializers.generation_serializers import GenerationInfoSerializer, SimpleGenerationSerializer
 from api.club.serializers.role_serializers import RoleSerializer
 
 
@@ -12,6 +12,7 @@ class ClubInfoSerializer(serializers.Serializer):
     club_name = serializers.CharField(source="club.name")
     club_image = serializers.ImageField(source="club.image")
     club_description = serializers.CharField(source="club.description")
+    generations = serializers.SerializerMethodField()
     current_generation = GenerationInfoSerializer(
         source="get_current_generation.generation"
     )
@@ -35,24 +36,24 @@ class ClubInfoSerializer(serializers.Serializer):
 
     def get_is_member_activated(self, obj: Member):
         return obj.get_current_generation().generation == obj.club.current_generation
+    
+    def get_generations(self, obj: Member):
+        generations = Generation.objects.filter(club=obj.club, deleted=False)
+        return GenerationInfoSerializer(generations, many=True).data
 
 
 class ClubCreateSerializer(serializers.Serializer):
-    class GenerationSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Generation
-            fields = ["name", "start_date", "end_date"]
 
     name = serializers.CharField(max_length=255)
     image = serializers.ImageField(required=False, allow_null=True, default=None)
     description = serializers.CharField(max_length=255, required=False, allow_null=True)
-    generation = GenerationSerializer()
+    generation = SimpleGenerationSerializer()
 
 
 class ClubUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
-        fields = ["image", "description"]
+        fields = ["name", "image", "description"]
 
 
 class ClubGenerationSerializer(serializers.ModelSerializer):
@@ -112,7 +113,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         current_gen = obj.current_generation
         if not current_gen:
             return None
-        return GenerationDetailSerializer(current_gen).data
+        return GenerationInfoSerializer(current_gen).data
 
     def get_current_member_count(self, obj):
         current_gen = obj.current_generation

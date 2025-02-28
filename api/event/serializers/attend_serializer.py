@@ -9,10 +9,9 @@ class FloatDecimalField(serializers.DecimalField):
 
 
 class CheckQRCodeSerializer(serializers.Serializer):
-    event_id = serializers.IntegerField()
     qr_code = serializers.CharField()
-    latitude = FloatDecimalField(max_digits=10, decimal_places=8)
-    longitude = FloatDecimalField(max_digits=11, decimal_places=8)
+    latitude = FloatDecimalField(max_digits=10, decimal_places=8, required=False)
+    longitude = FloatDecimalField(max_digits=11, decimal_places=8, required=False)
 
 
 class AttendanceSerializer(serializers.ModelSerializer):

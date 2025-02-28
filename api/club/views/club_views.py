@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from api.club import serializers as sz
+from api.club.serializers.generation_serializers import SimpleGenerationSerializer
 from api.club.models import Club, ClubApply, Generation, Member, Role
 from api.club.services.club_service import ClubService
 from api.userapp.permissions import IsAuthenticatedCustom
@@ -42,10 +43,10 @@ class ClubViewSet(ModelViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        return Member.objects.filter(user=self.request.user).order_by("club__name")
+        return Member.objects.filter(user=self.request.user, club__deleted=False).order_by("club__name")
 
     def get_object(self):
-        return Club.objects.get(id=self.kwargs["pk"])
+        return Club.objects.get(id=self.kwargs["pk"], deleted=False)
 
     # @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
     def create(self, request, *args, **kwargs):
@@ -85,11 +86,20 @@ class ClubViewSet(ModelViewSet):
         serializer = sz.RoleSerializer(roles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["get", "post"])
     def generations(self, request, *args, **kwargs):
         """클럽 기수 목록 조회"""
-        generation = Generation.objects.filter(club__id=kwargs["pk"]).order_by(
-            "start_date"
-        )
-        serializer = sz.GenerationInfoSerializer(generation, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if request.method == "POST":
+            serializer = SimpleGenerationSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            ClubService.create_generation(
+                club=self.get_object(),
+                generation_data=serializer.validated_data,
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        elif request.method == "GET":
+            generation = Generation.objects.filter(
+                club__id=kwargs["pk"], deleted=False, club__deleted=False
+            ).order_by("start_date")
+            serializer = sz.GenerationInfoSerializer(generation, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)

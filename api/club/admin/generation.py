@@ -5,4 +5,4 @@ from api.club.models import Generation
 
 @admin.register(Generation)
 class GenerationAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "club"]
+    list_display = ["id", "name", "club", "activated"]

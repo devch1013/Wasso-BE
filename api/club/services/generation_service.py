@@ -65,3 +65,17 @@ class GenerationService:
             database_id=notion_database_id,
             user=user
         )
+
+    @staticmethod
+    def activate_generation(generation: Generation):
+        generations = Generation.objects.filter(club=generation.club)
+        for gen in generations:
+            if gen.activated:   
+                gen.activated = False
+                gen.save()
+        generation.activated = True
+        generation.save()
+        club = generation.club
+        club.current_generation = generation
+        club.save()
+        return generation

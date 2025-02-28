@@ -12,6 +12,7 @@ class ClubInfoSerializer(serializers.Serializer):
     club_name = serializers.CharField(source="club.name")
     club_image = serializers.ImageField(source="club.image")
     club_description = serializers.CharField(source="club.description")
+    generations = serializers.SerializerMethodField()
     current_generation = GenerationInfoSerializer(
         source="get_current_generation.generation"
     )
@@ -35,6 +36,10 @@ class ClubInfoSerializer(serializers.Serializer):
 
     def get_is_member_activated(self, obj: Member):
         return obj.get_current_generation().generation == obj.club.current_generation
+    
+    def get_generations(self, obj: Member):
+        generations = Generation.objects.filter(club=obj.club, deleted=False)
+        return GenerationInfoSerializer(generations, many=True).data
 
 
 class ClubCreateSerializer(serializers.Serializer):

@@ -108,8 +108,8 @@ class EventService:
                 event=event,
                 generation_mapping=generation_mapping,
                 status=status,
-                latitude=serializer.validated_data.get("latitude"),
-                longitude=serializer.validated_data.get("longitude"),
+                latitude=serializer.validated_data.get("latitude", None),
+                longitude=serializer.validated_data.get("longitude", None),
             )
             return attendance
 

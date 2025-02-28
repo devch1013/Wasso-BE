@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet, mixins
 
 from api.club.models import ClubApply, Generation, GenMember
 from api.event.models import Event
@@ -21,8 +21,12 @@ from common.utils.excel import create_attendance_excel
 import os
 
 
-class GenerationView(ModelViewSet):
-    queryset = Generation.objects.all()
+class GenerationView(
+    mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
+    GenericViewSet,
+):
+    queryset = Generation.objects.filter(deleted=False)
 
     def get_serializer_class(self):
         if self.action == "apply":
@@ -63,6 +67,13 @@ class GenerationView(ModelViewSet):
         stats = GenerationService.get_generation_stats(generation.id)
         serializer = GenerationStatsSerializer(stats, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=["post"])
+    def activate(self, request, *args, **kwargs):
+        """기수 활성화"""
+        generation = self.get_object()
+        GenerationService.activate_generation(generation)
+        return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"], url_path="stats/google-sheet")
     def google_sheet(self, request, *args, **kwargs):
@@ -89,7 +100,7 @@ class GenerationView(ModelViewSet):
             result = GenerationService.update_notion(
                 self.get_object(),
                 serializer.validated_data["notion_database_url"],
-                user=request.user
+                user=request.user,
             )
             return Response(result, status=status.HTTP_202_ACCEPTED)
 

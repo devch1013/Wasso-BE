@@ -31,7 +31,7 @@ class ClubService:
 
         # 첫 번째 기수(generation) 생성
         generation = Generation.objects.create(
-            club=club, **generation_data, invite_code=invite_code
+            club=club, **generation_data, invite_code=invite_code, activated=True
         )
 
         owner_role = Role.create_owner_role(club)
@@ -56,3 +56,11 @@ class ClubService:
         )
 
         return club, member
+
+    @staticmethod
+    def create_generation(club: Club, generation_data: dict):
+        invite_code = "".join(random.choices(string.digits, k=6))
+        generation = Generation.objects.create(
+            club=club, **generation_data, invite_code=invite_code
+        )
+        return generation

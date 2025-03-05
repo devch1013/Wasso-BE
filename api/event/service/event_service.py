@@ -100,8 +100,13 @@ class EventService:
             member__user=user, generation=event.generation
         )
         try:
-            Attendance.objects.get(event=event, generation_mapping=generation_mapping)
-            raise CustomException(ErrorCode.ALREADY_CHECKED)
+            attendance = Attendance.objects.get(event=event, generation_mapping=generation_mapping)
+            if attendance.status != AttendanceStatus.UNCHECKED:
+                raise CustomException(ErrorCode.ALREADY_CHECKED)
+            else:
+                attendance.status = EventService.check_attendance_status(event)
+                attendance.save()
+                return attendance
         except Attendance.DoesNotExist:
             status = EventService.check_attendance_status(event)
             attendance = Attendance.objects.create(

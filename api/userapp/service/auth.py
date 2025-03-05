@@ -92,7 +92,6 @@ class GoogleAuthService(AuthService):
         return None
 
     def _create_user(self, google_token, fcmToken):
-        print(google_token)
         if not google_token:
             raise CustomException(ErrorCode.INVALID_TOKEN)
 

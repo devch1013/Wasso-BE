@@ -92,7 +92,7 @@ class EventViewSetTests(APITestCase):
         
     def upcoming_event(self):
         """다가오는 이벤트 조회"""
-        event = Event.objects.create(
+        Event.objects.create(
             title="Test Event",
             description="Test Event Description",
             location="Test Location",

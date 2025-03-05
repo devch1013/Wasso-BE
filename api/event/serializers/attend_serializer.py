@@ -12,6 +12,16 @@ class CheckQRCodeSerializer(serializers.Serializer):
     qr_code = serializers.CharField()
     latitude = FloatDecimalField(max_digits=10, decimal_places=8, required=False)
     longitude = FloatDecimalField(max_digits=11, decimal_places=8, required=False)
+    
+    def validate_latitude(self, value):
+        if value is not None:
+            return round(value, 8)
+        return value
+    
+    def validate_longitude(self, value):
+        if value is not None:
+            return round(value, 8)
+        return value
 
 
 class AttendanceSerializer(serializers.ModelSerializer):

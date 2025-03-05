@@ -95,7 +95,7 @@ class GoogleSheetTest(TestCase):
         mock_service.spreadsheets().create().execute.return_value = mock_spreadsheet
         
         # 함수 실행
-        result = create_attendance_sheet(self.generation.id)
+        result = create_attendance_sheet(self.generation)
         
         # 검증
         self.assertEqual(

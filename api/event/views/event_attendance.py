@@ -25,6 +25,8 @@ class EventAttendanceView(
         return Attendance.objects.filter(event_id=self.kwargs.get(self.lookup_field))
 
     def create(self, request, *args, **kwargs):
+        request.data["latitude"] = round(float(request.data["latitude"]), 8)
+        request.data["longitude"] = round(float(request.data["longitude"]), 8)
         serializer = CheckQRCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         event = Event.objects.get(id=kwargs.get(self.lookup_field))

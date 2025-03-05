@@ -29,8 +29,8 @@ class MemberViewTest(APITestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_add_tag(self):
-        url = reverse("member-add-tag", kwargs={"pk": self.member.id})
-        response = self.client.post(url, {"tag": "test-tag"})
+        url = reverse("members-tag", kwargs={"pk": self.member.id})
+        response = self.client.put(url, {"tag": "test-tag"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.member.refresh_from_db()
         self.assertIn("test-tag", self.member.tags)
@@ -38,15 +38,15 @@ class MemberViewTest(APITestCase):
     def test_remove_tag(self):
         self.member.tags.append("test-tag")
         self.member.save()
-        url = reverse("member-remove-tag", kwargs={"pk": self.member.id})
-        response = self.client.post(url, {"tag": "test-tag"})
+        url = reverse("members-tag", kwargs={"pk": self.member.id})
+        response = self.client.delete(url, {"tag": "test-tag"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.member.refresh_from_db()
         self.assertNotIn("test-tag", self.member.tags)
 
     def test_update_description(self):
-        url = reverse("member-update-description", kwargs={"pk": self.member.id})
-        response = self.client.post(url, {"description": "test-description"})
+        url = reverse("members-description", kwargs={"pk": self.member.id})
+        response = self.client.put(url, {"description": "test-description"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.member.refresh_from_db()
         self.assertEqual(self.member.description, "test-description")

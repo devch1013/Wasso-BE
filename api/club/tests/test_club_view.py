@@ -39,7 +39,7 @@ class ClubTestCase(APITestCase):
             "generation.end_date": "2024-12-31",
         }
 
-        response = self.client.post(reverse("club-list"), data, format="multipart")
+        response = self.client.post(reverse("clubs-list"), data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Club.objects.count(), 1)
@@ -65,7 +65,7 @@ class ClubTestCase(APITestCase):
             "image": "image.jpg",
         }
 
-        response = self.client.post(reverse("club-list"), data, format="json")
+        response = self.client.post(reverse("clubs-list"), data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         data = {
@@ -73,7 +73,7 @@ class ClubTestCase(APITestCase):
             "description": "Test Description",
             "image": "",
         }
-        response = self.client.post(reverse("club-list"), data, format="json")
+        response = self.client.post(reverse("clubs-list"), data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch("django.core.files.storage.default_storage.save")
@@ -105,7 +105,7 @@ class ClubTestCase(APITestCase):
             },
         )
 
-        response = self.client.get(reverse("club-list"))
+        response = self.client.get(reverse("clubs-list"))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
@@ -124,7 +124,7 @@ class ClubTestCase(APITestCase):
                 "end_date": "2024-12-31",
             },
         )
-        response = self.client.get(reverse("club-detail", kwargs={"pk": club.id}))
+        response = self.client.get(reverse("clubs-detail", kwargs={"pk": club.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], "Test Club")
 
@@ -148,18 +148,19 @@ class ClubTestCase(APITestCase):
         self.assertEqual(GenMember.objects.count(), 1)
         self.assertEqual(Member.objects.count(), 1)
 
-        response = self.client.delete(reverse("club-detail", kwargs={"pk": club.id}))
+        response = self.client.delete(reverse("clubs-detail", kwargs={"pk": club.id}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # 삭제 후 모든 관련 레코드 확인
-        self.assertEqual(Club.objects.count(), 0)
-        self.assertEqual(Generation.objects.count(), 0)
-        self.assertEqual(GenMember.objects.count(), 0)
-        self.assertEqual(Member.objects.count(), 0)
+        self.assertEqual(Club.objects.count(), 1)
+        self.assertEqual(Generation.objects.count(), 1)
+        self.assertEqual(GenMember.objects.count(), 1)
+        self.assertEqual(Member.objects.count(), 1)
+        self.assertEqual(Club.objects.all().first().deleted, True)
 
     def test_delete_club_invalid_data(self):
         """클럽 삭제 테스트(유효하지 않은 데이터)"""
-        response = self.client.delete(reverse("club-detail", kwargs={"pk": 9999}))
+        response = self.client.delete(reverse("clubs-detail", kwargs={"pk": 9999}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_club(self):
@@ -181,7 +182,7 @@ class ClubTestCase(APITestCase):
         }
 
         response = self.client.put(
-            reverse("club-detail", kwargs={"pk": club.id}), data, format="json"
+            reverse("clubs-detail", kwargs={"pk": club.id}), data, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["description"], "Updated Description")
@@ -216,7 +217,7 @@ class ClubTestCase(APITestCase):
         )
         ClubApply.objects.create(user=user1, generation=club.current_generation)
         ClubApply.objects.create(user=user2, generation=club.current_generation)
-        response = self.client.get(reverse("club-applies", kwargs={"pk": club.id}))
+        response = self.client.get(reverse("clubs-applies", kwargs={"pk": club.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
         self.assertEqual(response.data[0]["user"]["username"], "testuser1")
@@ -235,7 +236,7 @@ class ClubTestCase(APITestCase):
                 "end_date": "2024-12-31",
             },
         )
-        response = self.client.get(reverse("club-roles", kwargs={"pk": club.id}))
+        response = self.client.get(reverse("clubs-roles", kwargs={"pk": club.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3)
         self.assertEqual(response.data[0]["name"], "회장")
@@ -255,7 +256,7 @@ class ClubTestCase(APITestCase):
                 "end_date": "2024-12-31",
             },
         )
-        response = self.client.get(reverse("club-generations", kwargs={"pk": club.id}))
+        response = self.client.get(reverse("clubs-generations", kwargs={"pk": club.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["name"], "1기")

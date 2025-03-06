@@ -104,7 +104,6 @@ class GoogleAuthService(AuthService):
         user, is_created = User.objects.get_or_create(
             identifier=user_info["sub"],  # Google의 고유 사용자 ID
             defaults={
-                "username": user_info.get("name", ""),
                 "email": user_info.get("email", ""),
                 "provider": "google",
             },
@@ -167,7 +166,6 @@ class AppleAuthService(AuthService):
         user, is_created = User.objects.get_or_create(
             identifier=user_info["sub"],  # Apple의 고유 사용자 ID
             defaults={
-                "username": user_info.get("email", ""),  # 이메일을 username으로 사용
                 "email": user_info.get("email", ""),
                 "provider": "apple",
             },

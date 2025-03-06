@@ -30,11 +30,9 @@ class SocialAuthView(
         else:
             code = request.query_params.get("code")
             fcmToken = request.query_params.get("fcmToken")
-            print("fcmToken", fcmToken)
             user = service.get_or_create_user(code, fcmToken)
 
         refresh = service.get_token(user)
-        print("refresh", str(refresh.access_token))
         return Response(
             {
                 "access_token": str(refresh.access_token),

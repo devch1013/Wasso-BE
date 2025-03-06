@@ -13,9 +13,12 @@ class GenMemberService:
             raise CustomException(ErrorCode.ROLE_NOT_FOUND)
         if gen_member.role.is_superuser() and not gen_member.role == role:
             all_gen_members = GenMember.objects.filter(generation=gen_member.generation)
+            superuser_count = 0
             for m in all_gen_members:
                 if m.role.is_superuser():
-                    raise CustomException(ErrorCode.OWNER_ROLE_MUST_BE_MORE_THAN_ONE)
+                    superuser_count += 1
+            if superuser_count <= 1:
+                raise CustomException(ErrorCode.OWNER_ROLE_MUST_BE_MORE_THAN_ONE)
         gen_member.role = role
         gen_member.save()
         fcm_component.send_to_user(

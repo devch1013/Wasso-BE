@@ -52,6 +52,7 @@ class EventViewSet(
         이벤트 수정
         /events/{event_id}/
         """
+        print("request.data", request.data)
         serializer = EventUpdateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         EventService.update_event(serializer, request.user, kwargs.get("pk"))

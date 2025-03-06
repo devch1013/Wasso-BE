@@ -35,6 +35,7 @@ class SocialAuthView(
         refresh = service.get_token(user)
         return Response(
             {
+                "user_id": user.id,
                 "access_token": str(refresh.access_token),
                 "refresh_token": str(refresh),
                 "token_type": "bearer",

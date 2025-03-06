@@ -71,7 +71,8 @@ class EventService:
 
         additional_images = data.validated_data.get("additional_images")
         deleted_images = data.validated_data.get("deleted_images")
-
+        print("additional_images", additional_images)
+        print("deleted_images", deleted_images)
         event.update_images(additional_images, deleted_images)
 
         if data.validated_data.get("location_link") is not None:
@@ -151,12 +152,13 @@ class EventService:
             attendance = Attendance.objects.create(
                 event=event, generation_mapping=generation_mapping, status=status
             )
-        attendance.modify_attendance(status)
-        fcm_component.send_to_user(
-            attendance.generation_mapping.member.user,
-            NotificationTemplate.ATTENDANCE_CHANGE.get_title(),
-            NotificationTemplate.ATTENDANCE_CHANGE.get_body(event_name=attendance.event.title, attendance_status=AttendanceStatus(status).label),
-        )
+        is_changed = attendance.modify_attendance(status)
+        if is_changed:
+            fcm_component.send_to_user(
+                attendance.generation_mapping.member.user,
+                NotificationTemplate.ATTENDANCE_CHANGE.get_title(),
+                NotificationTemplate.ATTENDANCE_CHANGE.get_body(event_name=attendance.event.title, attendance_status=AttendanceStatus(status).label),
+            )
         return attendance
 
     @staticmethod

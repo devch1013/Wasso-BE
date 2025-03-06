@@ -25,6 +25,9 @@ def event_qr_code_path(instance, filename):
 
 
 class Event(models.Model):
+    def __str__(self):
+        return f"{self.generation.club.name} - {self.title}"
+
     generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=255, null=True, blank=True)

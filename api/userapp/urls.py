@@ -9,7 +9,7 @@ urlpatterns = [
     ),
     path(
         "push/",
-        views.UserView.as_view({"post": "push"}),
+        views.UserView.as_view({"post": "push", "get": "push"}),
         name="push",
     ),
     path(

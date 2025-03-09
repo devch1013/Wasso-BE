@@ -146,11 +146,10 @@ class MemberAttendanceSerializer(serializers.ModelSerializer):
 
     def get_attendance_status(self, obj):
         event = self.context.get("event")
-        try:
-            attendance = Attendance.objects.get(event=event, generation_mapping=obj)
+        attendance = Attendance.objects.filter(event=event, generation_mapping=obj).order_by("-created_at").first()
+        if attendance:
             return AttendanceSerializer(attendance).data
-        except Attendance.DoesNotExist:
-            return AttendanceSerializer(Attendance(status=0)).data
+        return AttendanceSerializer(Attendance(status=0)).data
 
 
 class EventAttendanceSerializer(serializers.ModelSerializer):

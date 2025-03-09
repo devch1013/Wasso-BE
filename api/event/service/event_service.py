@@ -97,27 +97,32 @@ class EventService:
     def check_qr_code(serializer: CheckQRCodeSerializer, event: Event, user: User):
         if serializer.validated_data.get("qr_code") != event.qr_code:
             raise CustomException(ErrorCode.INVALID_QR_CODE)
+        
+        # 트랜잭션 처리를 위해 get_or_create 사용
         generation_mapping = GenMember.objects.get(
             member__user=user, generation=event.generation
         )
-        try:
-            attendance = Attendance.objects.get(event=event, generation_mapping=generation_mapping)
-            if attendance.status != AttendanceStatus.UNCHECKED:
-                raise CustomException(ErrorCode.ALREADY_CHECKED)
-            else:
-                attendance.status = EventService.check_attendance_status(event)
-                attendance.save()
-                return attendance
-        except Attendance.DoesNotExist:
-            status = EventService.check_attendance_status(event)
-            attendance = Attendance.objects.create(
-                event=event,
-                generation_mapping=generation_mapping,
-                status=status,
-                latitude=serializer.validated_data.get("latitude", None),
-                longitude=serializer.validated_data.get("longitude", None),
-            )
-            return attendance
+        
+        # get_or_create를 사용하여 동시 요청 문제 해결
+        attendance, created = Attendance.objects.get_or_create(
+            event=event, 
+            generation_mapping=generation_mapping,
+            defaults={
+                'status': AttendanceStatus.UNCHECKED,
+                'latitude': serializer.validated_data.get("latitude", None),
+                'longitude': serializer.validated_data.get("longitude", None),
+            }
+        )
+        
+        # 이미 체크된 상태인지 확인
+        if attendance.status != AttendanceStatus.UNCHECKED:
+            raise CustomException(ErrorCode.ALREADY_CHECKED)
+        
+        # 출석 상태 업데이트
+        attendance.status = EventService.check_attendance_status(event)
+        attendance.save()
+        
+        return attendance
 
     @staticmethod
     def check_attendance_status(event: Event):

@@ -30,7 +30,7 @@ class Event(models.Model):
 
     generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    description = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     date = models.DateField(default=timezone.now)
     start_time = models.TimeField()
     end_time = models.TimeField()

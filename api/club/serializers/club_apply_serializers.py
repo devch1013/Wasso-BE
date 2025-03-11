@@ -3,11 +3,22 @@ from rest_framework import serializers
 from api.club.models import ClubApply
 from api.club.serializers.club_serializers import ClubGenerationSerializer
 from api.club.serializers.generation_serializers import GenerationInfoSerializer
-from api.userapp.serializers import UserSimpleSerializer
+from api.userapp.models import User
+class UserApplySimpleSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ["username", "profile_image"]
 
+    def get_username(self, obj):
+        if obj.username:
+            return obj.username
+        else:
+            return "익명"
+    
 
 class ClubApplySerializer(serializers.ModelSerializer):
-    user = UserSimpleSerializer()
+    user = UserApplySimpleSerializer()
     generation = GenerationInfoSerializer()
 
     class Meta:

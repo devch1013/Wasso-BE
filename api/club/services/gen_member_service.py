@@ -1,8 +1,8 @@
 from api.club.models import GenMember, Role
 from common.exceptions import CustomException, ErrorCode
 
-from common.component import UserSelector, FCMComponent, NotificationTemplate
-
+from common.component import FCMComponent, NotificationTemplate
+from api.club.models import Member
 fcm_component = FCMComponent()
 
 class GenMemberService:
@@ -26,3 +26,13 @@ class GenMemberService:
             NotificationTemplate.MEMBER_ROLE_CHANGE.get_title(),
             NotificationTemplate.MEMBER_ROLE_CHANGE.get_body(club_name=gen_member.generation.club.name, role_name=role.name),
         )
+
+    @staticmethod
+    def delete_gen_member(gen_member: GenMember):
+        member = gen_member.member
+        if gen_member.role.is_superuser():
+            raise CustomException(ErrorCode.OWNER_CANNOT_BE_DELETED)
+        gen_member.delete()
+        if Member.objects.filter(generation=gen_member.generation).count() == 0:
+            member.delete()
+            

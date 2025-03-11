@@ -1,4 +1,4 @@
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, mixins
 from rest_framework.decorators import action
 
 from api.club.models import GenMember
@@ -7,7 +7,7 @@ from api.club.services.gen_member_service import GenMemberService
 from common.responses.simple_response import SimpleResponse
 
 
-class GenMemberView(GenericViewSet):
+class GenMemberView(mixins.DestroyModelMixin, GenericViewSet):
     queryset = GenMember.objects.all()
     
     @action(detail=True, methods=["put"], url_path="roles")
@@ -17,3 +17,6 @@ class GenMemberView(GenericViewSet):
         serializer.is_valid(raise_exception=True)
         GenMemberService.update_gen_member(gen_member, serializer.validated_data["role_id"])
         return SimpleResponse("역할 변경 완료")
+    
+    def perform_destroy(self, instance):
+        GenMemberService.delete_gen_member(instance)

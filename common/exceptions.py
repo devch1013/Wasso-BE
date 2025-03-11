@@ -60,6 +60,11 @@ class ErrorCode(Enum):
         "CE010",
         status.HTTP_400_BAD_REQUEST,
     )
+    OWNER_CANNOT_BE_DELETED = (
+        "모든 권한을 가진 역할은 삭제할 수 없습니다",
+        "CE011",
+        status.HTTP_400_BAD_REQUEST,
+    )
 
     def __init__(self, message, code, status):
         self.message = message

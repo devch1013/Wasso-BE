@@ -59,7 +59,7 @@ class FCMComponent:
             logger.info(f"FCM 알림 전송 성공: {response}")
             return True
 
-        except messaging.UnregisteredError as e:
+        except messaging.UnregisteredError:
             logger.error(f"등록되지 않은 토큰입니다: {token}")
             return False
         except Exception as e:

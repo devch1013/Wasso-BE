@@ -37,7 +37,7 @@ class GenerationView(
 
     @action(detail=True, methods=["get"])
     def apply(self, request, *args, **kwargs):
-        """Club으로 옮겨야함"""
+        """기수 회원가입 신청 목록"""
         applies = ClubApply.objects.filter(generation=self.get_object(), accepted=False)
         serializer = self.get_serializer(applies, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

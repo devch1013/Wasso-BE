@@ -146,7 +146,7 @@ class MemberAttendanceSerializer(serializers.ModelSerializer):
 
     def get_attendance_status(self, obj):
         event = self.context.get("event")
-        attendance = Attendance.objects.filter(event=event, generation_mapping=obj).order_by("-created_at").first()
+        attendance = Attendance.objects.filter(event=event, generation_mapping=obj).order_by("-timestamp").first()
         if attendance:
             return AttendanceSerializer(attendance).data
         return AttendanceSerializer(Attendance(status=0)).data

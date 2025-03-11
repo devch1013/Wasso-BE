@@ -8,7 +8,7 @@ class UserApplySimpleSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ["username", "profile_image"]
+        fields = ["username", "profile_image", "email"]
 
     def get_username(self, obj):
         if obj.username:

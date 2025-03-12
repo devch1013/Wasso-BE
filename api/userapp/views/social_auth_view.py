@@ -30,9 +30,15 @@ class SocialAuthView(
             fcmToken = request.query_params.get("fcmToken")
             given_name = request.data.get("given_name", None)
             family_name = request.data.get("family_name", None)
-            user = service.get_or_create_user(
-                code, fcmToken, given_name + " " + family_name
-            )
+            if given_name and family_name:
+                name = given_name + " " + family_name
+            elif given_name:
+                name = given_name
+            elif family_name:
+                name = family_name
+            else:
+                name = None
+            user = service.get_or_create_user(code, fcmToken, name)
 
         refresh = service.get_token(user)
         return Response(

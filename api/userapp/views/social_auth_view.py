@@ -9,8 +9,6 @@ from common.component.fcm_component import FCMComponent
 from ..service.auth import (
     AppleAuthService,
     GoogleAuthService,
-    KakaoAuthService,
-    NativeAuthService,
 )
 
 
@@ -30,7 +28,11 @@ class SocialAuthView(
         else:
             code = request.query_params.get("code")
             fcmToken = request.query_params.get("fcmToken")
-            user = service.get_or_create_user(code, fcmToken)
+            given_name = request.data.get("given_name", None)
+            family_name = request.data.get("family_name", None)
+            user = service.get_or_create_user(
+                code, fcmToken, given_name + " " + family_name
+            )
 
         refresh = service.get_token(user)
         return Response(
@@ -46,11 +48,7 @@ class SocialAuthView(
         return super().retrieve(request, *args, **kwargs)
 
     def get_service(self, provider: str):
-        if provider == "kakao":
-            return KakaoAuthService()
-        elif provider == "native":
-            return NativeAuthService()
-        elif provider == "google":
+        if provider == "google":
             return GoogleAuthService()
         elif provider == "apple":
             return AppleAuthService()

@@ -103,24 +103,16 @@ class EventService:
             member__user=user, generation=event.generation
         )
         
-        # get_or_create를 사용하여 동시 요청 문제 해결
-        attendance, created = Attendance.objects.get_or_create(
+        # 계속 생성되게 변경
+        attendance = Attendance.objects.create(
             event=event, 
             generation_mapping=generation_mapping,
-            defaults={
-                'status': AttendanceStatus.UNCHECKED,
-                'latitude': serializer.validated_data.get("latitude", None),
-                'longitude': serializer.validated_data.get("longitude", None),
-            }
+            status=EventService.check_attendance_status(event),
+            latitude=serializer.validated_data.get("latitude", None),
+            longitude=serializer.validated_data.get("longitude", None),
+            created_by=generation_mapping,
+            is_modified=False,
         )
-        
-        # 이미 체크된 상태인지 확인
-        if attendance.status != AttendanceStatus.UNCHECKED:
-            raise CustomException(ErrorCode.ALREADY_CHECKED)
-        
-        # 출석 상태 업데이트
-        attendance.status = EventService.check_attendance_status(event)
-        attendance.save()
         
         return attendance
 

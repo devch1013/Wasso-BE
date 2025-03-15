@@ -137,11 +137,10 @@ class EventService:
 
     @staticmethod
     def change_attendance_status(event_id: int, member_id: int, status: int):
-        try:
-            attendance = Attendance.objects.filter(
+        attendance = Attendance.objects.filter(
                 event__id=event_id, generation_mapping__member__id=member_id
             ).order_by("-timestamp").first()
-        except Attendance.DoesNotExist:
+        if attendance is None:
             event = Event.objects.get(id=event_id)
             generation_mapping = GenMember.objects.get(
                 member__id=member_id, generation=event.generation

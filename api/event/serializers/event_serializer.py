@@ -133,7 +133,7 @@ class EventDetailSerializer(serializers.ModelSerializer):
             attendance = Attendance.objects.filter(
                 event=obj, generation_mapping__member__user=user
             ).order_by("-timestamp").first()
-            if attendance.status is None:
+            if attendance is None or attendance.status is None:
                 return 0
             return attendance.status
         except Attendance.DoesNotExist:

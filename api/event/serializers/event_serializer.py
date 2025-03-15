@@ -166,7 +166,7 @@ class EventAttendanceSerializer(serializers.ModelSerializer):
 
     def get_members(self, obj):
         return MemberAttendanceSerializer(
-            obj.generation.genmember_set.all(),
+            obj.generation.genmember_set.all().order_by("member__name"),
             many=True,
             context={"event": obj},
         ).data

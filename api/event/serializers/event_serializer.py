@@ -127,9 +127,9 @@ class EventDetailSerializer(serializers.ModelSerializer):
     def get_attendance_status(self, obj):
         user = self.context.get("request").user
         try:
-            attendance = Attendance.objects.get(
+            attendance = Attendance.objects.filter(
                 event=obj, generation_mapping__member__user=user
-            )
+            ).order_by("-timestamp").first()
             return attendance.status
         except Attendance.DoesNotExist:
             return 0

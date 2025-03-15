@@ -174,8 +174,11 @@ class EventService:
             member__user=user, generation=event.generation
         )
         try:
-            return Attendance.objects.filter(
+            attendance = Attendance.objects.filter(
                 event=event, generation_mapping=generation_mapping
             ).order_by("-timestamp").first()
+            if attendance is None or attendance.status is None:
+                return Attendance(status=AttendanceStatus.UNCHECKED)
+            return attendance
         except Attendance.DoesNotExist:
             return Attendance(status=AttendanceStatus.UNCHECKED)

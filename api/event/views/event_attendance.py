@@ -9,6 +9,7 @@ from ..serializers import (
     CheckQRCodeSerializer,
     ModifyAttendanceSerializer,
     EventAttendanceSerializer,
+    AttendanceLogSerializer,
 )
 from ..service.event_service import EventService
 from common.responses.simple_response import SimpleResponse
@@ -70,3 +71,11 @@ class EventAttendanceView(
         event = Event.objects.get(id=kwargs.get(self.lookup_field))
         attendance = EventService.get_me(event, request.user)
         return Response(AttendanceSerializer(attendance).data)
+    
+    def get_member_log(self, request, *args, **kwargs):
+        """멤버 출석 로그 조회"""
+        
+        event = Event.objects.get(id=kwargs.get(self.lookup_field))
+        gen_member_id = kwargs.get("gen_member_id")
+        attendance = EventService.get_member_log(event, gen_member_id)
+        return Response(AttendanceLogSerializer(attendance).data)

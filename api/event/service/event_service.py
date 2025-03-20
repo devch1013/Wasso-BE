@@ -201,3 +201,26 @@ class EventService:
             return attendance
         except Attendance.DoesNotExist:
             return Attendance(status=AttendanceStatus.UNCHECKED)
+
+    @staticmethod
+    def get_member_log(event: Event, gen_member_id: int):
+        generation_mapping = GenMember.objects.get(id=gen_member_id)
+        
+        # is_modified가 True인 것 중 가장 최근 생성된 것
+        latest_modified = Attendance.objects.filter(
+            event=event, 
+            generation_mapping=generation_mapping,
+            is_modified=True
+        ).order_by('-created_at').first()
+        
+        # is_modified가 False인 것 중 가장 최근 생성된 것
+        latest_unmodified = Attendance.objects.filter(
+            event=event, 
+            generation_mapping=generation_mapping,
+            is_modified=False
+        ).order_by('-created_at').first()
+        
+        return {
+            'modified': latest_modified,
+            'unmodified': latest_unmodified
+        }

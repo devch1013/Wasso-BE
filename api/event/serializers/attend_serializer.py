@@ -34,3 +34,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class ModifyAttendanceSerializer(serializers.Serializer):
     member_id = serializers.IntegerField()
     status = serializers.IntegerField()
+
+class AttendanceLogSerializer(serializers.Serializer):
+    modified = AttendanceSerializer()
+    unmodified = AttendanceSerializer()

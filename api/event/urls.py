@@ -32,4 +32,9 @@ urlpatterns = [
         views.EventAttendanceView.as_view({"get": "me"}),
         name="event-attendance-me",
     ),
+    path(
+        "<int:event_id>/attendance/<int:gen_member_id>/",
+        views.EventAttendanceView.as_view({"get": "get_member_log"}),
+        name="event-attendance-log",
+    ),
 ]

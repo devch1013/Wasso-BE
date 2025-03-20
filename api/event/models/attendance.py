@@ -33,12 +33,3 @@ class Attendance(models.Model):
 
     class Meta:
         db_table = "attendances"
-
-    def modify_attendance(self, status: int):
-        if self.status != status:
-            self.status = AttendanceStatus(status)
-            self.is_modified = True
-            self.modified_at = timezone.localtime(timezone.now())
-            self.save()
-            return True
-        return False

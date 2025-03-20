@@ -41,6 +41,7 @@ class EventAttendanceView(
             kwargs.get(self.lookup_field),
             serializer.validated_data["member_id"],
             serializer.validated_data["status"],
+            request.user,
         )
         result = AttendanceSerializer(attendance)
         return Response(result.data)

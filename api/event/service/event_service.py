@@ -97,23 +97,21 @@ class EventService:
     def check_qr_code(serializer: CheckQRCodeSerializer, event: Event, user: User):
         if serializer.validated_data.get("qr_code") != event.qr_code:
             raise CustomException(ErrorCode.INVALID_QR_CODE)
-        
-        # 트랜잭션 처리를 위해 get_or_create 사용
+
         generation_mapping = GenMember.objects.get(
             member__user=user, generation=event.generation
         )
-        
+
         # 계속 생성되게 변경
         attendance = Attendance.objects.create(
-            event=event, 
+            event=event,
             generation_mapping=generation_mapping,
             status=EventService.check_attendance_status(event),
             latitude=serializer.validated_data.get("latitude", None),
             longitude=serializer.validated_data.get("longitude", None),
-            created_by=generation_mapping,
             is_modified=False,
         )
-        
+
         return attendance
 
     @staticmethod
@@ -136,32 +134,49 @@ class EventService:
             raise CustomException(ErrorCode.INVALID_TIME)
 
     @staticmethod
-    def change_attendance_status(event_id: int, member_id: int, status: int):
-        attendance = Attendance.objects.filter(
+    def change_attendance_status(
+        event_id: int, member_id: int, status: int, user: User
+    ):
+        # 가장 최근의 attendance 레코드를 가져옴
+        attendance = (
+            Attendance.objects.filter(
                 event__id=event_id, generation_mapping__member__id=member_id
-            ).order_by("-created_at").first()
-        if attendance is None:
+            )
+            .order_by("-created_at")
+            .first()
+        )
+
+        # attendance가 없는 경우, 새로 생성
+        if attendance is None or attendance.status != status:
             event = Event.objects.get(id=event_id)
             generation_mapping = GenMember.objects.get(
                 member__id=member_id, generation=event.generation
             )
-            attendance = Attendance.objects.create(
-                event=event, generation_mapping=generation_mapping, status=status
+            modify_user = GenMember.objects.get(
+                member__user=user, generation=event.generation
             )
-        is_changed = attendance.modify_attendance(status)
-        if is_changed:
+            attendance = Attendance.objects.create(
+                event=event,
+                generation_mapping=generation_mapping,
+                status=status,
+                created_by=modify_user,
+                is_modified=True,
+            )
+            # 새로 생성된 경우에는 알림을 보냄
             fcm_component.send_to_user(
                 attendance.generation_mapping.member.user,
                 NotificationTemplate.ATTENDANCE_CHANGE.get_title(),
-                NotificationTemplate.ATTENDANCE_CHANGE.get_body(event_name=attendance.event.title, attendance_status=AttendanceStatus(status).label),
+                NotificationTemplate.ATTENDANCE_CHANGE.get_body(
+                    event_name=attendance.event.title,
+                    attendance_status=AttendanceStatus(status).label,
+                ),
             )
+
         return attendance
 
     @staticmethod
     def attend_all(event: Event):
-        generation_mappings = GenMember.objects.filter(
-            generation=event.generation
-        )
+        generation_mappings = GenMember.objects.filter(generation=event.generation)
         for generation_mapping in generation_mappings:
             EventService.change_attendance_status(
                 event.id, generation_mapping.member.id, AttendanceStatus.PRESENT
@@ -173,9 +188,13 @@ class EventService:
             member__user=user, generation=event.generation
         )
         try:
-            attendance = Attendance.objects.filter(
-                event=event, generation_mapping=generation_mapping
-            ).order_by("-created_at").first()
+            attendance = (
+                Attendance.objects.filter(
+                    event=event, generation_mapping=generation_mapping
+                )
+                .order_by("-created_at")
+                .first()
+            )
             if attendance is None or attendance.status is None:
                 return Attendance(status=AttendanceStatus.UNCHECKED)
             return attendance

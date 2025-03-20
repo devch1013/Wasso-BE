@@ -175,11 +175,12 @@ class EventService:
         return attendance
 
     @staticmethod
-    def attend_all(event: Event):
+    def attend_all(event: Event, user: User):
         generation_mappings = GenMember.objects.filter(generation=event.generation)
         for generation_mapping in generation_mappings:
+            # TODO: 알림 한번에 보내기
             EventService.change_attendance_status(
-                event.id, generation_mapping.member.id, AttendanceStatus.PRESENT
+                event.id, generation_mapping.member.id, AttendanceStatus.PRESENT, user
             )
 
     @staticmethod

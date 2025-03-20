@@ -63,7 +63,7 @@ class EventAttendanceView(
     
     def attendance_all(self, request, *args, **kwargs):
         event = Event.objects.get(id=kwargs.get(self.lookup_field))
-        EventService.attend_all(event)
+        EventService.attend_all(event, request.user)
         return SimpleResponse(message="출석 처리 완료")
 
     def me(self, request, *args, **kwargs):

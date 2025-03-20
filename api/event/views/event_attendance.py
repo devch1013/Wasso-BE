@@ -46,6 +46,7 @@ class EventAttendanceView(
         return Response(result.data)
     
     def attendances(self, request, *args, **kwargs):
+        """이벤트 출석 정보 조회"""
         event = Event.objects.get(id=kwargs.get(self.lookup_field))
         serializer = EventAttendanceSerializer(event)
         return Response(serializer.data)

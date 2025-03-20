@@ -68,7 +68,7 @@ class EventSerializer(serializers.ModelSerializer):
         try:
             attendance = Attendance.objects.filter(
                 event=obj, generation_mapping__member__user=user
-            ).order_by("-timestamp").first()
+            ).order_by("-created_at").first()
             
             if attendance is None or attendance.status is None:
                 return 0
@@ -132,7 +132,7 @@ class EventDetailSerializer(serializers.ModelSerializer):
         try:
             attendance = Attendance.objects.filter(
                 event=obj, generation_mapping__member__user=user
-            ).order_by("-timestamp").first()
+            ).order_by("-created_at").first()
             if attendance is None or attendance.status is None:
                 return 0
             return attendance.status
@@ -151,7 +151,7 @@ class MemberAttendanceSerializer(serializers.ModelSerializer):
 
     def get_attendance_status(self, obj):
         event = self.context.get("event")
-        attendance = Attendance.objects.filter(event=event, generation_mapping=obj).order_by("-timestamp").first()
+        attendance = Attendance.objects.filter(event=event, generation_mapping=obj).order_by("-created_at").first()
         if attendance:
             return AttendanceSerializer(attendance).data
         return AttendanceSerializer(Attendance(status=0)).data
@@ -165,8 +165,16 @@ class EventAttendanceSerializer(serializers.ModelSerializer):
         fields = ["id", "members"]
 
     def get_members(self, obj):
+        members = obj.generation.genmember_set.all()
+        
+        # 성(姓)을 기준으로 먼저 정렬하고, 성이 같으면 이름으로 정렬
+        members = sorted(members, key=lambda x: (
+            x.member.user.username[0],  # 성으로 먼저 정렬
+            x.member.user.username[1:]  # 성이 같으면 이름으로 정렬
+        ))
+        
         return MemberAttendanceSerializer(
-            obj.generation.genmember_set.all().order_by("member__user__username"),
+            members,
             many=True,
             context={"event": obj},
         ).data

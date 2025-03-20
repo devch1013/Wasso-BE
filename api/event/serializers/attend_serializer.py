@@ -25,6 +25,7 @@ class CheckQRCodeSerializer(serializers.Serializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
+    timestamp = serializers.DateTimeField(source='created_at', read_only=True)
     class Meta:
         model = Attendance
         fields = ["id", "status", "timestamp", "modified_at", "is_modified"]

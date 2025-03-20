@@ -139,7 +139,7 @@ class EventService:
     def change_attendance_status(event_id: int, member_id: int, status: int):
         attendance = Attendance.objects.filter(
                 event__id=event_id, generation_mapping__member__id=member_id
-            ).order_by("-timestamp").first()
+            ).order_by("-created_at").first()
         if attendance is None:
             event = Event.objects.get(id=event_id)
             generation_mapping = GenMember.objects.get(
@@ -175,7 +175,7 @@ class EventService:
         try:
             attendance = Attendance.objects.filter(
                 event=event, generation_mapping=generation_mapping
-            ).order_by("-timestamp").first()
+            ).order_by("-created_at").first()
             if attendance is None or attendance.status is None:
                 return Attendance(status=AttendanceStatus.UNCHECKED)
             return attendance

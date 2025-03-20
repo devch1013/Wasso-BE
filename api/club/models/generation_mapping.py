@@ -7,7 +7,7 @@ from .role import Role
 
 class GenMember(models.Model):
     def __str__(self):
-        return f"{self.member.user.username} - {self.generation.club.name} - {self.generation.name} - {self.role}"
+        return f"{self.id} - {self.member.user.username}"
 
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     generation = models.ForeignKey(Generation, on_delete=models.CASCADE)

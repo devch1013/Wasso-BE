@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.event.models import Attendance
+from api.event.models import Attendance, AbsentApply
 
 
 class FloatDecimalField(serializers.DecimalField):
@@ -45,3 +45,14 @@ class ModifyAttendanceSerializer(serializers.Serializer):
 class AttendanceLogSerializer(serializers.Serializer):
     modified = AttendanceSerializer()
     unmodified = AttendanceSerializer()
+
+class AbsentApplySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbsentApply
+        fields = ['id', 'gen_member', 'event', 'reason', 'status', 'is_approved', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'gen_member', 'event', 'is_approved', 'created_at', 'updated_at']
+
+class AbsentApplyCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbsentApply
+        fields = ['status', 'reason']

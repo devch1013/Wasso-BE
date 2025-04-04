@@ -3,6 +3,8 @@ from .attend_serializer import (
     CheckQRCodeSerializer,
     ModifyAttendanceSerializer,
     AttendanceLogSerializer,
+    AbsentApplySerializer,
+    AbsentApplyCreateSerializer,
 )
 from .event_serializer import (
     EventAttendanceSerializer,
@@ -24,4 +26,6 @@ __all__ = [
     ModifyAttendanceSerializer,
     EventUpdateSerializer,
     AttendanceLogSerializer,
+    AbsentApplySerializer,
+    AbsentApplyCreateSerializer,
 ]

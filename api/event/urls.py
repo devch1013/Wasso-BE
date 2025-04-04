@@ -37,4 +37,9 @@ urlpatterns = [
         views.EventAttendanceView.as_view({"get": "get_member_log"}),
         name="event-attendance-log",
     ),
+    path(
+        "<int:event_id>/absent-apply/",
+        views.AbsentApplyView.as_view({"post": "create"}),
+        name="event-absent-apply",
+    ),
 ]

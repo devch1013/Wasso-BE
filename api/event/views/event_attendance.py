@@ -78,4 +78,5 @@ class EventAttendanceView(
         event = Event.objects.get(id=kwargs.get(self.lookup_field))
         gen_member_id = kwargs.get("gen_member_id")
         attendance = EventService.get_member_log(event, gen_member_id)
+        print(attendance)
         return Response(AttendanceLogSerializer(attendance).data)

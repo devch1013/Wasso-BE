@@ -4,6 +4,6 @@ from ..models import AbsentApply
 
 @admin.register(AbsentApply)
 class AbsentApplyAdmin(admin.ModelAdmin):
-    list_display = ('id', 'event', 'user', 'created_at', 'status')
-    list_filter = ('event', 'user')
-    search_fields = ('event__title', 'user__username')
+    list_display = ('id', 'event', 'gen_member', 'created_at', 'status')
+    list_filter = ('event', 'gen_member')
+    search_fields = ('event__title', 'gen_member__member__user__username')

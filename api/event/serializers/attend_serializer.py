@@ -49,8 +49,8 @@ class AttendanceLogSerializer(serializers.Serializer):
 class AbsentApplySerializer(serializers.ModelSerializer):
     class Meta:
         model = AbsentApply
-        fields = ['id', 'gen_member', 'event', 'reason', 'status', 'is_approved', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'gen_member', 'event', 'is_approved', 'created_at', 'updated_at']
+        fields = ['id', 'reason', 'status', 'is_approved', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'is_approved', 'created_at', 'updated_at']
 
 class AbsentApplyCreateSerializer(serializers.ModelSerializer):
     class Meta:

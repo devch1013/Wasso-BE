@@ -205,7 +205,7 @@ class EventAttendanceSerializer(serializers.ModelSerializer):
         def sort_key(member):
             has_non_approved_absent_apply = False
             if member.id in absent_apply_map:
-                has_non_approved_absent_apply = absent_apply_map[member.id].is_approved == False
+                has_non_approved_absent_apply = absent_apply_map[member.id].is_approved is False
                 
             return (
                 not has_non_approved_absent_apply,  # False comes first in sorting

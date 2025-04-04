@@ -39,7 +39,12 @@ urlpatterns = [
     ),
     path(
         "<int:event_id>/absent-apply/",
-        views.AbsentApplyView.as_view({"post": "create"}),
+        views.AbsentApplyView.as_view({"post": "create", "get": "list"}),
         name="event-absent-apply",
+    ),
+    path(
+        "absent-apply/<int:pk>/",
+        views.AbsentApplyView.as_view({"post": "approve"}),
+        name="absent-apply-approve",
     ),
 ]

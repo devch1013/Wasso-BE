@@ -13,6 +13,11 @@ urlpatterns = [
         name="push",
     ),
     path(
+        "push-test/",
+        views.UserView.as_view({"post": "push_test"}),
+        name="push-test",
+    ),
+    path(
         "send-notification/",
         views.SocialAuthView.as_view({"post": "send_notification"}),
         name="send_notification",

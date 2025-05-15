@@ -15,23 +15,23 @@ class GenerationService:
         stats = (
             GenMember.objects.filter(generation=generation)
             .select_related("member__user")
-            .prefetch_related("attendance_set")
+            .prefetch_related("attendances")
             .annotate(
                 present_count=Count(
                     Case(
-                        When(attendance__status=1, then=1),
+                        When(attendances__status=1, then=1),
                         output_field=IntegerField(),
                     )
                 ),
                 late_count=Count(
                     Case(
-                        When(attendance__status=2, then=1),
+                        When(attendances__status=2, then=1),
                         output_field=IntegerField(),
                     )
                 ),
                 absent_count=Count(
                     Case(
-                        When(attendance__status=3, then=1),
+                        When(attendances__status=3, then=1),
                         output_field=IntegerField(),
                     )
                 ),

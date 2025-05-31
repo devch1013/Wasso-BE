@@ -1,9 +1,10 @@
 from django.db.models import Count, Case, When, IntegerField
-from django.db.models import F
+from django.db.models import F, OuterRef, Subquery, Max
 
 from api.club.models import GenMember, Generation
 from common.utils.notion import NotionAttendanceManager
 from api.userapp.models import User
+from api.event.models import Attendance
 
 
 class GenerationService:
@@ -15,23 +16,49 @@ class GenerationService:
         stats = (
             GenMember.objects.filter(generation=generation)
             .select_related("member__user")
-            .prefetch_related("attendances")
             .annotate(
                 present_count=Count(
                     Case(
-                        When(attendances__status=1, then=1),
+                        When(
+                            attendances__created_at=Subquery(
+                                Attendance.objects.filter(
+                                    generation_mapping=OuterRef('id'),
+                                    event=OuterRef('attendances__event')
+                                ).order_by('-created_at').values('created_at')[:1]
+                            ),
+                            attendances__status=1, 
+                            then=1
+                        ),
                         output_field=IntegerField(),
                     )
                 ),
                 late_count=Count(
                     Case(
-                        When(attendances__status=2, then=1),
+                        When(
+                            attendances__created_at=Subquery(
+                                Attendance.objects.filter(
+                                    generation_mapping=OuterRef('id'),
+                                    event=OuterRef('attendances__event')
+                                ).order_by('-created_at').values('created_at')[:1]
+                            ),
+                            attendances__status=2, 
+                            then=1
+                        ),
                         output_field=IntegerField(),
                     )
                 ),
                 absent_count=Count(
                     Case(
-                        When(attendances__status=3, then=1),
+                        When(
+                            attendances__created_at=Subquery(
+                                Attendance.objects.filter(
+                                    generation_mapping=OuterRef('id'),
+                                    event=OuterRef('attendances__event')
+                                ).order_by('-created_at').values('created_at')[:1]
+                            ),
+                            attendances__status=3, 
+                            then=1
+                        ),
                         output_field=IntegerField(),
                     )
                 ),

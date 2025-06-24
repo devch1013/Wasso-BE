@@ -2,9 +2,9 @@ from django.test import TestCase
 
 from api.club.models import GenMember
 from api.club.services.club_service import ClubService
+from api.userapp.models import Provider, User
 from common.exceptions import CustomException, ErrorCode
 from common.test_utils.image_utils import ImageTestUtils
-from api.userapp.models import Provider, User
 
 
 class ClubServiceTest(TestCase):
@@ -57,9 +57,7 @@ class ClubServiceTest(TestCase):
         self.assertEqual(member.get_current_generation().generation, generation)
 
         # Check that there's a generation mapping (the creator was set as owner)
-        owner_mappings = GenMember.objects.filter(
-            member=member, generation=generation
-        )
+        owner_mappings = GenMember.objects.filter(member=member, generation=generation)
         self.assertEqual(owner_mappings.count(), 1)
         owner_mapping = owner_mappings.first()
         self.assertIsNotNone(owner_mapping.role)

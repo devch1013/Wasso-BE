@@ -55,7 +55,9 @@ class MemberView(ModelViewSet):
             member.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["put"], url_path="description", url_name="description")
+    @action(
+        detail=True, methods=["put"], url_path="description", url_name="description"
+    )
     def update_description(self, request, *args, **kwargs):
         serializer = DescriptionUpdateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

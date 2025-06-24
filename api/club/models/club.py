@@ -1,8 +1,9 @@
 import uuid
 
 from django.db import models
-from storages.backends.s3boto3 import S3Boto3Storage
 from django.utils import timezone
+from storages.backends.s3boto3 import S3Boto3Storage
+
 
 def club_image_path(instance, filename):
     # 파일 확장자 추출
@@ -42,10 +43,10 @@ class Club(models.Model):
         related_name="default_club",
     )
     notion_database_id = models.CharField(max_length=255, null=True, blank=True)
-    
+
     deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
-    
+
     def delete(self):
         self.deleted = True
         self.deleted_at = timezone.localtime(timezone.now())

@@ -1,14 +1,14 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.utils import timezone
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient, APITestCase
-from unittest.mock import patch
-from common.test_utils.image_utils import ImageTestUtils
 
 from api.club.services.club_service import ClubService, GenMember
 from api.event.models import Attendance, AttendanceStatus, Event
 from api.userapp.models import User
+from common.test_utils.image_utils import ImageTestUtils
 
 
 class EventAttendanceViewTests(APITestCase):

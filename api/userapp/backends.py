@@ -1,5 +1,7 @@
 from django.contrib.auth.backends import BaseBackend
-from .models import User
+
+from api.userapp.models import User
+
 
 class CustomAuthBackend(BaseBackend):
     def authenticate(self, request, user_id=None):
@@ -12,4 +14,4 @@ class CustomAuthBackend(BaseBackend):
         try:
             return User.objects.get(id=user_id)
         except User.DoesNotExist:
-            return None 
+            return None

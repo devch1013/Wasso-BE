@@ -1,8 +1,7 @@
 from django.db import models
 
+from api.club.models.generation import Generation
 from api.userapp.models import User
-
-from .generation import Generation
 
 
 class ClubApply(models.Model):

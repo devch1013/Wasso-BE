@@ -4,7 +4,9 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from .enums import Provider
+from api.userapp.enums import Provider
+
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, identifier, password=None, **extra_fields):
         if not identifier:
@@ -24,6 +26,7 @@ def user_profile_image_path(instance, filename):
     ext = filename.split(".")[-1]
     filename = f"{uuid.uuid4()}.{ext}"
     return f"user_profile_images/{filename}"
+
 
 class User(AbstractUser):
     identifier = models.CharField(max_length=255, unique=True, null=True)

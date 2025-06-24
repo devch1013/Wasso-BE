@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from django.test import TestCase
 
-from common.exceptions import CustomException
 from api.userapp.service.auth import GoogleAuthService, KakaoAuthService
+from common.exceptions import CustomException
 
 
 class TestKakaoAuthService(TestCase):

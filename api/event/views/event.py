@@ -1,17 +1,16 @@
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import mixins, GenericViewSet
+from rest_framework.viewsets import GenericViewSet, mixins
 
-from ..serializers import (
+from api.event.models import Event
+from api.event.serializers import (
     EventCreateSerializer,
     EventDetailSerializer,
     EventUpdateSerializer,
     UpcomingEventSerializer,
 )
-
-from ..models import Event
-from ..service.event_service import EventService
+from api.event.service.event_service import EventService
 from common.responses.simple_response import SimpleResponse
 
 
@@ -68,5 +67,3 @@ class EventViewSet(
         events = Event.objects.filter(generation__id=generation_id)
         serializer = UpcomingEventSerializer(events, context={"user": request.user})
         return Response(serializer.data)
-
-

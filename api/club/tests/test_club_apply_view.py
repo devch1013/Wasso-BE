@@ -1,11 +1,13 @@
-from api.userapp.models import Provider, User
-from rest_framework.test import APITestCase, APIClient
-from rest_framework import status
-from django.urls import reverse
-from api.club.services.club_service import ClubService
-from common.test_utils.image_utils import ImageTestUtils
 from unittest.mock import patch
+
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
+
 from api.club.models import ClubApply, GenMember
+from api.club.services.club_service import ClubService
+from api.userapp.models import Provider, User
+from common.test_utils.image_utils import ImageTestUtils
 
 
 class ClubApplyViewTest(APITestCase):
@@ -67,7 +69,7 @@ class ClubApplyViewTest(APITestCase):
             generationMapping.role,
             self.club.default_role,
         )
-        
+
     def test_reject_club_apply(self):
         club_apply = ClubApply.objects.create(
             user=self.user2,

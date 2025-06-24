@@ -7,8 +7,8 @@ from rest_framework.test import APIClient, APITestCase
 
 from api.club.services.club_service import ClubService
 from api.event.models import Event
-from common.test_utils.image_utils import ImageTestUtils
 from api.userapp.models import User
+from common.test_utils.image_utils import ImageTestUtils
 
 
 class EventViewSetTests(APITestCase):
@@ -35,7 +35,7 @@ class EventViewSetTests(APITestCase):
                 "end_date": timezone.now() + timedelta(days=1),
             },
         )
-        
+
     def test_get_event(self):
         """이벤트 조회"""
         now = timezone.now()
@@ -52,7 +52,7 @@ class EventViewSetTests(APITestCase):
             late_minutes=10,
             fail_minutes=30,
         )
-        
+
         response = self.client.get(reverse("event-detail", kwargs={"pk": event.id}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["title"], "Test Event")
@@ -60,7 +60,6 @@ class EventViewSetTests(APITestCase):
         self.assertEqual(response.data["location"], "Test Location")
         self.assertEqual(len(response.data["images"]), 0)
         self.assertEqual(response.data["attendance_status"], 0)
-        
 
     @patch("django.core.files.storage.default_storage.save")
     def test_create_event(self, mock_storage):
@@ -89,7 +88,7 @@ class EventViewSetTests(APITestCase):
         self.assertEqual(Event.objects.first().description, "Test Event Description")
         self.assertEqual(Event.objects.first().location, "Test Location")
         self.assertEqual(len(Event.objects.first().images), 1)
-        
+
     def upcoming_event(self):
         """다가오는 이벤트 조회"""
         Event.objects.create(
@@ -105,8 +104,10 @@ class EventViewSetTests(APITestCase):
             late_minutes=10,
             fail_minutes=30,
         )
-        
-        response = self.client.get(reverse("event-upcoming", kwargs={"gid": self.club.current_generation.id}))
+
+        response = self.client.get(
+            reverse("event-upcoming", kwargs={"gid": self.club.current_generation.id})
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["title"], "Test Event")
@@ -150,7 +151,7 @@ class EventViewSetTests(APITestCase):
         self.assertEqual(Event.objects.first().description, "Updated Event Description")
         self.assertEqual(Event.objects.first().location, "Updated Location")
         self.assertEqual(len(Event.objects.first().images), 2)
-        
+
     def test_delete_event(self):
         """이벤트 삭제"""
         event1 = Event.objects.create(
@@ -180,12 +181,7 @@ class EventViewSetTests(APITestCase):
             fail_minutes=30,
         )
         self.assertEqual(Event.objects.count(), 2)
-        response = self.client.delete(
-            reverse("event-detail", kwargs={"pk": event1.id})
-        )
+        response = self.client.delete(reverse("event-detail", kwargs={"pk": event1.id}))
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Event.objects.count(), 1)
         self.assertEqual(Event.objects.first().id, event2.id)
-        
-
-    

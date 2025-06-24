@@ -4,11 +4,10 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
+from api.club.models import Club, ClubApply, Generation, GenMember, Member, Role
 from api.club.services.club_service import ClubService
-from common.test_utils.image_utils import ImageTestUtils
 from api.userapp.models import Provider, User
-
-from ..models import Club, Generation, GenMember, Member, Role, ClubApply
+from common.test_utils.image_utils import ImageTestUtils
 
 
 class ClubTestCase(APITestCase):

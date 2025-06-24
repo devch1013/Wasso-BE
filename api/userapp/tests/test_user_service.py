@@ -1,7 +1,9 @@
+from unittest.mock import patch
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from unittest.mock import patch
+
 from api.userapp.models import User
 from common.test_utils.image_utils import ImageTestUtils
 

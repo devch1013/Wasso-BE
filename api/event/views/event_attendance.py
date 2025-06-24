@@ -3,16 +3,18 @@ import logging
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from ..models import Event, Attendance
-from ..serializers import (
+
+from api.event.models import Attendance, Event
+from api.event.serializers import (
+    AttendanceLogSerializer,
     AttendanceSerializer,
     CheckQRCodeSerializer,
-    ModifyAttendanceSerializer,
     EventAttendanceSerializer,
-    AttendanceLogSerializer,
+    ModifyAttendanceSerializer,
 )
-from ..service.event_service import EventService
+from api.event.service.event_service import EventService
 from common.responses.simple_response import SimpleResponse
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +23,7 @@ class EventAttendanceView(
 ):
     permission_classes = [IsAuthenticated]
     lookup_field = "event_id"
-    
+
     def get_queryset(self):
         return Attendance.objects.filter(event_id=self.kwargs.get(self.lookup_field))
 
@@ -46,7 +48,7 @@ class EventAttendanceView(
         )
         result = AttendanceSerializer(attendance)
         return Response(result.data)
-    
+
     def attendances(self, request, *args, **kwargs):
         """이벤트 출석 정보 조회"""
         event = Event.objects.get(id=kwargs.get(self.lookup_field))
@@ -61,7 +63,7 @@ class EventAttendanceView(
         event = Event.objects.get(id=kwargs.get("pk"))
         attendance = EventService.check_qr_code(serializer, event, request.user)
         return Response(AttendanceSerializer(attendance).data)
-    
+
     def attendance_all(self, request, *args, **kwargs):
         event = Event.objects.get(id=kwargs.get(self.lookup_field))
         EventService.attend_all(event, request.user)
@@ -71,10 +73,10 @@ class EventAttendanceView(
         event = Event.objects.get(id=kwargs.get(self.lookup_field))
         attendance = EventService.get_me(event, request.user)
         return Response(AttendanceSerializer(attendance).data)
-    
+
     def get_member_log(self, request, *args, **kwargs):
         """멤버 출석 로그 조회"""
-        
+
         event = Event.objects.get(id=kwargs.get(self.lookup_field))
         gen_member_id = kwargs.get("gen_member_id")
         attendance = EventService.get_member_log(event, gen_member_id)

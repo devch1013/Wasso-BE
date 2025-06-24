@@ -1,6 +1,7 @@
 from django.db import models
+
+from api.event.models.event import Event
 from api.userapp.models import User
-from .event import Event
 
 
 class Notice(models.Model):

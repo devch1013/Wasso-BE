@@ -4,8 +4,11 @@ from api.club.models import ClubApply
 from api.club.serializers.club_serializers import ClubGenerationSerializer
 from api.club.serializers.generation_serializers import GenerationInfoSerializer
 from api.userapp.models import User
+
+
 class UserApplySimpleSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ["username", "profile_image", "email"]
@@ -15,7 +18,7 @@ class UserApplySimpleSerializer(serializers.ModelSerializer):
             return obj.username
         else:
             return "익명"
-    
+
 
 class ClubApplySerializer(serializers.ModelSerializer):
     user = UserApplySimpleSerializer()

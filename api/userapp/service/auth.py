@@ -6,8 +6,8 @@ from django.conf import settings
 from jose import jwt
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from common.exceptions import CustomException, ErrorCode
 from api.userapp.models import User
+from common.exceptions import CustomException, ErrorCode
 
 
 class AuthService(ABC):

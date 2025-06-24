@@ -3,8 +3,8 @@ from unittest.mock import patch
 from rest_framework.test import APIClient, APITestCase
 
 from api.club.services.club_service import ClubService
-from common.test_utils.image_utils import ImageTestUtils
 from api.userapp.models import Provider, User
+from common.test_utils.image_utils import ImageTestUtils
 
 
 class ClubTestCase(APITestCase):

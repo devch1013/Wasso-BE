@@ -2,7 +2,10 @@ from loguru import logger
 from rest_framework import serializers
 
 from api.club.models import Club, Generation, GenMember, Member
-from api.club.serializers.generation_serializers import GenerationInfoSerializer, SimpleGenerationSerializer
+from api.club.serializers.generation_serializers import (
+    GenerationInfoSerializer,
+    SimpleGenerationSerializer,
+)
 from api.club.serializers.role_serializers import RoleSerializer
 
 
@@ -36,14 +39,13 @@ class ClubInfoSerializer(serializers.Serializer):
 
     def get_is_member_activated(self, obj: Member):
         return obj.get_current_generation().generation == obj.club.current_generation
-    
+
     def get_generations(self, obj: Member):
         generations = Generation.objects.filter(club=obj.club, deleted=False)
         return GenerationInfoSerializer(generations, many=True).data
 
 
 class ClubCreateSerializer(serializers.Serializer):
-
     name = serializers.CharField(max_length=255)
     image = serializers.ImageField(required=False, allow_null=True, default=None)
     description = serializers.CharField(max_length=255, required=False, allow_null=True)

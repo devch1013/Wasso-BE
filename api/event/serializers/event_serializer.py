@@ -6,8 +6,11 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from api.club.models import GenMember
 from api.club.serializers.member_serializers import MemberSerializer
-from api.event.models import Attendance, Event, AbsentApply
-from api.event.serializers.attend_serializer import AttendanceSerializer, AbsentApplySerializer
+from api.event.models import AbsentApply, Attendance, Event
+from api.event.serializers.attend_serializer import (
+    AbsentApplySerializer,
+    AttendanceSerializer,
+)
 
 
 class EventCreateSerializer(serializers.Serializer):
@@ -66,10 +69,14 @@ class EventSerializer(serializers.ModelSerializer):
     def get_attendance_status(self, obj):
         user = self.context.get("user")
         try:
-            attendance = Attendance.objects.filter(
-                event=obj, generation_mapping__member__user=user
-            ).order_by("-created_at").first()
-            
+            attendance = (
+                Attendance.objects.filter(
+                    event=obj, generation_mapping__member__user=user
+                )
+                .order_by("-created_at")
+                .first()
+            )
+
             if attendance is None or attendance.status is None:
                 return 0
             return attendance.status
@@ -130,9 +137,13 @@ class EventDetailSerializer(serializers.ModelSerializer):
     def get_attendance_status(self, obj):
         user = self.context.get("request").user
         try:
-            attendance = Attendance.objects.filter(
-                event=obj, generation_mapping__member__user=user
-            ).order_by("-created_at").first()
+            attendance = (
+                Attendance.objects.filter(
+                    event=obj, generation_mapping__member__user=user
+                )
+                .order_by("-created_at")
+                .first()
+            )
             if attendance is None or attendance.status is None:
                 return 0
             return attendance.status
@@ -155,7 +166,7 @@ class MemberAttendanceSerializer(serializers.ModelSerializer):
         if attendance:
             return AttendanceSerializer(attendance).data
         return AttendanceSerializer(Attendance(status=0)).data
-    
+
     def get_absent_apply(self, obj):
         absent_apply = self.context.get("absent_apply_map", {}).get(obj.id)
         if absent_apply:
@@ -172,54 +183,54 @@ class EventAttendanceSerializer(serializers.ModelSerializer):
 
     def get_members(self, obj):
         # Get all members for this generation
-        members = obj.generation.genmember_set.all().select_related(
-            'member__user'
-        )
-        
+        members = obj.generation.genmember_set.all().select_related("member__user")
+
         # Prefetch all attendance records for this event in a single query
         # Use a dictionary for O(1) lookups instead of filtering in the serializer
         attendances = Attendance.objects.filter(
-            event=obj, 
-            generation_mapping__in=members
-        ).order_by('-created_at')
-        
+            event=obj, generation_mapping__in=members
+        ).order_by("-created_at")
+
         # Create a map of gen_member_id -> attendance for efficient lookup
         attendance_map = {}
         for attendance in attendances:
             # Only keep the most recent attendance record for each member
             if attendance.generation_mapping_id not in attendance_map:
                 attendance_map[attendance.generation_mapping_id] = attendance
-        
+
         # Prefetch all absent_apply records for this event in a single query
         absent_applies = AbsentApply.objects.filter(
-            event=obj, 
-            gen_member__in=members
-        ).order_by('created_at')
-        
+            event=obj, gen_member__in=members
+        ).order_by("created_at")
+
         # Create a map of gen_member_id -> absent_apply for efficient lookup
-        absent_apply_map = {absent_apply.gen_member_id: absent_apply for absent_apply in absent_applies}
-        
+        absent_apply_map = {
+            absent_apply.gen_member_id: absent_apply for absent_apply in absent_applies
+        }
+
         # Sort members by:
         # 1. First, members with non-approved absent_apply (is_approved=False) come first
         # 2. Then sort by surname and name
         def sort_key(member):
             has_non_approved_absent_apply = False
             if member.id in absent_apply_map:
-                has_non_approved_absent_apply = absent_apply_map[member.id].is_approved is False
-                
+                has_non_approved_absent_apply = (
+                    absent_apply_map[member.id].is_approved is False
+                )
+
             return (
                 not has_non_approved_absent_apply,  # False comes first in sorting
-                member.member.user.username[0],     # Then sort by surname
-                member.member.user.username[1:]     # Then by name
+                member.member.user.username[0],  # Then sort by surname
+                member.member.user.username[1:],  # Then by name
             )
-            
+
         members = sorted(members, key=sort_key)
-        
+
         return MemberAttendanceSerializer(
             members,
             many=True,
             context={
                 "attendance_map": attendance_map,
-                "absent_apply_map": absent_apply_map
+                "absent_apply_map": absent_apply_map,
             },
         ).data

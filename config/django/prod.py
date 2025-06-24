@@ -1,5 +1,6 @@
 import os
-from .base import * # noqa
+
+from config.django.base import *  # noqa
 
 DATABASES = {
     "default": {

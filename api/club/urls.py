@@ -1,6 +1,7 @@
-from rest_framework.routers import DefaultRouter
 from django.urls import path
-from . import views
+from rest_framework.routers import DefaultRouter
+
+from api.club import views
 
 router = DefaultRouter()
 
@@ -10,7 +11,19 @@ router.register("gen-members", views.GenMemberView, basename="gen-members")
 router.register("", views.ClubViewSet, basename="clubs")
 
 urlpatterns = [
-    path("apply/<int:apply_id>/", views.ClubApplyViewSet.as_view({"post": "approve", "delete": "reject"}), name="apply-detail"),
-    path("apply/", views.ClubApplyViewSet.as_view({"post": "apply", "get": "list"}), name="apply-list"),
-    path("apply/notice-test/", views.ClubApplyViewSet.as_view({"get": "notice_test"}), name="apply-notice-test"),
+    path(
+        "apply/<int:apply_id>/",
+        views.ClubApplyViewSet.as_view({"post": "approve", "delete": "reject"}),
+        name="apply-detail",
+    ),
+    path(
+        "apply/",
+        views.ClubApplyViewSet.as_view({"post": "apply", "get": "list"}),
+        name="apply-list",
+    ),
+    path(
+        "apply/notice-test/",
+        views.ClubApplyViewSet.as_view({"get": "notice_test"}),
+        name="apply-notice-test",
+    ),
 ] + router.urls

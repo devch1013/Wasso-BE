@@ -4,17 +4,16 @@ from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
 from api.club.models import Generation, GenMember
-from common.exceptions import CustomException, ErrorCode
-from api.userapp.models import User
-from common.utils.qr_code import generate_uuid_qr_for_imagefield
-from common.component import NotificationTemplate, FCMComponent, UserSelector
-
-from ..models import Attendance, AttendanceStatus, Event
-from ..serializers import (
+from api.event.models import Attendance, AttendanceStatus, Event
+from api.event.serializers import (
     CheckQRCodeSerializer,
     EventCreateSerializer,
     EventUpdateSerializer,
 )
+from api.userapp.models import User
+from common.component import FCMComponent, NotificationTemplate, UserSelector
+from common.exceptions import CustomException, ErrorCode
+from common.utils.qr_code import generate_uuid_qr_for_imagefield
 
 fcm_component = FCMComponent()
 
@@ -205,22 +204,23 @@ class EventService:
     @staticmethod
     def get_member_log(event: Event, gen_member_id: int):
         generation_mapping = GenMember.objects.get(id=gen_member_id)
-        
+
         # is_modified가 True인 것 중 가장 최근 생성된 것
-        latest_modified = Attendance.objects.filter(
-            event=event, 
-            generation_mapping=generation_mapping,
-            is_modified=True
-        ).order_by('-created_at').first()
-        
+        latest_modified = (
+            Attendance.objects.filter(
+                event=event, generation_mapping=generation_mapping, is_modified=True
+            )
+            .order_by("-created_at")
+            .first()
+        )
+
         # is_modified가 False인 것 중 가장 최근 생성된 것
-        latest_unmodified = Attendance.objects.filter(
-            event=event, 
-            generation_mapping=generation_mapping,
-            is_modified=False
-        ).order_by('-created_at').first()
-        
-        return {
-            'modified': latest_modified,
-            'unmodified': latest_unmodified
-        }
+        latest_unmodified = (
+            Attendance.objects.filter(
+                event=event, generation_mapping=generation_mapping, is_modified=False
+            )
+            .order_by("-created_at")
+            .first()
+        )
+
+        return {"modified": latest_modified, "unmodified": latest_unmodified}

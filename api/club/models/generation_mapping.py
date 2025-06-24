@@ -1,8 +1,8 @@
 from django.db import models
 
-from .generation import Generation
-from .member import Member
-from .role import Role
+from api.club.models.generation import Generation
+from api.club.models.member import Member
+from api.club.models.role import Role
 
 
 class GenMember(models.Model):
@@ -25,7 +25,7 @@ class GenMember(models.Model):
     def save(self, *args, **kwargs):
         if self.is_current:
             # 같은 멤버의 다른 GenerationMapping의 is_current를 False로 설정
-            GenMember.objects.filter(
-                member=self.member, is_current=True
-            ).exclude(pk=self.pk).update(is_current=False)
+            GenMember.objects.filter(member=self.member, is_current=True).exclude(
+                pk=self.pk
+            ).update(is_current=False)
         super().save(*args, **kwargs)

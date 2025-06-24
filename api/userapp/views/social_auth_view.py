@@ -4,12 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from common.component.fcm_component import FCMComponent
-
-from ..service.auth import (
+from api.userapp.service.auth import (
     AppleAuthService,
     GoogleAuthService,
 )
+from common.component.fcm_component import FCMComponent
 
 
 class SocialAuthView(

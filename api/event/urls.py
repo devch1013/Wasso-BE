@@ -1,5 +1,6 @@
 from django.urls import path
-from . import views
+
+from api.event import views
 
 urlpatterns = [
     path(
@@ -14,12 +15,16 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/",
-        views.EventViewSet.as_view({"get": "retrieve", "put": "update", "delete": "destroy"}),
+        views.EventViewSet.as_view(
+            {"get": "retrieve", "put": "update", "delete": "destroy"}
+        ),
         name="event-detail",
     ),
     path(
         "<int:event_id>/attendance/",
-        views.EventAttendanceView.as_view({"post": "create", "get": "attendances", "put": "modify"}),
+        views.EventAttendanceView.as_view(
+            {"post": "create", "get": "attendances", "put": "modify"}
+        ),
         name="event-attendance",
     ),
     path(

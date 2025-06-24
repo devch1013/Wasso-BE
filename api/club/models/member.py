@@ -1,9 +1,8 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+from api.club.models.club import Club
 from api.userapp.models import User
-
-from .club import Club
 
 
 class Member(models.Model):

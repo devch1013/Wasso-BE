@@ -1,7 +1,8 @@
 from django.db import models
+
 from api.club.models import GenMember
-from .event import Event
-from .enums import AttendanceStatus
+from api.event.models.enums import AttendanceStatus
+from api.event.models.event import Event
 
 
 class AbsentApply(models.Model):
@@ -13,12 +14,18 @@ class AbsentApply(models.Model):
         default=AttendanceStatus.PRESENT,
     )
     is_approved = models.BooleanField(default=False)
-    approved_by = models.ForeignKey(GenMember, on_delete=models.CASCADE, null=True, blank=True, related_name="approved_absent_applies")
+    approved_by = models.ForeignKey(
+        GenMember,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="approved_absent_applies",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "absent_applies"
-        
+
     def get_status_display(self):
         return AttendanceStatus(self.status).label

@@ -1,6 +1,5 @@
-from datetime import timedelta
-
 import os
+from datetime import timedelta
 
 # JWT 설정
 SIMPLE_JWT = {

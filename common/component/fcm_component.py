@@ -1,8 +1,11 @@
 from typing import Dict, List
 
 from firebase_admin import messaging
-from api.userapp.models import User
 from loguru import logger
+
+from api.userapp.models import User
+
+
 class FCMComponent:
     def __init__(self):
         pass
@@ -121,10 +124,14 @@ class FCMComponent:
             print(f"FCM 멀티캐스트 알림 전송 실패: {str(e)}")
             return {"success_count": 0, "failure_count": len(tokens)}
 
-    def send_to_users(self, users: List[User], title: str, body: str, data: Dict = None):
-        tokens = [user.fcm_token for user in users if user.fcm_token and user.push_allow]
+    def send_to_users(
+        self, users: List[User], title: str, body: str, data: Dict = None
+    ):
+        tokens = [
+            user.fcm_token for user in users if user.fcm_token and user.push_allow
+        ]
         return self.send_multicast_notification(tokens, title, body, data)
-    
+
     def send_to_user(self, user: User, title: str, body: str, data: Dict = None):
         if not user.push_allow:
             return

@@ -18,11 +18,6 @@ urlpatterns = [
         name="push-test",
     ),
     path(
-        "send-notification/",
-        views.SocialAuthView.as_view({"post": "send_notification"}),
-        name="send_notification",
-    ),
-    path(
         "<str:provider>/login/",
         views.SocialAuthView.as_view({"post": "create"}),
         name="social-login",

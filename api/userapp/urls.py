@@ -28,4 +28,5 @@ urlpatterns = [
         name="withdraw",
     ),
     path("refresh", TokenRefreshView.as_view(), name="token_refresh"),
+    path("session", views.PcSessionView.as_view(), name="pc-session"),
 ]

@@ -32,6 +32,7 @@ gunicorn = "^23.0.0"
 openpyxl = "^3.1.5"
 aiohttp = "^3.11.13"
 drf-yasg = "^1.21.7"
+django-cors-headers = "^4.7.0"
 
 
 [build-system]

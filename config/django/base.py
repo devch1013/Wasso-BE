@@ -36,6 +36,8 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 AUTH_USER_MODEL = "userapp.User"
 # Application definition
 
@@ -51,6 +53,7 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
     "django_extensions",
     "drf_yasg",
+    "corsheaders",
 ]
 
 INSTALLED_APPS = [
@@ -65,6 +68,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

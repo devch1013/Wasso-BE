@@ -174,3 +174,20 @@ class AppleAuthService(AuthService):
         )
 
         return client_secret
+
+
+class NativeAuthService(AuthService):
+    def get_or_create_user(self, identifier: str, password: str):
+        if not identifier or not password:
+            raise CustomException(ErrorCode.INVALID_TOKEN)
+
+        user, is_created = User.objects.get_or_create(
+            identifier=identifier,
+            defaults={
+                "password": password,
+                "username": identifier,
+                "provider": "native",
+            },
+        )
+
+        return user

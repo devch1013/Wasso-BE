@@ -28,5 +28,10 @@ urlpatterns = [
         name="withdraw",
     ),
     path("refresh", TokenRefreshView.as_view(), name="token_refresh"),
-    path("session", views.PcSessionView.as_view(), name="pc-session"),
+    path("session", views.PcSessionView.as_view({"post": "create"}), name="pc-session"),
+    path(
+        "session/<str:session_id>",
+        views.PcSessionView.as_view({"get": "authenticate_check"}),
+        name="pc-session-authenticate-check",
+    ),
 ]

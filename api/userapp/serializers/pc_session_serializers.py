@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from api.userapp.enums import SessionState
+from api.userapp.models.session import PcSession
 
 
 class PcSessionRequestSerializer(serializers.Serializer):
@@ -22,3 +23,19 @@ class PcSessionStateResponseSerializer(serializers.Serializer):
     token = serializers.CharField(required=False, help_text="토큰")
     userId = serializers.IntegerField(required=False, help_text="사용자 ID")
     eventId = serializers.IntegerField(required=False, help_text="이벤트 ID")
+
+
+class PcSessionAuthenticationSerializer(serializers.Serializer):
+    sessionCode = serializers.CharField(required=True, help_text="세션 코드")
+    eventId = serializers.IntegerField(required=True, help_text="이벤트 ID")
+
+
+class PcSessionAuthenticationResponseSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(required=True, help_text="세션 코드")
+    state = serializers.ChoiceField(
+        required=True, choices=SessionState.choices, help_text="세션 상태"
+    )
+
+    class Meta:
+        model = PcSession
+        fields = ["code", "state"]

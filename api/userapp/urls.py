@@ -1,5 +1,4 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenRefreshView
 
 from api.userapp import views
 
@@ -27,8 +26,15 @@ urlpatterns = [
         views.SocialAuthView.as_view({"delete": "withdraw"}),
         name="withdraw",
     ),
-    path("refresh", TokenRefreshView.as_view(), name="token_refresh"),
+    path(
+        "refresh/", views.RefreshView.as_view({"post": "refresh"}), name="token_refresh"
+    ),
     path("session", views.PcSessionView.as_view({"post": "create"}), name="pc-session"),
+    path(
+        "session/authenticate",
+        views.PcSessionView.as_view({"post": "authenticate"}),
+        name="pc-session-authenticate",
+    ),
     path(
         "session/<str:session_id>",
         views.PcSessionView.as_view({"get": "authenticate_check"}),

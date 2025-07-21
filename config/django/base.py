@@ -148,7 +148,7 @@ KAKAO_REDIRECT_URI = os.getenv("KAKAO_REDIRECT_URI")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "config.custom_jwt_authentication.CustomJWTAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": ("config.json_renderer.CustomJSONRenderer",),
     "EXCEPTION_HANDLER": "config.exception_handler.custom_exception_handler",

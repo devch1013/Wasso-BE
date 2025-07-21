@@ -30,6 +30,10 @@ class TokenSerializer(serializers.Serializer):
     token_type = serializers.CharField(required=True)
 
 
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField(required=True)
+
+
 # 소셜 로그인용 Serializer들
 class SocialLoginRequestSerializer(serializers.Serializer):
     """소셜 로그인 요청 데이터"""

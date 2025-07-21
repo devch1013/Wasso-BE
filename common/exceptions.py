@@ -4,6 +4,58 @@ from rest_framework import status
 
 
 class ErrorCode(Enum):
+    ## JWT 인증 관련 에러
+    JWT_TOKEN_MISSING = (
+        "JWT 토큰이 제공되지 않았습니다",
+        "JWT001",
+        status.HTTP_401_UNAUTHORIZED,
+    )
+    JWT_TOKEN_INVALID = (
+        "유효하지 않은 JWT 토큰입니다",
+        "JWT002",
+        status.HTTP_401_UNAUTHORIZED,
+    )
+    JWT_TOKEN_EXPIRED = (
+        "JWT 토큰이 만료되었습니다",
+        "JWT003",
+        status.HTTP_401_UNAUTHORIZED,
+    )
+    JWT_TOKEN_MALFORMED = (
+        "잘못된 형식의 JWT 토큰입니다",
+        "JWT004",
+        status.HTTP_401_UNAUTHORIZED,
+    )
+    JWT_USER_NOT_FOUND = (
+        "토큰의 사용자를 찾을 수 없습니다",
+        "JWT005",
+        status.HTTP_401_UNAUTHORIZED,
+    )
+    JWT_USER_INACTIVE = (
+        "비활성화된 사용자입니다",
+        "JWT006",
+        status.HTTP_401_UNAUTHORIZED,
+    )
+    ## Refresh 토큰 관련 에러
+    REFRESH_TOKEN_MISSING = (
+        "Refresh 토큰이 제공되지 않았습니다",
+        "RT001",
+        status.HTTP_401_UNAUTHORIZED,
+    )
+    REFRESH_TOKEN_INVALID = (
+        "유효하지 않은 Refresh 토큰입니다",
+        "RT002",
+        status.HTTP_401_UNAUTHORIZED,
+    )
+    REFRESH_TOKEN_EXPIRED = (
+        "Refresh 토큰이 만료되었습니다",
+        "RT003",
+        status.HTTP_401_UNAUTHORIZED,
+    )
+    REFRESH_TOKEN_BLACKLISTED = (
+        "이미 사용된 Refresh 토큰입니다",
+        "RT004",
+        status.HTTP_401_UNAUTHORIZED,
+    )
     ## 소셜로그인 관련 에러
     INVALID_TOKEN = ("유효하지 않은 토큰입니다", "SE001", status.HTTP_401_UNAUTHORIZED)
     ## 공통 에러
@@ -63,6 +115,22 @@ class ErrorCode(Enum):
     OWNER_CANNOT_BE_DELETED = (
         "모든 권한을 가진 역할은 삭제할 수 없습니다",
         "CE011",
+        status.HTTP_400_BAD_REQUEST,
+    )
+    ## PC 세션 관련 에러
+    PC_SESSION_EXPIRED = (
+        "PC 세션이 만료되었습니다",
+        "PC001",
+        status.HTTP_400_BAD_REQUEST,
+    )
+    PC_SESSION_ALREADY_USED = (
+        "PC 세션이 이미 사용되었습니다",
+        "PC002",
+        status.HTTP_400_BAD_REQUEST,
+    )
+    PC_SESSION_NOT_FOUND = (
+        "PC 세션을 찾을 수 없습니다",
+        "PC003",
         status.HTTP_400_BAD_REQUEST,
     )
 

@@ -1,13 +1,17 @@
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from loguru import logger
 from rest_framework import mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.userapp.serializers.user_serializers import (
     MessageResponseSerializer,
+    RefreshTokenSerializer,
     SocialLoginQuerySerializer,
     SocialLoginRequestSerializer,
     TokenSerializer,
@@ -16,6 +20,7 @@ from api.userapp.service.auth import (
     AppleAuthService,
     GoogleAuthService,
 )
+from common.exceptions import CustomException, ErrorCode
 
 
 class SocialAuthView(
@@ -145,3 +150,83 @@ class SocialAuthView(
             {"message": "User deleted successfully"},
             status=status.HTTP_200_OK,
         )
+
+
+class RefreshView(GenericViewSet):
+    """
+    Refresh 토큰을 사용하여 새로운 Access 토큰을 발급받는 API
+    """
+
+    @swagger_auto_schema(
+        operation_summary="토큰 갱신",
+        operation_description="""
+        유효한 Refresh 토큰을 사용하여 새로운 Access 토큰을 발급받습니다.
+        
+        Refresh 토큰이 만료되지 않은 경우 새로운 Access 토큰과 Refresh 토큰을 반환합니다.
+        """,
+        request_body=RefreshTokenSerializer,
+        responses={
+            200: TokenSerializer,
+            401: "유효하지 않은 Refresh 토큰",
+            400: "잘못된 요청 데이터",
+        },
+        tags=["인증"],
+    )
+    def refresh(self, request, *args, **kwargs):
+        # 요청 데이터 검증
+        serializer = RefreshTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        refresh_token_str = serializer.validated_data.get("refresh_token")
+
+        if not refresh_token_str:
+            raise CustomException(ErrorCode.REFRESH_TOKEN_MISSING)
+
+        try:
+            # Refresh 토큰 검증 및 새로운 토큰 생성
+            refresh_token = RefreshToken(refresh_token_str)
+
+            # 새로운 Access 토큰 생성
+            new_access_token = refresh_token.access_token
+
+            # 사용자 정보 가져오기
+            user_id = refresh_token.payload.get("user_id")
+
+            return Response(
+                TokenSerializer(
+                    {
+                        "user_id": user_id,
+                        "access_token": str(new_access_token),
+                        "refresh_token": str(refresh_token),
+                        "token_type": "bearer",
+                    }
+                ).data,
+                status=status.HTTP_200_OK,
+            )
+
+        except TokenError as e:
+            error_detail = str(e)
+            logger.error(f"Refresh token error: {error_detail}")
+
+            if "expired" in error_detail.lower():
+                raise CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED)
+            elif (
+                "blacklisted" in error_detail.lower()
+                or "not valid" in error_detail.lower()
+            ):
+                raise CustomException(ErrorCode.REFRESH_TOKEN_BLACKLISTED)
+            else:
+                raise CustomException(ErrorCode.REFRESH_TOKEN_INVALID)
+
+        except InvalidToken as e:
+            error_detail = str(e)
+            logger.error(f"Invalid refresh token: {error_detail}")
+
+            if "expired" in error_detail.lower():
+                raise CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED)
+            else:
+                raise CustomException(ErrorCode.REFRESH_TOKEN_INVALID)
+
+        except Exception as e:
+            logger.error(f"Unexpected refresh token error: {e}")
+            raise CustomException(ErrorCode.REFRESH_TOKEN_INVALID)

@@ -51,9 +51,11 @@ def create_attendance_sheet(generation: Generation) -> str:
         present_count = late_count = absent_count = 0
 
         for event in events:
-            attendance = attendances.filter(
-                event=event, generation_mapping=mapping
-            ).first()
+            attendance = (
+                attendances.filter(event=event, generation_mapping=mapping)
+                .order_by("modified_at")
+                .first()
+            )
             status = (
                 "출석"
                 if attendance and attendance.status == AttendanceStatus.PRESENT

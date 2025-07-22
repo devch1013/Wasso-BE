@@ -71,9 +71,11 @@ def create_attendance_excel(generation: Generation) -> str:
         ws.cell(row=row, column=1, value=mapping.member.user.username)
 
         for col, event in enumerate(events, 2):
-            attendance = attendances.filter(
-                event=event, generation_mapping=mapping
-            ).first()
+            attendance = (
+                attendances.filter(event=event, generation_mapping=mapping)
+                .order_by("modified_at")
+                .first()
+            )
 
             status = (
                 "출석"

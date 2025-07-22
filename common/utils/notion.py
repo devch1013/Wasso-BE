@@ -194,9 +194,13 @@ class NotionAttendanceManager:
 
             for event in events:
                 column_name = f"{event.date.strftime('%m/%d')} {event.title}"
-                attendance = Attendance.objects.filter(
-                    generation_mapping=gen_member, event=event
-                ).first()
+                attendance = (
+                    Attendance.objects.filter(
+                        generation_mapping=gen_member, event=event
+                    )
+                    .order_by("modified_at")
+                    .first()
+                )
 
                 status = "미정"
                 if attendance:

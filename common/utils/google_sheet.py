@@ -53,7 +53,7 @@ def create_attendance_sheet(generation: Generation) -> str:
         for event in events:
             attendance = (
                 attendances.filter(event=event, generation_mapping=mapping)
-                .order_by("modified_at")
+                .order_by("-modified_at")
                 .first()
             )
             status = (

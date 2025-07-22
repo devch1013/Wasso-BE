@@ -73,7 +73,7 @@ def create_attendance_excel(generation: Generation) -> str:
         for col, event in enumerate(events, 2):
             attendance = (
                 attendances.filter(event=event, generation_mapping=mapping)
-                .order_by("modified_at")
+                .order_by("-modified_at")
                 .first()
             )
 

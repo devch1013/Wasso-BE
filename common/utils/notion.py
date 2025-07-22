@@ -198,7 +198,7 @@ class NotionAttendanceManager:
                     Attendance.objects.filter(
                         generation_mapping=gen_member, event=event
                     )
-                    .order_by("modified_at")
+                    .order_by("-modified_at")
                     .first()
                 )
 

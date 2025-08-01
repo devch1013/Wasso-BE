@@ -76,6 +76,13 @@ class GenerationView(
         GenerationService.activate_generation(generation)
         return Response(status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=["post"])
+    def auto_approve(self, request, *args, **kwargs):
+        """자동 승인 토글"""
+        generation = self.get_object()
+        GenerationService.toggle_auto_approve(generation)
+        return Response(status=status.HTTP_200_OK)
+
     @action(detail=True, methods=["get"], url_path="stats/google-sheet")
     def google_sheet(self, request, *args, **kwargs):
         """구글 시트 연동"""

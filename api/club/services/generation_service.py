@@ -111,3 +111,9 @@ class GenerationService:
         club.current_generation = generation
         club.save()
         return generation
+
+    @classmethod
+    def toggle_auto_approve(cls, generation: Generation):
+        generation.auto_approve = not generation.auto_approve
+        generation.save()
+        return generation

@@ -139,6 +139,12 @@ class ErrorCode(Enum):
         "PC003",
         status.HTTP_400_BAD_REQUEST,
     )
+    ## 권한 에러
+    NOT_AUTHORIZED = (
+        "권한이 없습니다",
+        "AU001",
+        status.HTTP_400_BAD_REQUEST,
+    )
 
     def __init__(self, message, code, status):
         self.message = message

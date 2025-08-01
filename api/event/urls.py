@@ -57,4 +57,14 @@ urlpatterns = [
         views.AbsentApplyView.as_view({"post": "approve"}),
         name="absent-apply-approve",
     ),
+    path(
+        "<int:event_id>/edit-request/",
+        views.EditRequestView.as_view({"post": "create"}),
+        name="event-edit-request",
+    ),
+    path(
+        "<int:event_id>/edit-request/<int:pk>/",
+        views.EditRequestView.as_view({"post": "approve"}),
+        name="event-edit-request-approve",
+    ),
 ]

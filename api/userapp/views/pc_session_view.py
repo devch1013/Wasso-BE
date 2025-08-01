@@ -1,3 +1,4 @@
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -9,9 +10,13 @@ from api.userapp.serializers.pc_session_serializers import (
     PcSessionStateResponseSerializer,
 )
 from api.userapp.service.pc_session_service import PcSessionService
+from config.custom_jwt_authentication import CustomJWTAuthentication
 
 
 class PcSessionView(GenericViewSet):
+    permission_classes = [AllowAny]
+    authentication_classes = []  # JWT 인증 비활성화
+
     def create(self, request):
         serializer = PcSessionRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -32,22 +37,22 @@ class PcSessionView(GenericViewSet):
         return Response(response_data.data)
 
     def authenticate_check(self, request, session_id):
-        state = PcSessionService.get_session_state(session_id)
-        response_data = PcSessionStateResponseSerializer(
-            data={
-                "sessionCode": session_id,
-                "state": state,
-                "token": None,
-                "userId": None,
-                "eventId": None,
-            }
-        )
-        response_data.is_valid()
+        session = PcSessionService.get_session_state(session_id)
+        response_data = PcSessionStateResponseSerializer(session)
+        # response_data.is_valid()
         return Response(response_data.data)
 
     def authenticate(self, request):
-        # 인증이 필요한 엔드포인트이므로 인증 확인
-        if not request.user.is_authenticated:
+        # 수동으로 JWT 인증 처리
+        jwt_auth = CustomJWTAuthentication()
+        try:
+            user_auth_tuple = jwt_auth.authenticate(request)
+            if user_auth_tuple is None:
+                return Response({"error": "Authentication required"}, status=401)
+
+            user, token = user_auth_tuple
+            request.user = user
+        except Exception:
             return Response({"error": "Authentication required"}, status=401)
 
         # 요청 데이터 검증
@@ -59,7 +64,7 @@ class PcSessionView(GenericViewSet):
         session = PcSessionService.authenticate_session(
             session_code=data["sessionCode"],
             user=request.user,
-            event_id=data["eventId"],
+            event_id=1,
         )
 
         if session is None:

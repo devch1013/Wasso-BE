@@ -22,6 +22,11 @@ urlpatterns = [
         name="apply-list",
     ),
     path(
+        "apply/info/",
+        views.ClubApplyViewSet.as_view({"get": "get_info"}),
+        name="apply-info",
+    ),
+    path(
         "apply/notice-test/",
         views.ClubApplyViewSet.as_view({"get": "notice_test"}),
         name="apply-notice-test",

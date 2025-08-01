@@ -49,6 +49,20 @@ class EventUpdateSerializer(serializers.Serializer):
     fail_minutes = serializers.IntegerField(required=False, allow_null=True)
 
 
+class SimpleEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = [
+            "id",
+            "title",
+            "description",
+            "date",
+            "start_time",
+            "end_time",
+            "location",
+        ]
+
+
 class EventSerializer(serializers.ModelSerializer):
     attendance_status = serializers.SerializerMethodField()
 

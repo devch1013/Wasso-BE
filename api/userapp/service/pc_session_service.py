@@ -21,9 +21,9 @@ class PcSessionService:
         return pc_session
 
     @classmethod
-    def get_session_state(cls, session_id: str) -> SessionState:
+    def get_session_state(cls, session_id: str) -> PcSession:
         session = PcSession.objects.get(code=session_id)
-        return session.state
+        return session
 
     @classmethod
     def authenticate_session(cls, session_code: str, user, event_id: int):

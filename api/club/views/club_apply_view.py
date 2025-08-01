@@ -1,8 +1,12 @@
 from rest_framework import mixins, status
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from api.club.models import ClubApply, Generation
-from api.club.serializers.club_apply_serializers import MyClubApplySerializer
+from api.club.serializers.club_apply_serializers import (
+    GenerationSimpleInfoSerializer,
+    MyClubApplySerializer,
+)
 from api.club.services.apply_service import ApplyService
 from api.userapp.permissions import IsAuthenticatedCustom
 from common.component.fcm_component import FCMComponent
@@ -17,6 +21,15 @@ class ClubApplyViewSet(mixins.ListModelMixin, GenericViewSet):
 
     def get_queryset(self):
         return ClubApply.objects.filter(user=self.request.user, accepted=False)
+
+    def get_info(self, request):
+        club_code = request.query_params.get("code")
+        if not club_code:
+            raise CustomException(ErrorCode.PARAMS_MISSING)
+        generation = ApplyService.get_generation_from_code(club_code)
+        return Response(
+            GenerationSimpleInfoSerializer(generation).data, status=status.HTTP_200_OK
+        )
 
     def apply(self, request, *args, **kwargs):
         club_code = request.query_params.get("club-code")

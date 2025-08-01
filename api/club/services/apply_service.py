@@ -13,6 +13,13 @@ fcm_component = FCMComponent()
 
 
 class ApplyService:
+    @classmethod
+    def get_generation_from_code(cls, code: str):
+        generation = Generation.objects.filter(invite_code=code).first()
+        if not generation:
+            raise CustomException(ErrorCode.GENERATION_NOT_FOUND)
+        return generation
+
     @staticmethod
     def apply(user: User, club_code: str):
         if not club_code:

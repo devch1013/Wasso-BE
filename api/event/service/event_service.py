@@ -13,6 +13,7 @@ from api.event.serializers import (
 from api.userapp.models import User
 from common.component import FCMComponent, NotificationTemplate, UserSelector
 from common.exceptions import CustomException, ErrorCode
+from common.utils.code_generator import HashTimeGenerator
 from common.utils.qr_code import generate_uuid_qr_for_imagefield
 
 fcm_component = FCMComponent()
@@ -94,7 +95,9 @@ class EventService:
 
     @staticmethod
     def check_qr_code(serializer: CheckQRCodeSerializer, event: Event, user: User):
-        if serializer.validated_data.get("qr_code") != event.qr_code:
+        # TODO: 캐싱하기
+        valid_code = HashTimeGenerator.auto_generate_code_list(event.qr_code)
+        if serializer.validated_data.get("qr_code") not in valid_code:
             raise CustomException(ErrorCode.INVALID_QR_CODE)
 
         generation_mapping = GenMember.objects.get(

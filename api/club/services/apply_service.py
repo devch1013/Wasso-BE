@@ -20,8 +20,8 @@ class ApplyService:
             raise CustomException(ErrorCode.GENERATION_NOT_FOUND)
         return generation
 
-    @staticmethod
-    def apply(user: User, club_code: str):
+    @classmethod
+    def apply(cls, user: User, club_code: str):
         if not club_code:
             raise CustomException(ErrorCode.PARAMS_MISSING)
         generation = Generation.objects.filter(invite_code=club_code).first()
@@ -31,6 +31,11 @@ class ApplyService:
             raise CustomException(ErrorCode.ALREADY_APPLIED)
         if ClubApply.objects.filter(user=user, generation=generation).exists():
             raise CustomException(ErrorCode.ALREADY_APPLIED)
+
+        if generation.auto_approve:
+            cls.join_generation(user, generation)
+            return
+
         ClubApply.objects.create(user=user, generation=generation)
 
         notice_users = UserSelector.get_users_by_role(
@@ -44,14 +49,14 @@ class ApplyService:
         )
         logger.info(result)
 
-    @staticmethod
+    @classmethod
     @transaction.atomic
-    def approve_apply(apply_id: int):
+    def approve_apply(cls, apply_id: int):
         club_apply = ClubApply.objects.filter(id=apply_id, accepted=False).first()
         if not club_apply:
             raise CustomException(ErrorCode.APPLY_NOT_FOUND)
 
-        member, generation_mapping = ApplyService.join_generation(
+        member, generation_mapping = cls.join_generation(
             club_apply.user, club_apply.generation
         )
 
@@ -71,8 +76,8 @@ class ApplyService:
 
         return member, generation_mapping
 
-    @staticmethod
-    def reject_apply(apply_id: int):
+    @classmethod
+    def reject_apply(cls, apply_id: int):
         club_apply = ClubApply.objects.filter(id=apply_id, accepted=False).first()
         if not club_apply:
             raise CustomException(ErrorCode.APPLY_NOT_FOUND)
@@ -87,8 +92,8 @@ class ApplyService:
             ),
         )
 
-    @staticmethod
-    def join_generation(user: User, generation: Generation):
+    @classmethod
+    def join_generation(cls, user: User, generation: Generation):
         if Member.objects.filter(user=user, club=generation.club).exists():
             raise CustomException(ErrorCode.ALREADY_APPLIED)
 

@@ -18,6 +18,7 @@ class Generation(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     invite_code = models.CharField(max_length=6, null=True, blank=True)
+    auto_approve = models.BooleanField(default=False)
 
     deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)

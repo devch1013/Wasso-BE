@@ -28,7 +28,8 @@ class ClubApplyViewSet(mixins.ListModelMixin, GenericViewSet):
             raise CustomException(ErrorCode.PARAMS_MISSING)
         generation = ApplyService.get_generation_from_code(club_code)
         return Response(
-            GenerationSimpleInfoSerializer(generation).data, status=status.HTTP_200_OK
+            GenerationSimpleInfoSerializer(generation).data,
+            status=status.HTTP_200_OK,
         )
 
     def apply(self, request, *args, **kwargs):

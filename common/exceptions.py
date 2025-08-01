@@ -117,6 +117,12 @@ class ErrorCode(Enum):
         "CE011",
         status.HTTP_400_BAD_REQUEST,
     )
+    NOT_REGISTERED_CLUB = (
+        "클럽에 가입되지 않은 사용자입니다",
+        "CE012",
+        status.HTTP_400_BAD_REQUEST,
+    )
+
     ## PC 세션 관련 에러
     PC_SESSION_EXPIRED = (
         "PC 세션이 만료되었습니다",

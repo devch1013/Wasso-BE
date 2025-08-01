@@ -12,7 +12,8 @@ class GenerationSimpleInfoSerializer(serializers.ModelSerializer):
     generation_name = serializers.CharField(source="name")
     club_description = serializers.CharField(source="club.description")
     club_image = serializers.ImageField(source="club.image")
-    auto_approve = serializers.BooleanField(source="auto_approve")
+    auto_approve = serializers.BooleanField()
+    invite_code = serializers.CharField()
 
     class Meta:
         model = Generation
@@ -22,6 +23,7 @@ class GenerationSimpleInfoSerializer(serializers.ModelSerializer):
             "club_description",
             "club_image",
             "auto_approve",
+            "invite_code",
         ]
 
 

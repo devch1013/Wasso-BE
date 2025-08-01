@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, mixins
 
+from api.club.serializers.club_apply_serializers import GenerationSimpleInfoSerializer
 from api.event.models import Event
 from api.event.serializers import (
     EventCreateSerializer,
@@ -56,6 +57,14 @@ class EventViewSet(
         serializer.is_valid(raise_exception=True)
         EventService.update_event(serializer, request.user, kwargs.get("pk"))
         return SimpleResponse("이벤트 수정 완료")
+
+    def generation_info(self, request, *args, **kwargs):
+        """
+        기수 정보
+        /events/{event_id}/generation-info
+        """
+        generation = EventService.get_generation_info(kwargs.get("event_id"))
+        return Response(GenerationSimpleInfoSerializer(generation).data)
 
     @action(detail=False, methods=["get"])
     def upcoming(self, request, *args, **kwargs):

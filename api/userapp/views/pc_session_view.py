@@ -29,7 +29,7 @@ class PcSessionView(GenericViewSet):
         response_data = PcSessionResponseSerializer(
             data={
                 "sessionId": pc_session.code,
-                "qrCode": f"wasso://session/{pc_session.code}",
+                "qrCode": f"wasso://deeplink/redirect/session/{pc_session.code}",
                 "expiresAt": pc_session.expires_at,
             }
         )

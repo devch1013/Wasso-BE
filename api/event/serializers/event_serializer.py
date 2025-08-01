@@ -59,6 +59,7 @@ class SimpleEventSerializer(serializers.ModelSerializer):
             "date",
             "start_time",
             "end_time",
+            "qr_code",
             "location",
         ]
 

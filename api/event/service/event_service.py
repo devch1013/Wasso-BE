@@ -100,9 +100,12 @@ class EventService:
         if serializer.validated_data.get("qr_code") not in valid_code:
             raise CustomException(ErrorCode.INVALID_QR_CODE)
 
-        generation_mapping = GenMember.objects.get(
-            member__user=user, generation=event.generation
-        )
+        try:
+            generation_mapping = GenMember.objects.get(
+                member__user=user, generation=event.generation
+            )
+        except GenMember.DoesNotExist:
+            raise CustomException(ErrorCode.NOT_REGISTERED_CLUB)
 
         # 계속 생성되게 변경
         attendance = Attendance.objects.create(
@@ -227,3 +230,8 @@ class EventService:
         )
 
         return {"modified": latest_modified, "unmodified": latest_unmodified}
+
+    @staticmethod
+    def get_generation_info(event_id: int):
+        event = Event.objects.get(id=event_id)
+        return event.generation

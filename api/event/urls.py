@@ -21,6 +21,11 @@ urlpatterns = [
         name="event-detail",
     ),
     path(
+        "<int:event_id>/generation-info/",
+        views.EventViewSet.as_view({"get": "generation_info"}),
+        name="event-generation-info",
+    ),
+    path(
         "<int:event_id>/attendance/",
         views.EventAttendanceView.as_view(
             {"post": "create", "get": "attendances", "put": "modify"}

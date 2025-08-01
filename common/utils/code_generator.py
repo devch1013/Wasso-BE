@@ -15,11 +15,14 @@ class HashTimeGenerator:
     def custom_hash(cls, data: bytes, seed: int = 0x9E3779B185EBCA87) -> int:
         v = seed
         prime1 = 11400714785074694791
+        # print(f"data: {data}")
         for b in data:
             v ^= b
             v = (v * prime1) & 0xFFFFFFFFFFFFFFFF
             v = cls.rotate_left(v, 31)
             v ^= v >> 33
+            # print(f"{b}", end="-")
+        # print()
         return v
 
     @classmethod
@@ -42,20 +45,30 @@ class HashTimeGenerator:
         charset = charset or cls.DEFAULT_CHARSET
         base = len(charset)
         combined = f"{value}:{time_in_seconds}"
+        # print(f"combined: {combined}")
         hash_value = cls.custom_hash(combined.encode("utf-8"))
+        # print(f"hash_value: {hash_value}")
         return cls.to_base(hash_value % (base**code_length), charset, code_length)
 
     @classmethod
-    def auto_generate_code(cls, value: str, offset: int = 0):
-        current_time = cls.get_current_time_in_seconds()
+    def auto_generate_code(
+        cls,
+        value: str,
+        current_time: int | None = None,
+        offset: int = 0,
+    ):
+        if current_time is None:
+            current_time = cls.get_current_time_in_seconds()
         code = cls.generate_code(value, current_time + offset)
+        print(f"code: {code}, current_time: {current_time + offset}")
         return code
 
     @classmethod
-    def auto_generate_code_list(cls, value: str, range: int = 10):
+    def auto_generate_code_list(cls, value: str, time_range: int = 10, offset: int = 0):
         code_list = []
-        for i in range(range):
-            code_list.append(cls.auto_generate_code(value, -i))
+        current_time = cls.get_current_time_in_seconds()
+        for i in range(time_range):
+            code_list.append(cls.auto_generate_code(value, current_time, -i))
         return code_list
 
     @staticmethod
@@ -73,7 +86,7 @@ def main():
     """테스트 및 사용 예시"""
     print("=== Python 버전 테스트 ===")
 
-    test_code = "74c1dc40-a51c-4c32-88a7-bd75093f17ef"
+    test_code = "e582a7a3-a936-4730-ba9f-c3988b2f73ec"
     while True:
         current_time = HashTimeGenerator.get_current_time_in_seconds()
         code = HashTimeGenerator.generate_code(test_code, current_time)

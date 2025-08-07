@@ -8,6 +8,7 @@ from api.club.serializers.member_serializers import (
     DescriptionUpdateRequestSerializer,
     GenerationMappingSerializer,
     MemberDetailSerializer,
+    MemberProfileUpdateRequestSerializer,
     MemberRoleChangeRequestSerializer,
     TagUpdateRequestSerializer,
 )
@@ -52,6 +53,21 @@ class MemberView(ModelViewSet):
             serializer.is_valid(raise_exception=True)
             member = Member.objects.get(id=kwargs["pk"])
             member.tags.remove(serializer.validated_data["tag"])
+            member.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["put"], url_path="profile", url_name="profile")
+    def update_member_profile(self, request, *args, **kwargs):
+        serializer = MemberProfileUpdateRequestSerializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        for member_data in serializer.validated_data:
+            member = Member.objects.get(id=member_data["member_id"])
+            if member_data["description"]:
+                member.description = member_data["description"]
+            if member_data["short_description"]:
+                member.short_description = member_data["short_description"]
+            if member_data["profile_image"]:
+                member.profile_image = member_data["profile_image"]
             member.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -38,6 +38,13 @@ class DescriptionUpdateRequestSerializer(serializers.Serializer):
     short_description = serializers.CharField(required=False, allow_blank=True)
 
 
+class MemberProfileUpdateRequestSerializer(serializers.Serializer):
+    member_id = serializers.IntegerField()
+    description = serializers.CharField(required=False, allow_blank=True)
+    short_description = serializers.CharField(required=False, allow_blank=True)
+    profile_image = serializers.ImageField(required=False)
+
+
 class MemberDetailSerializer(serializers.ModelSerializer):
     generation = GenerationInfoSerializer()
     role = RoleSerializer()

@@ -11,6 +11,7 @@ class Member(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="members")
+    short_description = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     tags = ArrayField(
         models.CharField(max_length=100), blank=True, null=True, default=list

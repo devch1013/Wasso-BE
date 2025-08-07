@@ -2,7 +2,7 @@ import uuid
 from urllib.parse import urlparse
 
 from django.contrib.postgres.fields import ArrayField
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.uploadedfile import UploadedFile
 from django.db import models
 from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
@@ -59,13 +59,14 @@ class Event(models.Model):
         db_table = "events"
 
     def save(self, *args, **kwargs):
-        if self.images and isinstance(self.images[0], InMemoryUploadedFile):
+        if self.images and isinstance(self.images[0], UploadedFile):
+            storage = S3Boto3Storage()
             # Convert uploaded files to S3 URLs
             s3_urls = []
             for image in self.images:
                 # Save image to S3 and get the URL
                 image_name = event_image_path(self, image.name)
-                storage = S3Boto3Storage()
+                print(image_name)
                 storage.save(image_name, image)
                 s3_urls.append(image_name)
 
@@ -97,7 +98,7 @@ class Event(models.Model):
         s3_urls = []
         storage = S3Boto3Storage()
         for image in new_images:
-            if isinstance(image, InMemoryUploadedFile):
+            if isinstance(image, UploadedFile):
                 image_name = event_image_path(self, image.name)
                 storage.save(image_name, image)
                 s3_urls.append(image_name)

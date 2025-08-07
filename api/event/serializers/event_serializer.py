@@ -191,10 +191,12 @@ class MemberAttendanceSerializer(serializers.ModelSerializer):
 
 class EventAttendanceSerializer(serializers.ModelSerializer):
     members = serializers.SerializerMethodField()
+    title = serializers.CharField()
+    date = serializers.DateField()
 
     class Meta:
         model = Event
-        fields = ["id", "members"]
+        fields = ["id", "title", "date", "members"]
 
     def get_members(self, obj):
         # Get all members for this generation

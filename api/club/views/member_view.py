@@ -62,7 +62,10 @@ class MemberView(ModelViewSet):
         serializer = DescriptionUpdateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         member = Member.objects.get(id=kwargs["pk"])
-        member.description = serializer.validated_data["description"]
+        if serializer.validated_data["description"]:
+            member.description = serializer.validated_data["description"]
+        if serializer.validated_data["short_description"]:
+            member.short_description = serializer.validated_data["short_description"]
         member.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -11,7 +11,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        fields = ["id", "user", "tags", "description"]
+        fields = ["id", "user", "tags", "short_description", "description"]
 
 
 class GenerationMappingSerializer(serializers.ModelSerializer):
@@ -34,7 +34,8 @@ class TagUpdateRequestSerializer(serializers.Serializer):
 
 
 class DescriptionUpdateRequestSerializer(serializers.Serializer):
-    description = serializers.CharField()
+    description = serializers.CharField(required=False, allow_blank=True)
+    short_description = serializers.CharField(required=False, allow_blank=True)
 
 
 class MemberDetailSerializer(serializers.ModelSerializer):

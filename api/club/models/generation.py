@@ -27,3 +27,7 @@ class Generation(models.Model):
         self.deleted = True
         self.deleted_at = timezone.localtime(timezone.now())
         self.save()
+
+    @property
+    def member_count(self):
+        return self.gen_members.count()

@@ -14,6 +14,7 @@ class GenerationSimpleInfoSerializer(serializers.ModelSerializer):
     club_image = serializers.ImageField(source="club.image")
     auto_approve = serializers.BooleanField()
     invite_code = serializers.CharField()
+    member_count = serializers.IntegerField()
 
     class Meta:
         model = Generation
@@ -24,6 +25,7 @@ class GenerationSimpleInfoSerializer(serializers.ModelSerializer):
             "club_image",
             "auto_approve",
             "invite_code",
+            "member_count",
         ]
 
 

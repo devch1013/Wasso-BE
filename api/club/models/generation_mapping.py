@@ -10,7 +10,9 @@ class GenMember(models.Model):
         return f"{self.id} - {self.member.user.username}"
 
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    generation = models.ForeignKey(Generation, on_delete=models.CASCADE)
+    generation = models.ForeignKey(
+        Generation, on_delete=models.CASCADE, related_name="gen_members"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)

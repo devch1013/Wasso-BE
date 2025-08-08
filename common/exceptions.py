@@ -122,6 +122,12 @@ class ErrorCode(Enum):
         "CE012",
         status.HTTP_400_BAD_REQUEST,
     )
+    ## 출석 관련 오류
+    ALREADY_CHECKED_IN = (
+        "이미 출석 체크를 완료하였습니다",
+        "CI001",
+        status.HTTP_400_BAD_REQUEST,
+    )
 
     ## PC 세션 관련 에러
     PC_SESSION_EXPIRED = (

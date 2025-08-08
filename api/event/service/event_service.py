@@ -107,6 +107,11 @@ class EventService:
         except GenMember.DoesNotExist:
             raise CustomException(ErrorCode.NOT_REGISTERED_CLUB)
 
+        if Attendance.objects.filter(
+            event=event, generation_mapping=generation_mapping
+        ).exists():
+            raise CustomException(ErrorCode.ALREADY_CHECKED_IN)
+
         # 계속 생성되게 변경
         attendance = Attendance.objects.create(
             event=event,

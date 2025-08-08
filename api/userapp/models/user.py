@@ -48,6 +48,9 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    ## 초기 정보 입력
+    initialized = models.BooleanField(default=False)
+
     USERNAME_FIELD = "identifier"
     REQUIRED_FIELDS = []
 

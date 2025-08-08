@@ -8,10 +8,18 @@ from api.userapp.serializers.user_serializers import UserSerializer
 
 class MemberSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    profile_image = serializers.ImageField(required=False)
 
     class Meta:
         model = Member
-        fields = ["id", "user", "tags", "short_description", "description"]
+        fields = [
+            "id",
+            "user",
+            "tags",
+            "short_description",
+            "description",
+            "profile_image",
+        ]
 
 
 class GenerationMappingSerializer(serializers.ModelSerializer):
@@ -33,16 +41,12 @@ class TagUpdateRequestSerializer(serializers.Serializer):
     tag = serializers.CharField()
 
 
-class DescriptionUpdateRequestSerializer(serializers.Serializer):
-    description = serializers.CharField(required=False, allow_blank=True)
-    short_description = serializers.CharField(required=False, allow_blank=True)
-
-
-class MemberProfileUpdateRequestSerializer(serializers.Serializer):
-    member_id = serializers.IntegerField()
-    description = serializers.CharField(required=False, allow_blank=True)
-    short_description = serializers.CharField(required=False, allow_blank=True)
+class DescriptionUpdateRequestSerializer(serializers.ModelSerializer):
     profile_image = serializers.ImageField(required=False)
+
+    class Meta:
+        model = Member
+        fields = ["description", "short_description", "profile_image"]
 
 
 class MemberDetailSerializer(serializers.ModelSerializer):

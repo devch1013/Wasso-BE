@@ -1,8 +1,19 @@
+import uuid
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from storages.backends.s3boto3 import S3Boto3Storage
 
 from api.club.models.club import Club
 from api.userapp.models import User
+
+
+def member_profile_image_path(instance, filename):
+    # 파일 확장자 추출
+    ext = filename.split(".")[-1]
+    # UUID + 확장자로 새 파일명 생성
+    filename = f"{uuid.uuid4()}.{ext}"
+    return f"member_profile/{filename}"
 
 
 class Member(models.Model):
@@ -15,6 +26,12 @@ class Member(models.Model):
     description = models.TextField(null=True, blank=True)
     tags = ArrayField(
         models.CharField(max_length=100), blank=True, null=True, default=list
+    )
+    profile_image = models.ImageField(
+        upload_to=member_profile_image_path,
+        storage=S3Boto3Storage(),
+        null=True,
+        blank=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

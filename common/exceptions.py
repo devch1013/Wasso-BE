@@ -122,6 +122,11 @@ class ErrorCode(Enum):
         "CE012",
         status.HTTP_400_BAD_REQUEST,
     )
+    WAITING_FOR_APPROVAL = (
+        "클럽 가입 신청이 아직 승인되지 않았습니다",
+        "CE013",
+        status.HTTP_400_BAD_REQUEST,
+    )
     ## 출석 관련 오류
     ALREADY_CHECKED_IN = (
         "이미 출석 체크를 완료하였습니다",

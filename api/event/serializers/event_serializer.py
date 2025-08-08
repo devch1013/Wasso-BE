@@ -200,7 +200,7 @@ class EventAttendanceSerializer(serializers.ModelSerializer):
 
     def get_members(self, obj):
         # Get all members for this generation
-        members = obj.generation.genmember_set.all().select_related("member__user")
+        members = obj.generation.gen_members.all().select_related("member__user")
 
         # Prefetch all attendance records for this event in a single query
         # Use a dictionary for O(1) lookups instead of filtering in the serializer

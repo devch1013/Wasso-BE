@@ -38,7 +38,7 @@ class Member(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_current_generation(self):
-        return self.genmember_set.filter(is_current=True).first()
+        return self.gen_members.filter(is_current=True).first()
 
     class Meta:
         db_table = "member"

@@ -4,6 +4,7 @@ from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
 from api.club.models import Generation, GenMember
+from api.club.models.club_apply import ClubApply
 from api.event.models import Attendance, AttendanceStatus, Event
 from api.event.serializers import (
     CheckQRCodeSerializer,
@@ -105,7 +106,12 @@ class EventService:
                 member__user=user, generation=event.generation
             )
         except GenMember.DoesNotExist:
-            raise CustomException(ErrorCode.NOT_REGISTERED_CLUB)
+            if ClubApply.objects.filter(
+                user=user, generation=event.generation, accepted=False
+            ).exists():
+                raise CustomException(ErrorCode.WAITING_FOR_APPROVAL)
+            else:
+                raise CustomException(ErrorCode.NOT_REGISTERED_CLUB)
 
         if Attendance.objects.filter(
             event=event, generation_mapping=generation_mapping

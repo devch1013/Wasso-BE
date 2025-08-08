@@ -24,7 +24,8 @@ class Club(models.Model):
         upload_to=club_image_path,
         storage=S3Boto3Storage(),
     )
-    description = models.CharField(max_length=255, null=True, blank=True)
+    short_description = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     current_generation = models.ForeignKey(

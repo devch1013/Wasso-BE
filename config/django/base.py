@@ -45,6 +45,7 @@ LOCAL_APPS = [
     "api.userapp",
     "api.club",
     "api.event",
+    "scheduler",
 ]
 
 THIRD_PARTY_APPS = [
@@ -54,6 +55,7 @@ THIRD_PARTY_APPS = [
     "django_extensions",
     "drf_yasg",
     "corsheaders",
+    "django_celery_beat",
 ]
 
 INSTALLED_APPS = [
@@ -210,3 +212,15 @@ from config.settings.apple_settings import *  # noqa
 from config.settings.fcm_settings import *  # noqa
 from config.settings.jwt_settings import *  # noqa
 from config.settings.aws_settings import *  # noqa
+
+# Celery 설정
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "Asia/Seoul"
+CELERY_ENABLE_UTC = True
+
+# Celery Beat 설정 (Django DB에 스케줄 저장)
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

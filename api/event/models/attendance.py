@@ -7,7 +7,7 @@ from api.event.models.event import Event
 
 class Attendance(models.Model):
     def __str__(self):
-        return f"{self.generation_mapping.member.user.username} - {self.event.title} - {AttendanceStatus(self.status).label}"
+        return f"{self.id} - {self.generation_mapping.member.user.username} - {self.event.title} - {AttendanceStatus(self.status).label}"
 
     generation_mapping = models.ForeignKey(
         GenMember, on_delete=models.CASCADE, related_name="attendances"

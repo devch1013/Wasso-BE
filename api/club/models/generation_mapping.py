@@ -9,7 +9,9 @@ class GenMember(models.Model):
     def __str__(self):
         return f"{self.id} - {self.member.user.username}"
 
-    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    member = models.ForeignKey(
+        Member, on_delete=models.CASCADE, related_name="gen_members"
+    )
     generation = models.ForeignKey(
         Generation, on_delete=models.CASCADE, related_name="gen_members"
     )

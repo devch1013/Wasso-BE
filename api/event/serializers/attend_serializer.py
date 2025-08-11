@@ -43,6 +43,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "is_modified",
             "modifier_name",
             "created_at",
+            "latitude",
+            "longitude",
         ]
 
 

@@ -3,7 +3,7 @@ import os
 from celery import Celery
 
 # Django 설정 모듈 설정
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.django.base")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.django.dev")
 
 app = Celery("wasso")
 
@@ -19,6 +19,10 @@ app.conf.beat_schedule = {
         "task": "scheduler.tasks.mark_absent_for_past_events",
         "schedule": 300.0,  # 5분마다 실행
     },
+    # "scheduler-test": {
+    #     "task": "scheduler.tasks.scheduler_test",
+    #     "schedule": 2.0,  # 10초마다 실행
+    # },
 }
 
 app.conf.timezone = "Asia/Seoul"

@@ -12,6 +12,13 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task
+def scheduler_test():
+    logger.info("Starting scheduler_test job")
+
+    return {"message": "scheduler_test job completed"}
+
+
+@shared_task
 def mark_absent_for_past_events():
     """
     이벤트 시작 시간에 fail_minutes를 더한 시간이 지난 이벤트에 대해

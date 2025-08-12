@@ -156,6 +156,20 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "config.exception_handler.custom_exception_handler",
 }
 
+# Swagger 설정
+SWAGGER_SETTINGS = {
+    "USE_SESSION_AUTH": False,
+    "SECURITY_DEFINITIONS": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "JWT Token",
+        }
+    },
+    "SECURITY_REQUIREMENTS": [{"BearerAuth": []}],
+}
+
 
 DJANGO_BIND_ADDRESS = "0.0.0.0"
 DJANGO_BIND_PORT = "8000"

@@ -68,6 +68,10 @@ class Event(models.Model):
     def end_time(self):
         return timezone.localtime(self.end_datetime).time()
 
+    @property
+    def club_name(self):
+        return self.generation.club.name
+
     def save(self, *args, **kwargs):
         if self.images and isinstance(self.images[0], UploadedFile):
             storage = S3Boto3Storage()

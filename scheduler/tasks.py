@@ -9,6 +9,7 @@ from api.event.models import Attendance, Event
 from api.event.models.enums import AttendanceStatus
 from api.userapp.models.user import User
 from common.component.fcm_component import FCMComponent
+from common.component.notification_template import NotificationTemplate
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +23,14 @@ def scheduler_test():
 
 @shared_task
 def event_start_push_test():
+    """
+    출석 가능한 시간이 되면 알림 발송
+    """
     logger.info("Starting event_start_push_test job")
     fcm_component = FCMComponent()
 
     now = timezone.now().replace(second=0, microsecond=0)
+    future_time = now + timedelta(hours=1)
 
     events = Event.objects.filter(date=now.date())
     logger.info(f"events: {events}")
@@ -36,16 +41,26 @@ def event_start_push_test():
         logger.info(f"event.end_datetime: {event.end_datetime}")
         logger.info(f"event.date: {event.date}")
     events = events.filter(
-        start_datetime=now,
+        start_datetime__gte=now,
+        start_datetime__lte=future_time,
     )
 
     for event in events:
+        if event.start_datetime + timedelta(minutes=event.start_minutes) != now:
+            continue
         logger.info(f"Processing event: {event.title} (ID: {event.id})")
         user_ids = GenMember.objects.filter(
             generation=event.generation, is_current=True
         ).values_list("member__user__id", flat=True)
         users = User.objects.filter(id__in=user_ids)
-        fcm_component.send_to_users(users, "Test", "This is a test push notification")
+        fcm_component.send_to_users(
+            users,
+            NotificationTemplate.EVENT_ATTENDANCE_START.get_title(),
+            NotificationTemplate.EVENT_ATTENDANCE_START.get_body(
+                club_name=event.club_name,
+                event_name=event.title,
+            ),
+        )
     return {"message": "send_push_test job completed"}
 
 

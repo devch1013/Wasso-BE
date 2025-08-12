@@ -39,6 +39,11 @@ class NotificationTemplate(Enum):
         "[{club_name}] {event_name} 활동의 출석이 지금부터 가능합니다.",
         DeepLink.EVENT,
     )
+    EVENT_ATTENDANCE_END = (
+        "결석 처리 완료",
+        "[{club_name}] {event_name} 활동의 출석 시간이 종료되어 결석처리되었습니다.",
+        DeepLink.EVENT,
+    )
 
     def __init__(self, title: str, body: str, deeplink: DeepLink | None = None) -> None:
         self._title = title

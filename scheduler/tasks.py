@@ -184,13 +184,13 @@ def mark_absent_for_past_events():
 
         fcm_component = FCMComponent()
         fcm_component.send_to_users(
-            users_for_notification,
-            NotificationTemplate.EVENT_ATTENDANCE_START.get_title(),
-            NotificationTemplate.EVENT_ATTENDANCE_START.get_body(
+            User.objects.filter(id__in=users_for_notification),
+            NotificationTemplate.EVENT_ATTENDANCE_END.get_title(),
+            NotificationTemplate.EVENT_ATTENDANCE_END.get_body(
                 club_name=event.club_name,
                 event_name=event.title,
             ),
-            data=NotificationTemplate.EVENT_ATTENDANCE_START.get_deeplink_data(
+            data=NotificationTemplate.EVENT_ATTENDANCE_END.get_deeplink_data(
                 event_id=event.id,
             ),
         )

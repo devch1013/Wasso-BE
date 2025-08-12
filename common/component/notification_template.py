@@ -1,5 +1,7 @@
 from enum import Enum
 
+from common.component.deeplinks import DeepLink
+
 
 class NotificationTemplate(Enum):
     CLUB_APPLY = ("동아리 가입 신청", "{username}님이 동아리 가입을 요청했습니다.")
@@ -30,18 +32,26 @@ class NotificationTemplate(Enum):
     ABSENT_APPLY_APPROVE = (
         "{status} 신청이 승인되었습니다.",
         "[{event_name}] 활동의 {status} 신청이 승인되었습니다.",
+        DeepLink.MAIN,
     )
     EVENT_ATTENDANCE_START = (
         "활동 출석 시작",
         "[{club_name}] {event_name} 활동의 출석이 지금부터 가능합니다.",
+        DeepLink.EVENT,
     )
 
-    def __init__(self, title: str, body: str) -> None:
+    def __init__(self, title: str, body: str, deeplink: DeepLink | None = None) -> None:
         self._title = title
         self._body = body
+        self._deeplink = deeplink
 
     def get_title(self, **kwargs) -> str:
         return self._title.format(**kwargs)
 
     def get_body(self, **kwargs) -> str:
         return self._body.format(**kwargs)
+
+    def get_deeplink(self, **kwargs) -> str:
+        if self._deeplink is None:
+            return None
+        return self._deeplink.get_url(**kwargs)

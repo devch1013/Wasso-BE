@@ -133,7 +133,7 @@ class UserView(
 
         # 테스트용 데이터
         test_data = {
-            "deeplink": "wasso://event/checkin?id=16",
+            "deeplink": "wasso://deeplink/event/1",
             "type": "test",
             "message": "This is a test push notification",
             "timestamp": "2024-03-21T12:00:00Z",

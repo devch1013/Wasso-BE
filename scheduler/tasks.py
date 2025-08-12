@@ -22,11 +22,11 @@ def scheduler_test():
 
 
 @shared_task
-def event_start_push_test():
+def event_start_push():
     """
     출석 가능한 시간이 되면 알림 발송
     """
-    logger.info("Starting event_start_push_test job")
+    logger.info("Starting event_start_push job")
     fcm_component = FCMComponent()
 
     now = timezone.now().replace(second=0, microsecond=0)
@@ -49,9 +49,24 @@ def event_start_push_test():
         if event.start_datetime + timedelta(minutes=event.start_minutes) != now:
             continue
         logger.info(f"Processing event: {event.title} (ID: {event.id})")
-        user_ids = GenMember.objects.filter(
+
+        # 해당 generation의 모든 GenMember 가져오기
+        gen_members = GenMember.objects.filter(
             generation=event.generation, is_current=True
-        ).values_list("member__user__id", flat=True)
+        )
+
+        # 이미 출석 상태가 있는 GenMember 중 UNCHECKED가 아닌 상태의 ID들
+        checked_gen_member_ids = (
+            Attendance.objects.filter(event=event)
+            .exclude(status=AttendanceStatus.UNCHECKED)
+            .values_list("generation_mapping_id", flat=True)
+        )
+
+        # Attendance가 없거나 상태가 UNCHECKED인 GenMember들 필터링
+        target_gen_members = gen_members.exclude(id__in=checked_gen_member_ids)
+
+        # 해당 GenMember들의 User ID 가져오기
+        user_ids = target_gen_members.values_list("member__user__id", flat=True)
         users = User.objects.filter(id__in=user_ids)
         fcm_component.send_to_users(
             users,
@@ -60,8 +75,11 @@ def event_start_push_test():
                 club_name=event.club_name,
                 event_name=event.title,
             ),
+            deeplink=NotificationTemplate.EVENT_ATTENDANCE_START.get_deeplink(
+                event_id=event.id,
+            ),
         )
-    return {"message": "send_push_test job completed"}
+    return {"message": "event_start_push job completed"}
 
 
 @shared_task

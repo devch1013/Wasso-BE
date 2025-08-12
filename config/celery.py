@@ -20,8 +20,8 @@ app.conf.beat_schedule = {
         "task": "scheduler.tasks.mark_absent_for_past_events",
         "schedule": 300.0,  # 5분마다 실행
     },
-    "event-start-push-test": {
-        "task": "scheduler.tasks.event_start_push_test",
+    "event-start-push": {
+        "task": "scheduler.tasks.event_start_push",
         "schedule": crontab(
             minute="*/5"
         ),  # 매 시간의 0,5,10,15,20,25,30,35,40,45,50,55분에 실행

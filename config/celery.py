@@ -1,6 +1,7 @@
 import os
 
 from celery import Celery
+from celery.schedules import crontab
 
 # Django 설정 모듈 설정
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.django.dev")
@@ -19,10 +20,12 @@ app.conf.beat_schedule = {
         "task": "scheduler.tasks.mark_absent_for_past_events",
         "schedule": 300.0,  # 5분마다 실행
     },
-    # "scheduler-test": {
-    #     "task": "scheduler.tasks.scheduler_test",
-    #     "schedule": 2.0,  # 10초마다 실행
-    # },
+    "event-start-push-test": {
+        "task": "scheduler.tasks.event_start_push_test",
+        "schedule": crontab(
+            minute="*/5"
+        ),  # 매 시간의 0,5,10,15,20,25,30,35,40,45,50,55분에 실행
+    },
 }
 
 app.conf.timezone = "Asia/Seoul"

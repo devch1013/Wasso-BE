@@ -7,6 +7,8 @@ from django.utils import timezone
 from api.club.models.generation_mapping import GenMember
 from api.event.models import Attendance, Event
 from api.event.models.enums import AttendanceStatus
+from api.userapp.models.user import User
+from common.component.fcm_component import FCMComponent
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +21,35 @@ def scheduler_test():
 
 
 @shared_task
+def event_start_push_test():
+    logger.info("Starting event_start_push_test job")
+    fcm_component = FCMComponent()
+
+    now = timezone.now().replace(second=0, microsecond=0)
+
+    events = Event.objects.filter(date=now.date())
+    logger.info(f"events: {events}")
+    logger.info(f"now: {now}")
+    for event in events:
+        logger.info(f"event: {event.title} (ID: {event.id})")
+        logger.info(f"event.start_datetime: {event.start_datetime}")
+        logger.info(f"event.end_datetime: {event.end_datetime}")
+        logger.info(f"event.date: {event.date}")
+    events = events.filter(
+        start_datetime=now,
+    )
+
+    for event in events:
+        logger.info(f"Processing event: {event.title} (ID: {event.id})")
+        user_ids = GenMember.objects.filter(
+            generation=event.generation, is_current=True
+        ).values_list("member__user__id", flat=True)
+        users = User.objects.filter(id__in=user_ids)
+        fcm_component.send_to_users(users, "Test", "This is a test push notification")
+    return {"message": "send_push_test job completed"}
+
+
+@shared_task
 def mark_absent_for_past_events():
     """
     이벤트 시작 시간에 fail_minutes를 더한 시간이 지난 이벤트에 대해
@@ -26,7 +57,7 @@ def mark_absent_for_past_events():
     """
     logger.info("Starting mark_absent_for_past_events job")
 
-    now = timezone.localtime(timezone.now())
+    now = timezone.now()
     today = now.date()
 
     # 오늘 날짜의 이벤트 중 fail_minutes가 지난 이벤트 찾기

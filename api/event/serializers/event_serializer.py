@@ -22,8 +22,8 @@ class EventCreateSerializer(serializers.Serializer):
     location_link = serializers.CharField(required=False, allow_null=True)
 
     images = serializers.ListField(child=serializers.ImageField(), required=False)
-    start_time = serializers.TimeField()
-    end_time = serializers.TimeField()
+    start_time = serializers.DateTimeField()
+    end_time = serializers.DateTimeField()
     date = serializers.DateField()
     start_minutes = serializers.IntegerField()
     late_minutes = serializers.IntegerField()
@@ -41,8 +41,8 @@ class EventUpdateSerializer(serializers.Serializer):
     deleted_images = serializers.ListField(
         child=serializers.CharField(), required=False, allow_null=True
     )
-    start_time = serializers.TimeField(required=False, allow_null=True)
-    end_time = serializers.TimeField(required=False, allow_null=True)
+    start_time = serializers.DateTimeField(required=False, allow_null=True)
+    end_time = serializers.DateTimeField(required=False, allow_null=True)
     date = serializers.DateField(required=False, allow_null=True)
     start_minutes = serializers.IntegerField(required=False, allow_null=True)
     late_minutes = serializers.IntegerField(required=False, allow_null=True)

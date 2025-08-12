@@ -43,8 +43,8 @@ class EventService:
             location_link=data.validated_data.get("location_link"),
             images=data.validated_data.get("images"),
             date=data.validated_data.get("date"),
-            start_time=data.validated_data.get("start_time"),
-            end_time=data.validated_data.get("end_time"),
+            start_datetime=data.validated_data.get("start_time"),
+            end_datetime=data.validated_data.get("end_time"),
             start_minutes=data.validated_data.get("start_minutes"),
             late_minutes=data.validated_data.get("late_minutes"),
             fail_minutes=data.validated_data.get("fail_minutes"),
@@ -80,9 +80,9 @@ class EventService:
             event.location_link = data.validated_data.get("location_link")
 
         if data.validated_data.get("start_time") is not None:
-            event.start_time = data.validated_data.get("start_time")
+            event.start_datetime = data.validated_data.get("start_time")
         if data.validated_data.get("end_time") is not None:
-            event.end_time = data.validated_data.get("end_time")
+            event.end_datetime = data.validated_data.get("end_time")
         if data.validated_data.get("date") is not None:
             event.date = data.validated_data.get("date")
         if data.validated_data.get("start_minutes") is not None:

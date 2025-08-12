@@ -31,8 +31,10 @@ class Event(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     date = models.DateField(default=timezone.now)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    # start_time = models.TimeField(null=True, blank=True)
+    start_datetime = models.DateTimeField(default=timezone.now)
+    # end_time = models.TimeField(null=True, blank=True)
+    end_datetime = models.DateTimeField(default=timezone.now)
     start_minutes = models.IntegerField()
     late_minutes = models.IntegerField()
     fail_minutes = models.IntegerField()
@@ -57,6 +59,14 @@ class Event(models.Model):
 
     class Meta:
         db_table = "events"
+
+    @property
+    def start_time(self):
+        return timezone.localtime(self.start_datetime).time()
+
+    @property
+    def end_time(self):
+        return timezone.localtime(self.end_datetime).time()
 
     def save(self, *args, **kwargs):
         if self.images and isinstance(self.images[0], UploadedFile):

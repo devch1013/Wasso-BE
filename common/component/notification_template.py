@@ -31,6 +31,10 @@ class NotificationTemplate(Enum):
         "{status} 신청이 승인되었습니다.",
         "[{event_name}] 활동의 {status} 신청이 승인되었습니다.",
     )
+    EVENT_ATTENDANCE_START = (
+        "활동 출석 시작",
+        "[{club_name}] {event_name} 활동의 출석이 지금부터 가능합니다.",
+    )
 
     def __init__(self, title: str, body: str) -> None:
         self._title = title

@@ -20,7 +20,7 @@ def event_image_path(instance, filename):
 class EditRequest(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     gen_member = models.ForeignKey(GenMember, on_delete=models.CASCADE)
-    reason = models.TextField()
+    reason = models.TextField(null=True, blank=True)
     images = ArrayField(
         models.ImageField(
             upload_to=event_image_path,
@@ -44,3 +44,6 @@ class EditRequest(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_status_display(self):
+        return AttendanceStatus(self.status).label

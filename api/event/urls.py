@@ -14,6 +14,16 @@ urlpatterns = [
         name="event-upcoming",
     ),
     path(
+        "edit-request/<int:pk>/",
+        views.EditRequestView.as_view({"post": "approve"}),
+        name="event-edit-request-approve",
+    ),
+    path(
+        "absent-apply/<int:pk>/",
+        views.AbsentApplyView.as_view({"post": "approve"}),
+        name="absent-apply-approve",
+    ),
+    path(
         "<int:pk>/",
         views.EventViewSet.as_view(
             {"get": "retrieve", "put": "update", "delete": "destroy"}
@@ -24,13 +34,6 @@ urlpatterns = [
         "<int:event_id>/generation-info/",
         views.EventViewSet.as_view({"get": "generation_info"}),
         name="event-generation-info",
-    ),
-    path(
-        "<int:event_id>/attendance/",
-        views.EventAttendanceView.as_view(
-            {"post": "create", "get": "attendances", "put": "modify"}
-        ),
-        name="event-attendance",
     ),
     path(
         "<int:event_id>/attendance/all/",
@@ -48,9 +51,11 @@ urlpatterns = [
         name="event-attendance-log",
     ),
     path(
-        "absent-apply/<int:pk>/",
-        views.AbsentApplyView.as_view({"post": "approve"}),
-        name="absent-apply-approve",
+        "<int:event_id>/attendance/",
+        views.EventAttendanceView.as_view(
+            {"post": "create", "get": "attendances", "put": "modify"}
+        ),
+        name="event-attendance",
     ),
     path(
         "<int:event_id>/absent-apply/",
@@ -59,12 +64,7 @@ urlpatterns = [
     ),
     path(
         "<int:event_id>/edit-request/",
-        views.EditRequestView.as_view({"post": "create"}),
+        views.EditRequestView.as_view({"post": "create", "get": "list"}),
         name="event-edit-request",
-    ),
-    path(
-        "<int:event_id>/edit-request/<int:pk>/",
-        views.EditRequestView.as_view({"post": "approve"}),
-        name="event-edit-request-approve",
     ),
 ]

@@ -4,13 +4,23 @@ from api.event.models.edit_request import EditRequest
 
 
 class EditRequestCreateSerializer(serializers.Serializer):
-    event_id = serializers.IntegerField()
-    reason = serializers.CharField()
-    images = serializers.ListField(child=serializers.ImageField(), required=False)
-    status = serializers.IntegerField(required=False)
+    reason = serializers.CharField(required=False, allow_blank=True)
+    status = serializers.IntegerField()
 
 
 class EditRequestSerializer(serializers.ModelSerializer):
+    approved_by = serializers.CharField(
+        source="approved_by.member.user.username", read_only=True
+    )
+
     class Meta:
         model = EditRequest
-        fields = "__all__"
+        fields = [
+            "id",
+            "reason",
+            "status",
+            "is_approved",
+            "approved_by",
+            "created_at",
+            "updated_at",
+        ]

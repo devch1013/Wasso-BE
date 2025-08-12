@@ -45,7 +45,7 @@ class GenMemberService:
 
         # 해당 GenMember의 generation에 속한 모든 Event 가져오기
         events = Event.objects.filter(generation=gen_member.generation).order_by(
-            "-date", "-start_time"
+            "-date", "-start_datetime"
         )
 
         # 모든 Event에 대한 해당 GenMember의 Attendance를 한 번에 가져오기

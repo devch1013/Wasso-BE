@@ -54,6 +54,16 @@ class NotificationTemplate(Enum):
         "[{club_name}] {event_name} 활동의 출석 시간이 종료되어 결석처리되었습니다.",
         DeepLink.EVENT,
     )
+    EDIT_REQUEST = (
+        "{status} 변경 신청",
+        "[{event_name}] 활동에 {username}님이 {status}으로 변경 신청을 했습니다.",
+        DeepLink.EVENT,
+    )
+    EDIT_REQUEST_APPROVE = (
+        "{status} 변경 신청이 승인되었습니다.",
+        "[{event_name}] 활동의 {status} 변경 신청이 승인되었습니다.",
+        DeepLink.EVENT,
+    )
 
     def __init__(self, title: str, body: str, deeplink: DeepLink | None = None) -> None:
         self._title = title

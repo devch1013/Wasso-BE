@@ -7,10 +7,12 @@ from storages.backends.s3boto3 import S3Boto3Storage
 from api.club.models import GenMember
 from api.club.serializers.member_serializers import MemberSerializer
 from api.event.models import AbsentApply, Attendance, Event
+from api.event.models.edit_request import EditRequest
 from api.event.serializers.attend_serializer import (
     AbsentApplySerializer,
     AttendanceSerializer,
 )
+from api.event.serializers.edit_request_serializer import EditRequestSerializer
 
 
 class EventCreateSerializer(serializers.Serializer):
@@ -171,10 +173,17 @@ class MemberAttendanceSerializer(serializers.ModelSerializer):
     member = MemberSerializer()
     attendance_status = serializers.SerializerMethodField()
     absent_apply = serializers.SerializerMethodField()
+    edit_request = serializers.SerializerMethodField()
 
     class Meta:
         model = GenMember
-        fields = ["member_id", "member", "attendance_status", "absent_apply"]
+        fields = [
+            "member_id",
+            "member",
+            "attendance_status",
+            "absent_apply",
+            "edit_request",
+        ]
 
     def get_attendance_status(self, obj):
         attendance = self.context.get("attendance_map", {}).get(obj.id)
@@ -186,6 +195,12 @@ class MemberAttendanceSerializer(serializers.ModelSerializer):
         absent_apply = self.context.get("absent_apply_map", {}).get(obj.id)
         if absent_apply:
             return AbsentApplySerializer(absent_apply).data
+        return None
+
+    def get_edit_request(self, obj):
+        edit_requests = self.context.get("edit_requests_map", {}).get(obj.id)
+        if edit_requests:
+            return EditRequestSerializer(edit_requests).data
         return None
 
 
@@ -220,9 +235,17 @@ class EventAttendanceSerializer(serializers.ModelSerializer):
             event=obj, gen_member__in=members
         ).order_by("created_at")
 
+        edit_requests = EditRequest.objects.filter(
+            event=obj, gen_member__in=members
+        ).order_by("created_at")
+
         # Create a map of gen_member_id -> absent_apply for efficient lookup
         absent_apply_map = {
             absent_apply.gen_member_id: absent_apply for absent_apply in absent_applies
+        }
+
+        edit_requests_map = {
+            edit_request.gen_member_id: edit_request for edit_request in edit_requests
         }
 
         # Sort members by:
@@ -249,5 +272,6 @@ class EventAttendanceSerializer(serializers.ModelSerializer):
             context={
                 "attendance_map": attendance_map,
                 "absent_apply_map": absent_apply_map,
+                "edit_requests_map": edit_requests_map,
             },
         ).data

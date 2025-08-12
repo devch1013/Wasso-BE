@@ -1,7 +1,8 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from celery import shared_task
+from django.db.models import OuterRef, Subquery
 from django.utils import timezone
 
 from api.club.models.generation_mapping import GenMember
@@ -55,15 +56,30 @@ def event_start_push():
             generation=event.generation, is_current=True
         )
 
-        # 이미 출석 상태가 있는 GenMember 중 UNCHECKED가 아닌 상태의 ID들
+        # 각 GenMember별로 가장 최신의 Attendance 상태가 UNCHECKED가 아닌 상태의 ID들
+        latest_attendance_status = (
+            Attendance.objects.filter(event=event, generation_mapping_id=OuterRef("id"))
+            .order_by("-modified_at", "-created_at")
+            .values("status")[:1]
+        )
+
         checked_gen_member_ids = (
-            Attendance.objects.filter(event=event)
-            .exclude(status=AttendanceStatus.UNCHECKED)
-            .values_list("generation_mapping_id", flat=True)
+            gen_members.filter(
+                id__in=Subquery(
+                    Attendance.objects.filter(event=event)
+                    .values("generation_mapping_id")
+                    .distinct()
+                )
+            )
+            .annotate(latest_status=Subquery(latest_attendance_status))
+            .exclude(latest_status=AttendanceStatus.UNCHECKED)
+            .values_list("id", flat=True)
         )
 
         # Attendance가 없거나 상태가 UNCHECKED인 GenMember들 필터링
         target_gen_members = gen_members.exclude(id__in=checked_gen_member_ids)
+
+        logger.info(f"target_gen_members: {target_gen_members}")
 
         # 해당 GenMember들의 User ID 가져오기
         user_ids = target_gen_members.values_list("member__user__id", flat=True)
@@ -75,7 +91,7 @@ def event_start_push():
                 club_name=event.club_name,
                 event_name=event.title,
             ),
-            deeplink=NotificationTemplate.EVENT_ATTENDANCE_START.get_deeplink(
+            data=NotificationTemplate.EVENT_ATTENDANCE_START.get_deeplink_data(
                 event_id=event.id,
             ),
         )
@@ -90,7 +106,7 @@ def mark_absent_for_past_events():
     """
     logger.info("Starting mark_absent_for_past_events job")
 
-    now = timezone.now()
+    now = timezone.now().replace(second=0, microsecond=0)
     today = now.date()
 
     # 오늘 날짜의 이벤트 중 fail_minutes가 지난 이벤트 찾기
@@ -101,10 +117,7 @@ def mark_absent_for_past_events():
     total_created = 0
 
     for event in events:
-        # 이벤트 시작 시간에 fail_minutes를 더한 시간 계산
-        event_datetime = datetime.combine(event.date, event.start_time)
-        event_datetime = timezone.make_aware(event_datetime)
-        absent_time = event_datetime + timedelta(minutes=event.fail_minutes)
+        absent_time = event.start_datetime + timedelta(minutes=event.fail_minutes)
 
         # 현재 시간이 absent_time을 지났는지 확인
         if now < absent_time:
@@ -113,15 +126,25 @@ def mark_absent_for_past_events():
         logger.info(f"Processing event: {event.title} (ID: {event.id})")
         processed_events += 1
 
+        users_for_notification = []
+
         # 해당 세대에 속한 모든 멤버 가져오기
         gen_members = GenMember.objects.filter(
             generation=event.generation, is_current=True
         )
 
         # 이미 출석 상태가 있는 멤버 ID 목록
-        existing_attendance_member_ids = Attendance.objects.filter(
-            event=event
-        ).values_list("generation_mapping_id", flat=True)
+        existing_attendance_member_ids = (
+            Attendance.objects.filter(event=event)
+            .values_list("generation_mapping_id", flat=True)
+            .distinct()
+        )
+
+        users_for_notification.extend(
+            gen_members.filter(id__in=existing_attendance_member_ids).values_list(
+                "member__user", flat=True
+            )
+        )
 
         # 출석 전 상태인 멤버들 결석으로 변경
         unchecked_attendances = Attendance.objects.filter(
@@ -153,6 +176,24 @@ def mark_absent_for_past_events():
             Attendance.objects.bulk_create(new_attendances)
             total_created += len(new_attendances)
             logger.info(f"Created {len(new_attendances)} new absent attendances")
+            users_for_notification.extend(
+                new_attendances.values_list(
+                    "generation_mapping__member__user", flat=True
+                )
+            )
+
+        fcm_component = FCMComponent()
+        fcm_component.send_to_users(
+            users_for_notification,
+            NotificationTemplate.EVENT_ATTENDANCE_START.get_title(),
+            NotificationTemplate.EVENT_ATTENDANCE_START.get_body(
+                club_name=event.club_name,
+                event_name=event.title,
+            ),
+            data=NotificationTemplate.EVENT_ATTENDANCE_START.get_deeplink_data(
+                event_id=event.id,
+            ),
+        )
 
     logger.info(
         f"Completed mark_absent_for_past_events job - Processed {processed_events} events, Updated {total_updated} attendances, Created {total_created} new attendances"

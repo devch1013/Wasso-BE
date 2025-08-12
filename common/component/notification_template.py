@@ -51,7 +51,7 @@ class NotificationTemplate(Enum):
     def get_body(self, **kwargs) -> str:
         return self._body.format(**kwargs)
 
-    def get_deeplink(self, **kwargs) -> str:
+    def get_deeplink_data(self, **kwargs) -> str:
         if self._deeplink is None:
             return None
-        return self._deeplink.get_url(**kwargs)
+        return {"deeplink": self._deeplink.get_url(**kwargs)}

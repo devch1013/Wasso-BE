@@ -18,7 +18,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     "mark-absent-for-past-events": {
         "task": "scheduler.tasks.mark_absent_for_past_events",
-        "schedule": 300.0,  # 5분마다 실행
+        "schedule": crontab(minute="*/5"),
     },
     "event-start-push": {
         "task": "scheduler.tasks.event_start_push",

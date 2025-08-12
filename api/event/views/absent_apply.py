@@ -73,6 +73,9 @@ class AbsentApplyView(GenericViewSet):
                 event_name=event.title,
                 status=absent_apply.get_status_display(),
             ),
+            data=NotificationTemplate.ABSENT_APPLY.get_deeplink_data(
+                event_id=event.id,
+            ),
         )
         return Response(result.data, status=status.HTTP_201_CREATED)
 
@@ -153,6 +156,9 @@ class AbsentApplyView(GenericViewSet):
                 NotificationTemplate.ABSENT_APPLY_APPROVE.get_body(
                     event_name=absent_apply.event.title,
                     status=absent_apply.get_status_display(),
+                ),
+                data=NotificationTemplate.ABSENT_APPLY_APPROVE.get_deeplink_data(
+                    event_id=absent_apply.event.id,
                 ),
             )
             return Response(result.data, status=status.HTTP_200_OK)

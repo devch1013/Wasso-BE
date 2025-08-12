@@ -35,7 +35,7 @@ class EventService:
         generation = Generation.objects.get(id=generation_id)
         qr_code, qr_file = generate_uuid_qr_for_imagefield()
 
-        Event.objects.create(
+        event = Event.objects.create(
             generation=generation,
             title=data.validated_data.get("title"),
             description=data.validated_data.get("description"),
@@ -57,6 +57,7 @@ class EventService:
             users,
             NotificationTemplate.EVENT_CREATE.get_title(),
             NotificationTemplate.EVENT_CREATE.get_body(club_name=generation.club.name),
+            data=NotificationTemplate.EVENT_CREATE.get_deeplink_data(event_id=event.id),
         )
 
     @staticmethod
@@ -185,6 +186,9 @@ class EventService:
                 NotificationTemplate.ATTENDANCE_CHANGE.get_body(
                     event_name=attendance.event.title,
                     attendance_status=AttendanceStatus(status).label,
+                ),
+                data=NotificationTemplate.ATTENDANCE_CHANGE.get_deeplink_data(
+                    event_id=event.id,
                 ),
             )
 

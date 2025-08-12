@@ -30,6 +30,7 @@ class GenMemberService:
             NotificationTemplate.MEMBER_ROLE_CHANGE.get_body(
                 club_name=gen_member.generation.club.name, role_name=role.name
             ),
+            data=NotificationTemplate.MEMBER_ROLE_CHANGE.get_deeplink_data(),
         )
 
     @staticmethod

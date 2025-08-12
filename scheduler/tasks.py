@@ -140,17 +140,16 @@ def mark_absent_for_past_events():
             .distinct()
         )
 
-        users_for_notification.extend(
-            gen_members.filter(id__in=existing_attendance_member_ids).values_list(
-                "member__user", flat=True
-            )
-        )
-
         # 출석 전 상태인 멤버들 결석으로 변경
         unchecked_attendances = Attendance.objects.filter(
             event=event, status=AttendanceStatus.UNCHECKED
         )
 
+        users_for_notification.extend(
+            unchecked_attendances.values_list(
+                "generation_mapping__member__user", flat=True
+            )
+        )
         update_count = unchecked_attendances.update(
             status=AttendanceStatus.ABSENT, is_modified=True, modified_at=now
         )

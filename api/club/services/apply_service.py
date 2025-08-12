@@ -46,6 +46,7 @@ class ApplyService:
             notice_users,
             NotificationTemplate.CLUB_APPLY.get_title(),
             NotificationTemplate.CLUB_APPLY.get_body(username=user.username),
+            data=NotificationTemplate.CLUB_APPLY.get_deeplink_data(),
         )
         logger.info(result)
 
@@ -72,6 +73,7 @@ class ApplyService:
             NotificationTemplate.CLUB_APPLY_ACCEPT.get_body(
                 club_name=club_apply.generation.club.name
             ),
+            data=NotificationTemplate.CLUB_APPLY_ACCEPT.get_deeplink_data(),
         )
 
         return member, generation_mapping
@@ -90,6 +92,7 @@ class ApplyService:
             NotificationTemplate.CLUB_APPLY_REJECT.get_body(
                 club_name=club_apply.generation.club.name
             ),
+            data=NotificationTemplate.CLUB_APPLY_REJECT.get_deeplink_data(),
         )
 
     @classmethod

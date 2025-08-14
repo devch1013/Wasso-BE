@@ -37,6 +37,8 @@ class GenMemberService:
     def delete_gen_member(gen_member: GenMember):
         if gen_member.role.is_superuser():
             raise CustomException(ErrorCode.OWNER_CANNOT_BE_DELETED)
+        if gen_member.get_siblings().count() == 0:
+            gen_member.member.delete()
         gen_member.delete()
 
     @classmethod

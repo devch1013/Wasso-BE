@@ -6,6 +6,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from api.club.models.club import Club
 from api.userapp.models import User
+from config.abstract_models.soft_delete_model import SoftDeleteModel
 
 
 def member_profile_image_path(instance, filename):
@@ -16,7 +17,7 @@ def member_profile_image_path(instance, filename):
     return f"member_profile/{filename}"
 
 
-class Member(models.Model):
+class Member(SoftDeleteModel):
     def __str__(self):
         return f"{self.user.username} - {self.club.name}"
 

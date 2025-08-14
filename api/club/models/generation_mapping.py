@@ -33,3 +33,6 @@ class GenMember(models.Model):
                 pk=self.pk
             ).update(is_current=False)
         super().save(*args, **kwargs)
+
+    def get_siblings(self):
+        return GenMember.objects.filter(member=self.member).exclude(pk=self.pk)

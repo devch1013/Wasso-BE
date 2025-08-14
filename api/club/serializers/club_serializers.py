@@ -17,12 +17,16 @@ class ClubInfoSerializer(serializers.Serializer):
     club_description = serializers.CharField(source="club.description")
     generations = serializers.SerializerMethodField()
     current_generation = GenerationInfoSerializer(
-        source="get_current_generation.generation"
+        source="get_current_generation.generation", required=False, allow_null=True
     )
     is_member_activated = serializers.SerializerMethodField()
-    role = RoleSerializer(source="get_current_generation.role")
+    role = RoleSerializer(
+        source="get_current_generation.role", required=False, allow_null=True
+    )
     member_id = serializers.IntegerField(source="id")
-    generation_mapping_id = serializers.IntegerField(source="get_current_generation.id")
+    generation_mapping_id = serializers.IntegerField(
+        source="get_current_generation.id", required=False, allow_null=True
+    )
 
     class Meta:
         model = Member
@@ -38,7 +42,11 @@ class ClubInfoSerializer(serializers.Serializer):
         ]
 
     def get_is_member_activated(self, obj: Member):
-        return obj.get_current_generation().generation == obj.club.current_generation
+        if obj.get_current_generation():
+            return (
+                obj.get_current_generation().generation == obj.club.current_generation
+            )
+        return False
 
     def get_generations(self, obj: Member):
         generations = Generation.objects.filter(club=obj.club, deleted=False)

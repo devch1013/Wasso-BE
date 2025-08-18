@@ -2,6 +2,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from api.userapp.enums import SessionState
 from api.userapp.serializers.pc_session_serializers import (
     PcSessionAuthenticationResponseSerializer,
     PcSessionAuthenticationSerializer,
@@ -37,10 +38,20 @@ class PcSessionView(GenericViewSet):
         return Response(response_data.data)
 
     def authenticate_check(self, request, session_id):
+        from rest_framework_simplejwt.tokens import RefreshToken
+
         session = PcSessionService.get_session_state(session_id)
         response_data = PcSessionStateResponseSerializer(session)
         # response_data.is_valid()
-        return Response(response_data.data)
+
+        # token 값을 추가로 포함
+        response_dict = response_data.data
+        if session.state == SessionState.AUTHENTICATED:
+            refresh = RefreshToken.for_user(session.user)
+            access_token = refresh.access_token
+            response_dict["token"] = str(access_token)
+
+        return Response(response_dict)
 
     def authenticate(self, request):
         # 수동으로 JWT 인증 처리

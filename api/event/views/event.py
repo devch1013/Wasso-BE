@@ -1,8 +1,10 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, mixins
 
+from api.club.models.member import Member
 from api.club.serializers.club_apply_serializers import GenerationSimpleInfoSerializer
 from api.event.models import Event
 from api.event.serializers import (
@@ -11,6 +13,7 @@ from api.event.serializers import (
     EventUpdateSerializer,
     UpcomingEventSerializer,
 )
+from api.event.serializers.event_serializer import EventListForPCSerializer
 from api.event.service.event_service import EventService
 from common.responses.simple_response import SimpleResponse
 
@@ -75,4 +78,25 @@ class EventViewSet(
         generation_id = request.query_params.get("gid")
         events = Event.objects.filter(generation__id=generation_id)
         serializer = UpcomingEventSerializer(events, context={"user": request.user})
+        return Response(serializer.data)
+
+    @swagger_auto_schema(
+        operation_summary="모든 이벤트 정보",
+        operation_description="모든 이벤트 정보를 조회합니다.",
+        responses={
+            200: EventListForPCSerializer(many=True),
+            400: "잘못된 요청 데이터",
+            401: "인증되지 않은 사용자",
+        },
+        tags=["푸시 알림"],
+    )
+    def all_events(self, request, *args, **kwargs):
+        """
+        모든 이벤트 정보
+        """
+        member = Member.objects.get(user=request.user)
+        events = Event.objects.filter(
+            generation__club__id=member.club.id, generation__activated=True
+        ).order_by("start_datetime")
+        serializer = EventListForPCSerializer(events, many=True)
         return Response(serializer.data)

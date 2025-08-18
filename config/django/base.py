@@ -45,6 +45,7 @@ LOCAL_APPS = [
     "api.userapp",
     "api.club",
     "api.event",
+    "common",
     "scheduler",
 ]
 

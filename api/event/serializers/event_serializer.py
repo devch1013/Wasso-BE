@@ -5,6 +5,7 @@ from rest_framework import serializers
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from api.club.models import GenMember
+from api.club.serializers.generation_serializers import SimpleGenerationSerializer
 from api.club.serializers.member_serializers import MemberSerializer
 from api.event.models import AbsentApply, Attendance, Event
 from api.event.models.edit_request import EditRequest
@@ -118,6 +119,28 @@ class UpcomingEventSerializer(serializers.Serializer):
         return EventSerializer(
             upcoming_events, many=True, context={"user": self.context.get("user")}
         ).data
+
+
+class EventListForPCSerializer(serializers.ModelSerializer):
+    generation = SimpleGenerationSerializer()
+    code = serializers.CharField(source="qr_code")
+
+    class Meta:
+        model = Event
+        fields = [
+            "id",
+            "code",
+            "title",
+            "description",
+            "date",
+            "start_datetime",
+            "end_datetime",
+            "start_minutes",
+            "late_minutes",
+            "fail_minutes",
+            "location",
+            "generation",
+        ]
 
 
 class EventDetailSerializer(serializers.ModelSerializer):

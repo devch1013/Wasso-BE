@@ -100,10 +100,15 @@ class ApplyService:
         if Member.objects.filter(user=user, club=generation.club).exists():
             raise CustomException(ErrorCode.ALREADY_APPLIED)
 
-        member = Member.objects.create(
-            user=user,
-            club=generation.club,
-        )
+        existed_member = Member.objects.filter(user=user, club=generation.club).first()
+        if existed_member:
+            existed_member.restore()
+            member = existed_member
+        else:
+            member = Member.objects.create(
+                user=user,
+                club=generation.club,
+            )
 
         generation_mapping = GenMember.objects.create(
             member=member,

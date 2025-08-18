@@ -5,7 +5,7 @@ from api.event import views
 urlpatterns = [
     path(
         "",
-        views.EventViewSet.as_view({"post": "create"}),
+        views.EventViewSet.as_view({"post": "create", "get": "all_events"}),
         name="event-list",
     ),
     path(

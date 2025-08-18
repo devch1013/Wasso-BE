@@ -4,9 +4,12 @@ from api.club.models import Generation, GenMember
 
 
 class SimpleGenerationSerializer(serializers.ModelSerializer):
+    club_name = serializers.CharField(source="club.name")
+    club_image = serializers.ImageField(source="club.image")
+
     class Meta:
         model = Generation
-        fields = ["name", "start_date", "end_date"]
+        fields = ["id", "name", "start_date", "end_date", "club_name", "club_image"]
 
 
 class GenerationInfoSerializer(serializers.ModelSerializer):

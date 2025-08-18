@@ -150,6 +150,11 @@ class ErrorCode(Enum):
         "PC003",
         status.HTTP_400_BAD_REQUEST,
     )
+    ADMIN_ONLY = (
+        "클럽 관리자만 이벤트를 생성할 수 있습니다",
+        "PC004",
+        status.HTTP_400_BAD_REQUEST,
+    )
     ## 권한 에러
     NOT_AUTHORIZED = (
         "권한이 없습니다",

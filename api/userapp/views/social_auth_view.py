@@ -9,6 +9,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from api.userapp.models.user_meta import FcmToken, Platform, UniqueToken
 from api.userapp.serializers.user_serializers import (
     MessageResponseSerializer,
     RefreshTokenSerializer,
@@ -98,7 +99,39 @@ class SocialAuthView(
                 name = family_name
             else:
                 name = None
+
             user = service.get_or_create_user(code, fcmToken, name)
+
+            if request_data.get("device_id", None):
+                if user.unique_tokens.filter(
+                    token=request_data.get("device_id")
+                ).exists():
+                    unique_token = user.unique_tokens.get(
+                        token=request_data.get("device_id")
+                    )
+                    unique_token.platform = request_data.get(
+                        "platform", Platform.UNKNOWN
+                    )
+                    unique_token.model = request_data.get("model", None)
+                    unique_token.login()
+                else:
+                    unique_token = UniqueToken.objects.create(
+                        user=user,
+                        token=request_data.get("device_id"),
+                        platform=request_data.get("platform", Platform.UNKNOWN),
+                        model=request_data.get("model", None),
+                    )
+                    unique_token.login()
+
+            if request_data.get("fcm_token", None):
+                if not user.fcm_tokens.filter(
+                    token=request_data.get("fcm_token")
+                ).exists():
+                    FcmToken.objects.create(
+                        user=user,
+                        token=request_data.get("fcm_token"),
+                        active=True,
+                    )
 
         refresh = service.get_token(user)
         return Response(

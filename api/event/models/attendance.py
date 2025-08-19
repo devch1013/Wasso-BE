@@ -3,6 +3,7 @@ from django.db import models
 from api.club.models.generation_mapping import GenMember
 from api.event.models.enums import AttendanceStatus
 from api.event.models.event import Event
+from api.userapp.models.user_meta import UniqueToken
 
 
 class Attendance(models.Model):
@@ -12,7 +13,9 @@ class Attendance(models.Model):
     generation_mapping = models.ForeignKey(
         GenMember, on_delete=models.CASCADE, related_name="attendances"
     )
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, related_name="attendances"
+    )
     status = models.IntegerField(
         choices=AttendanceStatus.choices,
         default=AttendanceStatus.PRESENT,
@@ -35,6 +38,14 @@ class Attendance(models.Model):
     )
     modified_at = models.DateTimeField(auto_now=True)
     is_modified = models.BooleanField(default=False)
+
+    unique_token = models.ForeignKey(
+        UniqueToken,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="attendances",
+    )
 
     class Meta:
         db_table = "attendances"

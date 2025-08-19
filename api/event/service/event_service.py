@@ -6,12 +6,14 @@ from rest_framework.exceptions import PermissionDenied
 from api.club.models import Generation, GenMember
 from api.club.models.club_apply import ClubApply
 from api.event.models import Attendance, AttendanceStatus, Event
+from api.event.models.abusing import Abusing
 from api.event.serializers import (
     CheckQRCodeSerializer,
     EventCreateSerializer,
     EventUpdateSerializer,
 )
 from api.userapp.models import User
+from api.userapp.models.user_meta import Platform, UniqueToken
 from common.component import FCMComponent, NotificationTemplate, UserSelector
 from common.exceptions import CustomException, ErrorCode
 from common.utils.code_generator import HashTimeGenerator
@@ -114,11 +116,31 @@ class EventService:
             else:
                 raise CustomException(ErrorCode.NOT_REGISTERED_CLUB)
 
-        if Attendance.objects.filter(
-            event=event, generation_mapping=generation_mapping
-        ).exists():
-            raise CustomException(ErrorCode.ALREADY_CHECKED_IN)
+        if (
+            attendance := Attendance.objects.filter(
+                event=event, generation_mapping=generation_mapping
+            )
+            .order_by("-created_at")
+            .first()
+        ):
+            if attendance.status != AttendanceStatus.UNCHECKED:
+                raise CustomException(ErrorCode.ALREADY_CHECKED_IN)
 
+        unique_token = None
+
+        if serializer.validated_data.get("device_id", None):
+            unique_token = UniqueToken.objects.filter(
+                token=serializer.validated_data.get("device_id")
+            ).first()
+            if not unique_token:
+                unique_token = UniqueToken.objects.create(
+                    user=user,
+                    token=serializer.validated_data.get("device_id"),
+                    platform=Platform.UNKNOWN,
+                    model=serializer.validated_data.get("model", None),
+                )
+
+        print(serializer.validated_data)
         # 계속 생성되게 변경
         attendance = Attendance.objects.create(
             event=event,
@@ -127,7 +149,28 @@ class EventService:
             latitude=serializer.validated_data.get("latitude", None),
             longitude=serializer.validated_data.get("longitude", None),
             is_modified=False,
+            unique_token=unique_token,
         )
+
+        if unique_token:
+            duplicated_attendance = (
+                event.attendances.filter(unique_token=unique_token)
+                .exclude(id=attendance.id)
+                .first()
+            )
+            if duplicated_attendance:
+                Abusing.objects.create(
+                    attendance=duplicated_attendance,
+                    reason=f"중복 출석 - {duplicated_attendance.generation_mapping.member.user.username}",
+                )
+
+        # if serializer.validated_data.get("device_id", None):
+        #     if event.attendances.
+
+        #     Abusing.objects.create(
+        #         attendance=attendance,
+        #         reason=serializer.validated_data.get("reason", None),
+        #     )
 
         return attendance
 

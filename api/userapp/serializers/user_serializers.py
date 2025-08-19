@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from api.userapp.models import User
+from api.userapp.models.user_meta import Platform
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -57,6 +58,16 @@ class SocialLoginRequestSerializer(serializers.Serializer):
     password = serializers.CharField(
         required=False, write_only=True, help_text="비밀번호 (native 로그인)"
     )
+    fcm_token = serializers.CharField(
+        required=False, help_text="FCM 토큰 (푸시 알림용)"
+    )
+    device_id = serializers.CharField(required=False, help_text="Device ID")
+    platform = serializers.ChoiceField(
+        required=False,
+        choices=Platform.choices,
+        default=Platform.UNKNOWN,
+    )
+    model = serializers.CharField(required=False, help_text="Device Model")
 
 
 class SocialLoginQuerySerializer(serializers.Serializer):

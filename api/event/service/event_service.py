@@ -3,8 +3,6 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
 
-from api.club.models import Generation, GenMember
-from api.club.models.club_apply import ClubApply
 from api.event.models import Attendance, AttendanceStatus, Event
 from api.event.models.abusing import Abusing
 from api.event.serializers import (
@@ -12,6 +10,7 @@ from api.event.serializers import (
     EventCreateSerializer,
     EventUpdateSerializer,
 )
+from api.generation.models import ClubApply, Generation, GenMember
 from api.userapp.models import User
 from api.userapp.models.user_meta import Platform, UniqueToken
 from common.component import FCMComponent, NotificationTemplate, UserSelector

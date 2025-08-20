@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.club.models import GenMember, Member, Role
+from api.club.models import Member, Role
 from api.club.serializers.member_serializers import (
     DescriptionUpdateRequestSerializer,
     GenerationMappingSerializer,
@@ -13,6 +13,7 @@ from api.club.serializers.member_serializers import (
     MemberRoleChangeRequestSerializer,
     TagUpdateRequestSerializer,
 )
+from api.generation.models import GenMember
 
 
 class MemberView(ModelViewSet):

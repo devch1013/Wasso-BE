@@ -7,8 +7,8 @@ from django.db import models
 from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from api.club.models import Generation
 from api.event.models.enums import AttendanceType
+from api.generation.models import Generation
 
 
 def event_image_path(instance, filename):

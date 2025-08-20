@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from api.club.models import ClubApply
+from api.generation.models import ClubApply
 
 
 @admin.register(ClubApply)

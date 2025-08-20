@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.club.models import Generation, GenMember
+from api.generation.models import Generation, GenMember
 
 
 class GenerationCreateSerializer(serializers.ModelSerializer):

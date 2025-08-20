@@ -1,7 +1,7 @@
 from django.db.models import Case, Count, F, IntegerField, OuterRef, Subquery, When
 
-from api.club.models import Generation, GenMember
 from api.event.models import Attendance
+from api.generation.models import Generation, GenMember
 from api.userapp.models import User
 from common.utils.notion import NotionAttendanceManager
 

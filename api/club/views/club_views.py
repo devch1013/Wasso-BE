@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from api.club import serializers as sz
-from api.club.models import Club, ClubApply, Generation, Member, Role
+from api.club.models import Club, Member, Role
 from api.club.services.club_service import ClubService
+from api.generation.models import ClubApply, Generation
 from api.generation.serializers.generation_serializers import GenerationCreateSerializer
 from api.userapp.permissions import IsAuthenticatedCustom
 

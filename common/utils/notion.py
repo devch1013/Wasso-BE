@@ -4,8 +4,8 @@ from typing import Dict, List
 
 import requests
 
-from api.club.models import Generation, GenMember
 from api.event.models import Attendance, AttendanceStatus, Event
+from api.generation.models import Generation, GenMember
 from api.userapp.models import User
 from common.component import FCMComponent
 

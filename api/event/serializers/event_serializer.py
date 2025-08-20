@@ -4,7 +4,6 @@ from django.utils import timezone
 from rest_framework import serializers
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from api.club.models import GenMember
 from api.club.serializers.member_serializers import MemberSerializer
 from api.event.models import AbsentApply, Attendance, Event
 from api.event.models.edit_request import EditRequest
@@ -13,6 +12,7 @@ from api.event.serializers.attend_serializer import (
     AttendanceSerializer,
 )
 from api.event.serializers.edit_request_serializer import EditRequestSerializer
+from api.generation.models import GenMember
 from api.generation.serializers.generation_serializers import SimpleGenerationSerializer
 
 

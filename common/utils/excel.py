@@ -7,8 +7,8 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import get_column_letter
 
-from api.club.models import Generation, GenMember
 from api.event.models import Attendance, AttendanceStatus, Event
+from api.generation.models import Generation, GenMember
 
 
 def create_attendance_excel(generation: Generation) -> str:

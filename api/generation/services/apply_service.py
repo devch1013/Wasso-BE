@@ -2,7 +2,8 @@ from django.db import transaction
 from django.utils import timezone
 from loguru import logger
 
-from api.club.models import ClubApply, Generation, GenMember, Member
+from api.club.models import Member
+from api.generation.models import ClubApply, Generation, GenMember
 from api.userapp.models import User
 from common.component.fcm_component import FCMComponent
 from common.component.notification_template import NotificationTemplate

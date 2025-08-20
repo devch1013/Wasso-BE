@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from api.club.models import GenMember
+from api.generation.models import GenMember
 
 
 @admin.register(GenMember)

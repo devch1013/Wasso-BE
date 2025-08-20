@@ -1,6 +1,6 @@
 from django.db import models
 
-from api.club.models.generation import Generation
+from api.generation.models.generation import Generation
 from api.userapp.models import User
 
 

@@ -5,9 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from api.club.models import GenMember
 from api.event.models import AbsentApply, Event
 from api.event.serializers import AbsentApplyCreateSerializer, AbsentApplySerializer
+from api.generation.models import GenMember
 from common.component.fcm_component import FCMComponent
 from common.component.notification_template import NotificationTemplate
 from common.component.user_selector import UserSelector

@@ -3,7 +3,8 @@ import string
 
 from django.db import transaction
 
-from api.club.models import Club, Generation, GenMember, Member, Role
+from api.club.models import Club, Member, Role
+from api.generation.models import Generation, GenMember
 from api.userapp.models import User
 from common.exceptions import CustomException, ErrorCode
 

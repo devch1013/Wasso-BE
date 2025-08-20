@@ -5,12 +5,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, mixins
 
-from api.club.models import ClubApply, Generation, GenMember
 from api.club.serializers.member_serializers import (
     GenerationMappingSerializer,
 )
 from api.event.models import Event
 from api.event.serializers.event_serializer import EventSerializer
+from api.generation.models import ClubApply, Generation, GenMember
 from api.generation.serializers.club_apply_serializers import ClubApplySerializer
 from api.generation.serializers.generation_serializers import (
     GenerationStatsSerializer,

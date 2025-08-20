@@ -4,9 +4,9 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from api.club.models import GenMember
 from api.event.models.enums import AttendanceStatus
 from api.event.models.event import Event
+from api.generation.models import GenMember
 
 
 def event_image_path(instance, filename):

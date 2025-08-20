@@ -1,8 +1,8 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from api.club.models import Generation, GenMember
 from api.event.models import Attendance, AttendanceStatus, Event
+from api.generation.models import Generation, GenMember
 
 
 def create_attendance_sheet(generation: Generation) -> str:

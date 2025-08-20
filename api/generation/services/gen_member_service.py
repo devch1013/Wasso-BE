@@ -1,7 +1,8 @@
-from api.club.models import GenMember, Role
+from api.club.models import Role
 from api.event.models import Attendance, Event
 from api.event.models.enums import AttendanceStatus
 from api.event.serializers import AttendanceSerializer
+from api.generation.models import GenMember
 from common.component import FCMComponent, NotificationTemplate
 from common.exceptions import CustomException, ErrorCode
 

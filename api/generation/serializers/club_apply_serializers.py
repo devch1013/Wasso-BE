@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from api.club.models import ClubApply
-from api.club.models.generation import Generation
 from api.club.serializers.club_serializers import ClubGenerationSerializer
+from api.generation.models import ClubApply, Generation
 from api.generation.serializers.generation_serializers import GenerationInfoSerializer
 from api.userapp.models import User
 

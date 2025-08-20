@@ -1,8 +1,8 @@
 from django.db import models
 
-from api.club.models.generation import Generation
 from api.club.models.member import Member
 from api.club.models.role import Role
+from api.generation.models.generation import Generation
 
 
 class GenMember(models.Model):

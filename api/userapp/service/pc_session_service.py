@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from django.db import transaction
 from django.utils import timezone
 
-from api.club.models.generation_mapping import GenMember
 from api.event.models import Event
+from api.generation.models import GenMember
 from api.userapp.enums import SessionState
 from api.userapp.models import PcSession
 from common.exceptions import CustomException, ErrorCode

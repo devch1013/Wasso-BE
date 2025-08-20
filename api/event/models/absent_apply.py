@@ -1,8 +1,8 @@
 from django.db import models
 
-from api.club.models import GenMember
 from api.event.models.enums import AttendanceStatus
 from api.event.models.event import Event
+from api.generation.models import GenMember
 
 
 class AbsentApply(models.Model):

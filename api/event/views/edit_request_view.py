@@ -4,7 +4,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from api.club.models.generation_mapping import GenMember
 from api.event.models.edit_request import EditRequest
 from api.event.models.event import Event
 from api.event.serializers.edit_request_serializer import (
@@ -12,6 +11,7 @@ from api.event.serializers.edit_request_serializer import (
     EditRequestSerializer,
 )
 from api.event.service.edit_request_service import EditRequestService
+from api.generation.models import GenMember
 from common.component.fcm_component import FCMComponent
 from common.component.notification_template import NotificationTemplate
 

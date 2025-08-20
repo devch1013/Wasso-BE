@@ -1,4 +1,4 @@
-from api.club.models import Generation, GenMember
+from api.generation.models import Generation, GenMember
 
 
 class UserSelector:

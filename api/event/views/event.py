@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, mixins
 
 from api.club.models.member import Member
-from api.club.serializers.club_apply_serializers import GenerationSimpleInfoSerializer
 from api.event.models import Event
 from api.event.serializers import (
     EventCreateSerializer,
@@ -15,6 +14,9 @@ from api.event.serializers import (
 )
 from api.event.serializers.event_serializer import EventListForPCSerializer
 from api.event.service.event_service import EventService
+from api.generation.serializers.club_apply_serializers import (
+    GenerationSimpleInfoSerializer,
+)
 from common.responses.simple_response import SimpleResponse
 
 

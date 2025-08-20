@@ -4,11 +4,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from api.club.models import ClubApply, Generation
-from api.club.serializers.club_apply_serializers import (
+from api.generation.serializers.club_apply_serializers import (
     GenerationSimpleInfoSerializer,
     MyClubApplySerializer,
 )
-from api.club.services.apply_service import ApplyService
+from api.generation.services import ApplyService
 from api.userapp.permissions import IsAuthenticatedCustom
 from common.component.fcm_component import FCMComponent
 from common.component.user_selector import UserSelector
@@ -16,7 +16,7 @@ from common.exceptions import CustomException, ErrorCode
 from common.responses.simple_response import SimpleResponse
 
 
-class ClubApplyView(mixins.ListModelMixin, GenericViewSet):
+class ApplyView(mixins.ListModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticatedCustom]
     serializer_class = MyClubApplySerializer
 

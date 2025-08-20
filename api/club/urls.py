@@ -1,13 +1,14 @@
 from rest_framework.routers import DefaultRouter
 
 from api.club import views
+from api.generation import views as generation_views
 
 router = DefaultRouter()
 
-router.register("generations", views.GenerationView, basename="generations")
+router.register("generations", generation_views.GenerationView, basename="generations")
 router.register("members", views.MemberView, basename="members")
-router.register("gen-members", views.GenMemberView, basename="gen-members")
-router.register("apply", views.ClubApplyView, basename="apply")
+router.register("gen-members", generation_views.GenMemberView, basename="gen-members")
+router.register("apply", generation_views.ApplyView, basename="apply")
 router.register("", views.ClubView, basename="clubs")
 
 urlpatterns = router.urls

@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import requests
 from django.conf import settings
 from jose import jwt
+from loguru import logger
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.userapp.models import User
@@ -32,8 +33,9 @@ class GoogleAuthService(AuthService):
             "https://www.googleapis.com/oauth2/v3/userinfo", headers=headers
         )
         if response.status_code == 200:
-            print(response.json())
             return response.json()
+        else:
+            logger.error(f"Google token error: {response.json()}")
         return None
 
     def _create_user(self, google_token, fcmToken, name):

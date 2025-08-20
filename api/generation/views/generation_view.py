@@ -6,18 +6,18 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, mixins
 
 from api.club.models import ClubApply, Generation, GenMember
-from api.club.serializers.club_apply_serializers import ClubApplySerializer
-from api.club.serializers.generation_serializers import (
+from api.club.serializers.member_serializers import (
+    GenerationMappingSerializer,
+)
+from api.event.models import Event
+from api.event.serializers.event_serializer import EventSerializer
+from api.generation.serializers.club_apply_serializers import ClubApplySerializer
+from api.generation.serializers.generation_serializers import (
     GenerationStatsSerializer,
     NotionIdSerializer,
     SimpleGenerationSerializer,
 )
-from api.club.serializers.member_serializers import (
-    GenerationMappingSerializer,
-)
-from api.club.services.generation_service import GenerationService
-from api.event.models import Event
-from api.event.serializers.event_serializer import EventSerializer
+from api.generation.services import GenerationService
 from common.utils.excel import create_attendance_excel
 from common.utils.google_sheet import create_attendance_sheet
 

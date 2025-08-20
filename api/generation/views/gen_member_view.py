@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, mixins
 
 from api.club.models import GenMember
-from api.club.serializers.gen_member_serializers import GenMemberSerializer
-from api.club.services.gen_member_service import GenMemberService
+from api.generation.serializers.gen_member_serializers import GenMemberSerializer
+from api.generation.services import GenMemberService
 from common.responses.simple_response import SimpleResponse
 
 

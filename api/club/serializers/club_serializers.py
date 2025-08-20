@@ -2,11 +2,11 @@ from loguru import logger
 from rest_framework import serializers
 
 from api.club.models import Club, Generation, GenMember, Member
-from api.club.serializers.generation_serializers import (
+from api.club.serializers.role_serializers import RoleSerializer
+from api.generation.serializers.generation_serializers import (
     GenerationCreateSerializer,
     GenerationInfoSerializer,
 )
-from api.club.serializers.role_serializers import RoleSerializer
 
 
 ## 완료

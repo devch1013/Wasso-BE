@@ -1,3 +1,5 @@
+from warnings import deprecated
+
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -29,6 +31,9 @@ class MemberView(ModelViewSet):
 
     @action(detail=False, methods=["post"])
     def role_change(self, request, *args, **kwargs):
+        """
+        권한 정보 변경
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         requested_role = Role.objects.get(id=serializer.validated_data["role_id"])
@@ -39,6 +44,7 @@ class MemberView(ModelViewSet):
         user_generation.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @deprecated("Deleted")
     @action(detail=True, methods=["put", "delete"], url_path="tag", url_name="tag")
     def add_tag(self, request, *args, **kwargs):
         if request.method == "PUT":
@@ -59,6 +65,9 @@ class MemberView(ModelViewSet):
         detail=True, methods=["put"], url_path="description", url_name="description"
     )
     def update_member_profile(self, request, *args, **kwargs):
+        """
+        프로필 정보 업데이트
+        """
         serializer = DescriptionUpdateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         member = Member.objects.get(id=kwargs["pk"])
@@ -75,6 +84,9 @@ class MemberView(ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def detail(self, request, *args, **kwargs):
+        """
+        프로필 정보 조회
+        """
         user = request.user
         user_club = Member.objects.get(user=user, club__id=kwargs["pk"])
         serializer = MemberDetailSerializer(user_club)

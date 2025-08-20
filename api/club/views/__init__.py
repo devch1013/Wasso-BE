@@ -1,11 +1,12 @@
-from .club_apply_view import ClubApplyViewSet
-from .club_views import ClubViewSet
+from .club_apply_view import ClubApplyView
+from .club_views import ClubView
+from .gen_member_view import GenMemberView
 from .generation_view import GenerationView
 from .member_view import MemberView
-from .gen_member_view import GenMemberView
+
 __all__ = [
-    ClubViewSet,
-    ClubApplyViewSet,
+    ClubView,
+    ClubApplyView,
     GenerationView,
     MemberView,
     GenMemberView,

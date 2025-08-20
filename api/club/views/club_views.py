@@ -11,7 +11,7 @@ from api.club.services.club_service import ClubService
 from api.userapp.permissions import IsAuthenticatedCustom
 
 
-class ClubViewSet(ModelViewSet):
+class ClubView(ModelViewSet):
     permission_classes = [IsAuthenticatedCustom]
 
     def get_queryset(self):

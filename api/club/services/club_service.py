@@ -18,6 +18,7 @@ class ClubService:
         description: str,
         generation_data: dict,
     ):
+        print("clubName", name)
         if Club.objects.filter(name=name).exists():
             raise CustomException(ErrorCode.CLUB_ALREADY_EXISTS)
 

@@ -1,3 +1,4 @@
+from ast import Dict
 from enum import Enum
 
 from rest_framework import status
@@ -166,6 +167,13 @@ class ErrorCode(Enum):
         self.message = message
         self.status = status
         self.code = code
+
+    def test_equal(self, other: Dict):
+        return (
+            self.message == other["message"]
+            and self.code == other["code"]
+            and self.status == other["status"]
+        )
 
 
 class CustomException(Exception):

@@ -3,8 +3,8 @@ from rest_framework import serializers
 
 from api.club.models import Club, Generation, GenMember, Member
 from api.club.serializers.generation_serializers import (
+    GenerationCreateSerializer,
     GenerationInfoSerializer,
-    SimpleGenerationSerializer,
 )
 from api.club.serializers.role_serializers import RoleSerializer
 
@@ -57,13 +57,21 @@ class ClubCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     image = serializers.ImageField(required=False, allow_null=True, default=None)
     description = serializers.CharField(max_length=255, required=False, allow_null=True)
-    generation = SimpleGenerationSerializer()
+    generation = GenerationCreateSerializer()
 
 
 class ClubUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
         fields = ["name", "image", "description"]
+
+    def update(self, instance, validated_data):
+        """클럽 정보 업데이트"""
+        instance.name = validated_data.get("name", instance.name)
+        instance.image = validated_data.get("image", instance.image)
+        instance.description = validated_data.get("description", instance.description)
+        instance.save()
+        return instance
 
 
 class ClubGenerationSerializer(serializers.ModelSerializer):

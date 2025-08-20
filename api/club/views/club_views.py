@@ -6,13 +6,21 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.club import serializers as sz
 from api.club.models import Club, ClubApply, Generation, Member, Role
-from api.club.serializers.generation_serializers import SimpleGenerationSerializer
+from api.club.serializers.generation_serializers import GenerationCreateSerializer
 from api.club.services.club_service import ClubService
 from api.userapp.permissions import IsAuthenticatedCustom
 
 
 class ClubViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedCustom]
+
+    def get_queryset(self):
+        return Member.objects.filter(
+            user=self.request.user, club__deleted=False
+        ).order_by("club__name")
+
+    def get_object(self):
+        return Club.objects.get(id=self.kwargs["pk"], deleted=False)
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -25,30 +33,27 @@ class ClubViewSet(ModelViewSet):
 
     # @cache_response(timeout=60, key_prefix=CacheKey.CLUB_LIST)
     def list(self, request, *args, **kwargs):
-        """사용자가 속한 클럽들을 조회"""
+        """
+        [GET] /clubs/
+        사용자가 속한 클럽들을 조회
+        """
         return super().list(request, *args, **kwargs)
 
     # @cache_response(timeout=60, key_prefix=CacheKey.CLUB_DETAIL)
     def retrieve(self, request, *args, **kwargs):
-        """클럽 상세 조회"""
+        """
+        [GET] /clubs/{pk}/
+        클럽 상세 조회
+        """
         return super().retrieve(request, *args, **kwargs)
 
     # @delete_cache_response(key_prefix=CacheKey.CLUB_DETAIL)
     def update(self, request, *args, **kwargs):
-        """동아리 정보 수정"""
-        instance = Club.objects.get(id=kwargs["pk"])
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
-
-    def get_queryset(self):
-        return Member.objects.filter(
-            user=self.request.user, club__deleted=False
-        ).order_by("club__name")
-
-    def get_object(self):
-        return Club.objects.get(id=self.kwargs["pk"], deleted=False)
+        """
+        [PUT] /clubs/{pk}/
+        동아리 정보 수정
+        """
+        return super().update(request, *args, **kwargs)
 
     # @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
     def create(self, request, *args, **kwargs):
@@ -56,6 +61,8 @@ class ClubViewSet(ModelViewSet):
         """클럽 생성"""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        print("serializer", serializer.validated_data)
 
         club, member = ClubService.create_club(
             user=self.request.user,
@@ -92,7 +99,7 @@ class ClubViewSet(ModelViewSet):
     def generations(self, request, *args, **kwargs):
         """클럽 기수 목록 조회"""
         if request.method == "POST":
-            serializer = SimpleGenerationSerializer(data=request.data)
+            serializer = GenerationCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             ClubService.create_generation(
                 club=self.get_object(),

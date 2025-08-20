@@ -5,9 +5,9 @@ from PIL import Image
 
 
 class ImageTestUtils:
-    @staticmethod
-    def create_test_image() -> SimpleUploadedFile:
-        image = Image.new("RGB", (100, 100), color="red")
+    @classmethod
+    def create_test_image(cls, width=100, height=100) -> SimpleUploadedFile:
+        image = Image.new("RGB", (width, height), color="red")
         image_io = io.BytesIO()
         image.save(image_io, format="PNG")
         image_io.seek(0)

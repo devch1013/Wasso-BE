@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
 from django.conf import settings
@@ -155,7 +155,7 @@ class AppleAuthService(AuthService):
 
     def _create_client_secret(self):
         """Apple Client Secret 생성"""
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         exp_time = now + timedelta(days=180)  # 180일 유효기간
 
         headers = {"kid": self.key_id, "alg": "ES256"}

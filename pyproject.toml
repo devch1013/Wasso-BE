@@ -36,7 +36,16 @@ django-cors-headers = "^4.7.0"
 celery = "^5.3.4"
 django-celery-beat = "^2.6.0"
 redis = "^5.0.1"
+pytest = "^8.4.1"
+pytest-mock = "^3.14.1"
 
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.django.dev"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--reuse-db --nomigrations"
 
 [build-system]
 requires = ["poetry-core"]

@@ -3,6 +3,12 @@ from rest_framework import serializers
 from api.club.models import Generation, GenMember
 
 
+class GenerationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Generation
+        fields = ["name", "start_date", "end_date"]
+
+
 class SimpleGenerationSerializer(serializers.ModelSerializer):
     club_name = serializers.CharField(source="club.name")
     club_image = serializers.ImageField(source="club.image")

@@ -101,11 +101,13 @@ class ClubView(ModelViewSet):
         if request.method == "POST":
             serializer = GenerationCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            ClubService.create_generation(
+            generations = ClubService.create_generation(
                 club=self.get_object(),
                 generation_data=serializer.validated_data,
+                user=request.user,
             )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response_serializer = sz.GenerationInfoSerializer(generations, many=True)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         elif request.method == "GET":
             generation = Generation.objects.filter(
                 club__id=kwargs["pk"], deleted=False, club__deleted=False

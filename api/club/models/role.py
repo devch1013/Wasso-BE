@@ -82,3 +82,7 @@ class Role(models.Model):
             and self.generation_change
             and self.attendance_manage
         )
+
+    @staticmethod
+    def get_highest_role(club: Club):
+        return Role.objects.get(name="회장", club=club)

@@ -59,9 +59,21 @@ class ClubService:
         return club, member
 
     @staticmethod
-    def create_generation(club: Club, generation_data: dict):
+    def create_generation(
+        club: Club, generation_data: dict, user: User
+    ) -> list[Generation]:
         invite_code = "".join(random.choices(string.digits, k=6))
         generation = Generation.objects.create(
             club=club, **generation_data, invite_code=invite_code
         )
-        return generation
+        member = Member.objects.get(user=user, club=club)
+        GenMember.objects.create(
+            member=member,
+            generation=generation,
+            role=Role.get_highest_role(club),
+            is_current=True,
+        )
+
+        all_generation = Generation.objects.filter(club=club, deleted=False)
+
+        return all_generation

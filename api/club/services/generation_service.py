@@ -110,7 +110,8 @@ class GenerationService:
         club = generation.club
         club.current_generation = generation
         club.save()
-        return generation
+
+        return Generation.objects.filter(club=generation.club)
 
     @classmethod
     def toggle_auto_approve(cls, generation: Generation):

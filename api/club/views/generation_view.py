@@ -8,6 +8,7 @@ from rest_framework.viewsets import GenericViewSet, mixins
 from api.club.models import ClubApply, Generation, GenMember
 from api.club.serializers.club_apply_serializers import ClubApplySerializer
 from api.club.serializers.generation_serializers import (
+    GenerationInfoSerializer,
     GenerationStatsSerializer,
     NotionIdSerializer,
     SimpleGenerationSerializer,
@@ -73,8 +74,9 @@ class GenerationView(
     def activate(self, request, *args, **kwargs):
         """기수 활성화"""
         generation = self.get_object()
-        GenerationService.activate_generation(generation)
-        return Response(status=status.HTTP_200_OK)
+        generations = GenerationService.activate_generation(generation)
+        response_serializer = GenerationInfoSerializer(generations, many=True)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"])
     def auto_approve(self, request, *args, **kwargs):

@@ -3,10 +3,9 @@ from datetime import date, timedelta
 import pytest
 from rest_framework.test import APIClient
 
-from api.club.models import Member, Role
+from api.club.models import ClubApply, Generation, GenMember, Member, Role
 from api.club.services.club_service import ClubService
 from api.club.tests.club_test_utils import ClubTestUtils
-from api.generation.models import ClubApply, Generation, GenMember
 from common.test_utils.image_utils import ImageTestUtils
 
 

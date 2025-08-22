@@ -5,9 +5,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from api.club.models import ClubApply, Generation
 from api.club.services.club_service import ClubService
 from api.club.tests.club_test_utils import ClubTestUtils
+from api.generation.models import ClubApply, Generation
 from common.exceptions import ErrorCode
 from common.test_utils.image_utils import ImageTestUtils
 

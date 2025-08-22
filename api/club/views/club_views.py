@@ -4,11 +4,21 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.club import serializers as sz
 from api.club.models import Club, Member, Role
+from api.club.serializers import (
+    ClubCreateSerializer,
+    ClubDetailSerializer,
+    ClubInfoSerializer,
+    ClubUpdateSerializer,
+    RoleSerializer,
+)
 from api.club.services.club_service import ClubService
 from api.generation.models import ClubApply, Generation
-from api.generation.serializers.generation_serializers import GenerationCreateSerializer
+from api.generation.serializers.club_apply_serializers import ClubApplySerializer
+from api.generation.serializers.generation_serializers import (
+    GenerationCreateSerializer,
+    GenerationInfoSerializer,
+)
 from api.userapp.permissions import IsAuthenticatedCustom
 
 
@@ -25,12 +35,12 @@ class ClubView(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "create":
-            return sz.ClubCreateSerializer
+            return ClubCreateSerializer
         if self.action == "update":
-            return sz.ClubUpdateSerializer
+            return ClubUpdateSerializer
         if self.action == "retrieve":
-            return sz.ClubDetailSerializer
-        return sz.ClubInfoSerializer
+            return ClubDetailSerializer
+        return ClubInfoSerializer
 
     # @cache_response(timeout=60, key_prefix=CacheKey.CLUB_LIST)
     def list(self, request, *args, **kwargs):
@@ -73,7 +83,7 @@ class ClubView(ModelViewSet):
             generation_data=serializer.validated_data["generation"],
         )
 
-        serializer = sz.ClubInfoSerializer(instance=member)
+        serializer = ClubInfoSerializer(instance=member)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     # @delete_cache_response(key_prefix=CacheKey.CLUB_LIST)
@@ -86,14 +96,14 @@ class ClubView(ModelViewSet):
     def applies(self, request, *args, **kwargs):
         """클럽 가입 신청 목록 조회"""
         club_apply = ClubApply.objects.filter(generation=kwargs["pk"])
-        serializer = sz.ClubApplySerializer(club_apply, many=True)
+        serializer = ClubApplySerializer(club_apply, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["get"])
     def roles(self, request, *args, **kwargs):
         """클럽 역할 목록 조회"""
         roles = Role.objects.filter(club__id=kwargs["pk"])
-        serializer = sz.RoleSerializer(roles, many=True)
+        serializer = RoleSerializer(roles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get", "post"])
@@ -111,5 +121,5 @@ class ClubView(ModelViewSet):
             generation = Generation.objects.filter(
                 club__id=kwargs["pk"], deleted=False, club__deleted=False
             ).order_by("start_date")
-            serializer = sz.GenerationInfoSerializer(generation, many=True)
+            serializer = GenerationInfoSerializer(generation, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)

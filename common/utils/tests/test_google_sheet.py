@@ -3,8 +3,9 @@ from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
-from api.club.models import Club, Generation, GenMember, Member
+from api.club.models import Club, Member
 from api.event.models import Attendance, AttendanceStatus, Event
+from api.generation.models import Generation, GenMember
 from api.userapp.models import User
 from common.utils.google_sheet import create_attendance_sheet
 

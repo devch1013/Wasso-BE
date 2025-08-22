@@ -5,9 +5,10 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from api.club.models import ClubApply, Generation, GenMember
 from api.club.services.club_service import ClubService
-from api.userapp.models import Provider, User
+from api.generation.models import ClubApply, Generation, GenMember
+from api.userapp.enums import Provider
+from api.userapp.models import User
 from common.test_utils.image_utils import ImageTestUtils
 
 

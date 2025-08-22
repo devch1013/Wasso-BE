@@ -8,7 +8,7 @@ class Generation(models.Model):
     def __str__(self):
         return f"{self.club.name} - {self.name}"
 
-    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, on_delete=models.PROTECT, related_name="generations")
     name = models.CharField(max_length=100)
     activated = models.BooleanField(default=False)
     start_date = models.DateField()
@@ -31,3 +31,6 @@ class Generation(models.Model):
     @property
     def member_count(self):
         return self.gen_members.count()
+
+    class Meta:
+        db_table = "club_generations"

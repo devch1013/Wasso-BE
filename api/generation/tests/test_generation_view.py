@@ -84,7 +84,7 @@ class TestGenerationMembersView:
         self, authenticated_client, test_users, mock_storage
     ):
         """멤버가 없는 기수 테스트"""
-        user1 = test_users[0]
+        # user1 = test_users[0]
         generation = Generation.objects.create(
             club_id=1,  # 존재하지 않는 클럽
             name="빈기수",

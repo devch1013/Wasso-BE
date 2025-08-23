@@ -39,7 +39,7 @@ class Member(SoftDeleteModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_current_generation(self):
-        return self.gen_members.all().order_by("generation__start_date").first()
+        return self.gen_members.all().order_by("-generation__start_date").first()
 
     class Meta:
         db_table = "member"

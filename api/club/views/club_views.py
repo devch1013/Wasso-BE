@@ -5,9 +5,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from api.club import serializers as sz
-from api.club.models import Club, ClubApply, Generation, Member, Role
+from api.club.models import Club, ClubApply, Member, Role
 from api.club.serializers.generation_serializers import GenerationCreateSerializer
 from api.club.services.club_service import ClubService
+from api.club.services.generation_service import GenerationService
 from api.userapp.permissions import IsAuthenticatedCustom
 
 
@@ -95,10 +96,11 @@ class ClubView(ModelViewSet):
         serializer = sz.RoleSerializer(roles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["get", "post"])
+    @action(detail=True, methods=["post", "get"], url_path="generations")
     def generations(self, request, *args, **kwargs):
-        """클럽 기수 목록 조회"""
+        """기수 생성 및 목록 조회"""
         if request.method == "POST":
+            """기수 생성"""
             serializer = GenerationCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             generations = ClubService.create_generation(
@@ -108,9 +110,11 @@ class ClubView(ModelViewSet):
             )
             response_serializer = sz.GenerationInfoSerializer(generations, many=True)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
         elif request.method == "GET":
-            generation = Generation.objects.filter(
-                club__id=kwargs["pk"], deleted=False, club__deleted=False
-            ).order_by("start_date")
-            serializer = sz.GenerationInfoSerializer(generation, many=True)
+            """기수 목록 조회"""
+            generations = GenerationService.get_generations_by_user(
+                user=request.user, club_id=kwargs["pk"]
+            )
+            serializer = sz.GenerationInfoSerializer(generations, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)

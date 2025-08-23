@@ -16,7 +16,7 @@ from common.exceptions import CustomException, ErrorCode
 from common.responses.simple_response import SimpleResponse
 
 
-class ClubApplyView(mixins.ListModelMixin, GenericViewSet):
+class ClubApplyView(mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticatedCustom]
     serializer_class = MyClubApplySerializer
 

@@ -1,6 +1,7 @@
 from django.db.models import Case, Count, F, IntegerField, OuterRef, Subquery, When
 
 from api.club.models import Generation, GenMember
+from api.club.models.member import Member
 from api.event.models import Attendance
 from api.userapp.models import User
 from common.utils.notion import NotionAttendanceManager
@@ -118,3 +119,8 @@ class GenerationService:
         generation.auto_approve = not generation.auto_approve
         generation.save()
         return generation
+
+    @classmethod
+    def get_generations_by_member(cls, member: Member):
+        generation_ids = member.gen_members.values_list("generation_id", flat=True)
+        return Generation.objects.filter(id__in=generation_ids).order_by("start_date")

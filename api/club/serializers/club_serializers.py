@@ -19,8 +19,8 @@ class ClubInfoSerializer(serializers.Serializer):
     current_generation = GenerationInfoSerializer(
         source="get_current_generation.generation", required=False, allow_null=True
     )
-    is_member_activated = serializers.SerializerMethodField()
-    role = RoleSerializer(
+    is_member_activated: bool = serializers.SerializerMethodField()
+    role: RoleSerializer = RoleSerializer(
         source="get_current_generation.role", required=False, allow_null=True
     )
     member_id = serializers.IntegerField(source="id")
@@ -42,14 +42,15 @@ class ClubInfoSerializer(serializers.Serializer):
         ]
 
     def get_is_member_activated(self, obj: Member):
-        if obj.get_current_generation():
-            return (
-                obj.get_current_generation().generation == obj.club.current_generation
-            )
+        current_generation = obj.get_current_generation()
+        if current_generation:
+            return current_generation.generation.activated
         return False
 
     def get_generations(self, obj: Member):
-        generations = Generation.objects.filter(club=obj.club, deleted=False)
+        from api.club.services.generation_service import GenerationService
+
+        generations = GenerationService.get_generations_by_member(obj)
         return GenerationInfoSerializer(generations, many=True).data
 
 

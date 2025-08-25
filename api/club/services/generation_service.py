@@ -129,3 +129,7 @@ class GenerationService:
     def get_generations_by_user(cls, user: User, club_id: int):
         member = Member.objects.get(user=user, club__id=club_id)
         return cls.get_generations_by_member(member)
+
+    @classmethod
+    def get_all_generations_of_club(cls, club_id: int):
+        return Generation.objects.filter(club__id=club_id).order_by("start_date")

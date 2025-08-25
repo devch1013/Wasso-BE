@@ -103,18 +103,21 @@ class ClubView(ModelViewSet):
             """기수 생성"""
             serializer = GenerationCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            generations = ClubService.create_generation(
+            ClubService.create_generation(
                 club=self.get_object(),
                 generation_data=serializer.validated_data,
                 user=request.user,
+            )
+            generations = GenerationService.get_all_generations_of_club(
+                club_id=self.get_object().id
             )
             response_serializer = sz.GenerationInfoSerializer(generations, many=True)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
         elif request.method == "GET":
             """기수 목록 조회"""
-            generations = GenerationService.get_generations_by_user(
-                user=request.user, club_id=kwargs["pk"]
+            generations = GenerationService.get_all_generations_of_club(
+                club_id=kwargs["pk"]
             )
             serializer = sz.GenerationInfoSerializer(generations, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)

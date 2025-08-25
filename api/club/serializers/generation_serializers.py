@@ -19,6 +19,11 @@ class SimpleGenerationSerializer(serializers.ModelSerializer):
 
 
 class GenerationInfoSerializer(serializers.ModelSerializer):
+    member_count = serializers.SerializerMethodField()
+
+    def get_member_count(self, obj: Generation):
+        return obj.gen_members.count()
+
     class Meta:
         model = Generation
         fields = "__all__"

@@ -73,7 +73,4 @@ class ClubService:
             role=Role.get_highest_role(club),
             is_current=True,
         )
-
-        all_generation = Generation.objects.filter(club=club, deleted=False)
-
-        return all_generation
+        return

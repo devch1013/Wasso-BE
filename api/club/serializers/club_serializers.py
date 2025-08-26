@@ -6,6 +6,7 @@ from api.club.serializers.generation_serializers import (
     GenerationCreateSerializer,
     GenerationInfoSerializer,
 )
+from api.club.serializers.member_serializers import MemberSerializer
 from api.club.serializers.role_serializers import RoleSerializer
 
 
@@ -19,6 +20,7 @@ class ClubInfoSerializer(serializers.Serializer):
     current_generation = GenerationInfoSerializer(
         source="get_current_generation.generation", required=False, allow_null=True
     )
+    current_member = MemberSerializer(source="*", required=False, allow_null=True)
     is_member_activated: bool = serializers.SerializerMethodField()
     role: RoleSerializer = serializers.SerializerMethodField(
         required=False, allow_null=True
@@ -35,6 +37,7 @@ class ClubInfoSerializer(serializers.Serializer):
             "club_name",
             "club_image",
             "current_generation",
+            "current_member",
             "is_member_activated",
             "role",
             "member_id",
@@ -71,13 +74,16 @@ class ClubCreateSerializer(serializers.Serializer):
 class ClubUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
-        fields = ["name", "image", "description"]
+        fields = ["name", "image", "description", "short_description"]
 
     def update(self, instance, validated_data):
         """클럽 정보 업데이트"""
         instance.name = validated_data.get("name", instance.name)
         instance.image = validated_data.get("image", instance.image)
         instance.description = validated_data.get("description", instance.description)
+        instance.short_description = validated_data.get(
+            "short_description", instance.short_description
+        )
         instance.save()
         return instance
 

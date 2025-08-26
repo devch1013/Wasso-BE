@@ -9,6 +9,7 @@ from api.club.serializers.member_serializers import (
     GenerationMappingSerializer,
     MemberDetailSerializer,
     MemberRoleChangeRequestSerializer,
+    MemberSerializer,
     TagUpdateRequestSerializer,
 )
 
@@ -70,7 +71,7 @@ class MemberView(ModelViewSet):
             print(type(serializer.validated_data["profile_image"]))
             member.profile_image = serializer.validated_data["profile_image"]
         member.save()
-        result = DescriptionUpdateRequestSerializer(member)
+        result = MemberSerializer(member)
         return Response(result.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])

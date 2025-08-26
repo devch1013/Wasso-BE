@@ -1,10 +1,10 @@
 from django.db import models
-from django.utils import timezone
 
 from api.club.models.club import Club
+from config.abstract_models.soft_delete_model import SoftDeleteModel
 
 
-class Generation(models.Model):
+class Generation(SoftDeleteModel):
     def __str__(self):
         return f"{self.club.name} - {self.name}"
 
@@ -19,14 +19,6 @@ class Generation(models.Model):
 
     invite_code = models.CharField(max_length=6, null=True, blank=True)
     auto_approve = models.BooleanField(default=False)
-
-    deleted = models.BooleanField(default=False)
-    deleted_at = models.DateTimeField(null=True, blank=True)
-
-    def delete(self):
-        self.deleted = True
-        self.deleted_at = timezone.localtime(timezone.now())
-        self.save()
 
     @property
     def member_count(self):

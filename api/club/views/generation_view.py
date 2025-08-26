@@ -28,7 +28,7 @@ class GenerationView(
     mixins.UpdateModelMixin,
     GenericViewSet,
 ):
-    queryset = Generation.objects.filter(deleted=False)
+    queryset = Generation.objects.all()
 
     def get_serializer_class(self):
         if self.action == "apply":

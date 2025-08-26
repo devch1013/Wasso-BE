@@ -52,10 +52,8 @@ class ClubInfoSerializer(serializers.Serializer):
 
     def get_role(self, obj: Member):
         current_generation = obj.get_current_generation()
-        if current_generation.generation.activated:
-            result = RoleSerializer(current_generation.role).data
-            return result
-        return None
+        result = RoleSerializer(current_generation.role).data
+        return result
 
     def get_generations(self, obj: Member):
         from api.club.services.generation_service import GenerationService

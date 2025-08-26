@@ -116,8 +116,8 @@ class ClubView(ModelViewSet):
 
         elif request.method == "GET":
             """기수 목록 조회"""
-            generations = GenerationService.get_all_generations_of_club(
-                club_id=kwargs["pk"]
+            generations = GenerationService.get_generations_by_user(
+                user=request.user, club_id=kwargs["pk"]
             )
             serializer = sz.GenerationInfoSerializer(generations, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)

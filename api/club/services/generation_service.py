@@ -122,13 +122,23 @@ class GenerationService:
 
     @classmethod
     def get_generations_by_member(cls, member: Member):
-        generation_ids = member.gen_members.values_list("generation_id", flat=True)
-        return Generation.objects.filter(id__in=generation_ids).order_by("start_date")
+        return cls.get_generations_by_user(member.user, member.club.id)
 
     @classmethod
     def get_generations_by_user(cls, user: User, club_id: int):
-        member = Member.objects.get(user=user, club__id=club_id)
-        return cls.get_generations_by_member(member)
+        member: Member = Member.objects.get(user=user, club__id=club_id)
+        current_gen_member: GenMember = member.get_current_generation()
+        print(current_gen_member)
+        if (
+            current_gen_member.generation.activated
+            and current_gen_member.role.history_edit
+        ):
+            return cls.get_all_generations_of_club(club_id)
+        else:
+            generation_ids = member.gen_members.values_list("generation_id", flat=True)
+            return Generation.objects.filter(id__in=generation_ids).order_by(
+                "start_date"
+            )
 
     @classmethod
     def get_all_generations_of_club(cls, club_id: int):

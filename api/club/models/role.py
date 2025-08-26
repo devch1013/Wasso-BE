@@ -26,6 +26,8 @@ class Role(models.Model):
     generation_change = models.BooleanField(default=False)
     # 출석 관리
     attendance_manage = models.BooleanField(default=False)
+    # can edit history
+    history_edit = models.BooleanField(default=False)
 
     @staticmethod
     def create_owner_role(club):
@@ -39,6 +41,7 @@ class Role(models.Model):
         role.club_info_manage = True
         role.generation_change = True
         role.attendance_manage = True
+        role.history_edit = True
         role.save()
         return role
 
@@ -54,6 +57,7 @@ class Role(models.Model):
         role.club_info_manage = False
         role.generation_change = False
         role.attendance_manage = True
+        role.history_edit = False
         role.save()
         return role
 
@@ -69,6 +73,7 @@ class Role(models.Model):
         role.club_info_manage = False
         role.generation_change = False
         role.attendance_manage = False
+        role.history_edit = False
         role.save()
         return role
 
@@ -81,6 +86,7 @@ class Role(models.Model):
             and self.club_info_manage
             and self.generation_change
             and self.attendance_manage
+            and self.history_edit
         )
 
     @staticmethod

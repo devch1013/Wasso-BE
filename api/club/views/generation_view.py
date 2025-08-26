@@ -8,10 +8,10 @@ from rest_framework.viewsets import GenericViewSet, mixins
 from api.club.models import ClubApply, Generation, GenMember
 from api.club.serializers.club_apply_serializers import ClubApplySerializer
 from api.club.serializers.generation_serializers import (
+    GenerationCreateSerializer,
     GenerationInfoSerializer,
     GenerationStatsSerializer,
     NotionIdSerializer,
-    SimpleGenerationSerializer,
 )
 from api.club.serializers.member_serializers import (
     GenerationMappingSerializer,
@@ -34,7 +34,7 @@ class GenerationView(
         if self.action == "apply":
             return ClubApplySerializer
         elif self.action == "update":
-            return SimpleGenerationSerializer
+            return GenerationCreateSerializer
         return None
 
     @action(detail=True, methods=["get"])

@@ -31,6 +31,11 @@ urlpatterns = [
         name="event-detail",
     ),
     path(
+        "<int:generation_id>/default-times/",
+        views.EventViewSet.as_view({"get": "get_event_default_times"}),
+        name="event-default-times",
+    ),
+    path(
         "<int:event_id>/generation-info/",
         views.EventViewSet.as_view({"get": "generation_info"}),
         name="event-generation-info",

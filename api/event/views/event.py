@@ -13,7 +13,10 @@ from api.event.serializers import (
     EventUpdateSerializer,
     UpcomingEventSerializer,
 )
-from api.event.serializers.event_serializer import EventListForPCSerializer
+from api.event.serializers.event_serializer import (
+    EventDefaultTimesSerializer,
+    EventListForPCSerializer,
+)
 from api.event.service.event_service import EventService
 from common.responses.simple_response import SimpleResponse
 
@@ -100,3 +103,10 @@ class EventViewSet(
         ).order_by("start_datetime")
         serializer = EventListForPCSerializer(events, many=True)
         return Response(serializer.data)
+
+    def get_event_default_times(self, request, *args, **kwargs):
+        """
+        이벤트 기본 시간 조회
+        """
+        event = EventService.get_recent_event(kwargs.get("generation_id"))
+        return Response(EventDefaultTimesSerializer(event).data)

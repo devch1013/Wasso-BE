@@ -2,7 +2,6 @@ from api.club.models.generation_mapping import GenMember
 from api.event.models.edit_request import EditRequest
 from api.event.models.event import Event
 from api.event.serializers.edit_request_serializer import EditRequestCreateSerializer
-from api.event.service.event_service import EventService
 from common.component.fcm_component import FCMComponent
 from common.component.notification_template import NotificationTemplate
 from common.component.user_selector import UserSelector
@@ -32,12 +31,12 @@ class EditRequestService:
             is_approved=False,
         )
 
-        attendance = EventService.change_attendance_status(
-            event_id,
-            gen_member.id,
-            serializer.validated_data.get("status"),
-            user,
-        )
+        # attendance = EventService.change_attendance_status(
+        #     event_id,
+        #     gen_member.member.id,
+        #     serializer.validated_data.get("status"),
+        #     user,
+        # )
 
         notice_users = UserSelector.get_users_by_role(
             generation=event.generation,

@@ -293,3 +293,15 @@ class EventService:
     def get_generation_info(event_id: int):
         event = Event.objects.get(id=event_id)
         return event.generation
+
+    @classmethod
+    def get_recent_event(cls, generation_id: int):
+        generation = Generation.objects.get(id=generation_id)
+        event = (
+            Event.objects.filter(generation=generation)
+            .order_by("-start_datetime")
+            .first()
+        )
+        if event is None:
+            return None
+        return event

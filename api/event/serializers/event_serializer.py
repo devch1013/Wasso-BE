@@ -298,3 +298,11 @@ class EventAttendanceSerializer(serializers.ModelSerializer):
                 "edit_requests_map": edit_requests_map,
             },
         ).data
+
+
+class EventDefaultTimesSerializer(serializers.Serializer):
+    start_datetime = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S")
+    end_datetime = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S")
+    start_minutes = serializers.IntegerField()
+    late_minutes = serializers.IntegerField()
+    fail_minutes = serializers.IntegerField()

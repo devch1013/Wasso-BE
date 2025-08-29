@@ -185,3 +185,33 @@ class EventViewSetTests(APITestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Event.objects.count(), 1)
         self.assertEqual(Event.objects.first().id, event2.id)
+
+    def test_get_event_default_times(self):
+        """이벤트 기본 시간 조회"""
+
+        Event.objects.create(
+            title="Test Event1",
+            description="Test Event Description",
+            location="Test Location",
+            images=[],
+            generation=self.club.current_generation,
+            date="2018-01-01",
+            start_datetime="2018-01-01T10:00:00",
+            end_datetime="2018-01-01T11:00:00",
+            start_minutes=0,
+            late_minutes=10,
+            fail_minutes=30,
+        )
+        response = self.client.get(
+            reverse(
+                "event-default-times",
+                kwargs={"generation_id": self.club.current_generation.id},
+            )
+        )
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["start_datetime"], "2018-01-01T10:00:00")
+        self.assertEqual(response.data["end_datetime"], "2018-01-01T11:00:00")
+        self.assertEqual(response.data["start_minutes"], 0)
+        self.assertEqual(response.data["late_minutes"], 10)
+        self.assertEqual(response.data["fail_minutes"], 30)

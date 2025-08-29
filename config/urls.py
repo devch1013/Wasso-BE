@@ -24,6 +24,8 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
+from api.userapp.views.version_view import VersionView
+
 
 def health_check(request):
     return HttpResponse(status=200)
@@ -48,6 +50,7 @@ urlpatterns = [
     path("clubs/", include("api.club.urls")),
     path("events/", include("api.event.urls")),
     path("health/", health_check, name="health_check"),
+    path("versions/", VersionView.as_view(), name="version"),
     # Swagger URLs
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",

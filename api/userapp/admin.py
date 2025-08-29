@@ -7,6 +7,8 @@ from django.utils.html import format_html
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.userapp.models import User
+from api.userapp.models.session import PcSession
+from api.userapp.models.version import Version
 
 
 class CustomUserAdmin(UserAdmin):
@@ -105,3 +107,5 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(Version)
+admin.site.register(PcSession)

@@ -31,8 +31,14 @@ class GoogleAuthService(AuthService):
         response = requests.get(
             "https://www.googleapis.com/oauth2/v3/userinfo", headers=headers
         )
+        if response.status_code == 500:
+            retry_response = requests.get(
+                f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}"
+            )
+            if retry_response.status_code == 200:
+                return retry_response.json()
+            return None
         if response.status_code == 200:
-            print(response.json())
             return response.json()
         return None
 
@@ -44,6 +50,9 @@ class GoogleAuthService(AuthService):
         user_info = self._get_google_user_info(google_token)
         if not user_info:
             raise CustomException(ErrorCode.INVALID_TOKEN)
+
+        if "user_id" in user_info:
+            user_info["sub"] = user_info["user_id"]
 
         # 사용자 생성 또는 조회
         user, is_created = User.objects.get_or_create(

@@ -159,6 +159,8 @@ class EventDetailSerializer(serializers.ModelSerializer):
             "date",
             "start_time",
             "end_time",
+            "start_datetime",
+            "end_datetime",
             "location",
             "location_link",
             "start_minutes",

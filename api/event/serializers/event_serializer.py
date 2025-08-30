@@ -110,14 +110,20 @@ class UpcomingEventSerializer(serializers.Serializer):
 
     def get_past_events(self, obj):
         yesterday = timezone.now().date() - timedelta(days=1)
-        past_events = [event for event in self.instance if event.date < yesterday]
+        past_events = self.instance.filter(date__lt=yesterday).order_by(
+            "-start_datetime"
+        )
+        # past_events = [event for event in self.instance if event.date < yesterday]
         return EventSerializer(
             past_events, many=True, context={"user": self.context.get("user")}
         ).data
 
     def get_upcoming_events(self, obj):
         yesterday = timezone.now().date() - timedelta(days=1)
-        upcoming_events = [event for event in self.instance if event.date >= yesterday]
+        upcoming_events = self.instance.filter(date__gte=yesterday).order_by(
+            "start_datetime"
+        )
+        # upcoming_events = [event for event in self.instance if event.date >= yesterday]
         return EventSerializer(
             upcoming_events, many=True, context={"user": self.context.get("user")}
         ).data

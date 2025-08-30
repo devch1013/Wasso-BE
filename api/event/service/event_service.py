@@ -25,6 +25,7 @@ fcm_component = FCMComponent()
 class EventService:
     @staticmethod
     def create_event(data: EventCreateSerializer, user):
+        print("data", data)
         generation_id = data.validated_data.get("generation_id")
         # 사용자가 클럽의 관리자인지 확인
         try:

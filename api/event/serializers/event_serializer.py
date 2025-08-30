@@ -197,6 +197,7 @@ class EventDetailSerializer(serializers.ModelSerializer):
 
 class MemberAttendanceSerializer(serializers.ModelSerializer):
     member_id = serializers.IntegerField(source="member.id")
+    gen_member_id = serializers.IntegerField(source="id")
     member = MemberSerializer()
     attendance_status = serializers.SerializerMethodField()
     absent_apply = serializers.SerializerMethodField()
@@ -206,6 +207,7 @@ class MemberAttendanceSerializer(serializers.ModelSerializer):
         model = GenMember
         fields = [
             "member_id",
+            "gen_member_id",
             "member",
             "attendance_status",
             "absent_apply",

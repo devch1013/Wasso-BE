@@ -75,7 +75,6 @@ class PcSessionView(GenericViewSet):
         session = PcSessionService.authenticate_session(
             session_code=data["sessionCode"],
             user=request.user,
-            event_id=1,
         )
 
         if session is None:

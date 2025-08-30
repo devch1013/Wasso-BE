@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from django.db import transaction
 from django.utils import timezone
 
-from api.club.models.generation_mapping import GenMember
 from api.event.models import Event
 from api.userapp.enums import SessionState
 from api.userapp.models import PcSession
@@ -27,7 +26,7 @@ class PcSessionService:
             return session
 
     @classmethod
-    def authenticate_session(cls, session_code: str, user, event_id: int):
+    def authenticate_session(cls, session_code: str, user):
         """세션을 인증하고 사용자 및 이벤트 정보를 설정"""
         with transaction.atomic():
             try:
@@ -42,21 +41,20 @@ class PcSessionService:
                 # 세션이 이미 사용되었는지 확인
                 if session.state != SessionState.PENDING:
                     raise CustomException(ErrorCode.PC_SESSION_ALREADY_USED)
+                ## TODO
+                # try:
+                #     if not GenMember.objects.get(
+                #         member__user=user, generation__id=session.event.generation.id
+                #     ).is_admin():
+                #         print("GenMember.is_admin()")
+                #         raise CustomException(ErrorCode.ADMIN_ONLY)
 
-                event = Event.objects.get(id=event_id)
-
-                try:
-                    if not GenMember.objects.get(
-                        member__user=user, generation__id=event.generation.id
-                    ).is_admin():
-                        raise CustomException(ErrorCode.ADMIN_ONLY)
-
-                except GenMember.DoesNotExist:
-                    raise CustomException(ErrorCode.ADMIN_ONLY)
+                # except GenMember.DoesNotExist:
+                #     print("GenMember.DoesNotExist")
+                #     raise CustomException(ErrorCode.ADMIN_ONLY)
 
                 # 세션 인증
                 session.user = user
-                session.event = event
                 session.state = SessionState.AUTHENTICATED
                 session.save()
 

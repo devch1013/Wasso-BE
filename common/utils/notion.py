@@ -133,7 +133,7 @@ class NotionAttendanceManager:
         # Get required data from Django models
         club = generation.club
         events = Event.objects.filter(generation=generation).order_by(
-            "date", "start_time"
+            "date", "start_datetime"
         )
         gen_members = GenMember.objects.filter(generation=generation, is_current=True)
 

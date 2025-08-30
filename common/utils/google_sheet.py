@@ -26,7 +26,9 @@ def create_attendance_sheet(generation: Generation) -> str:
     service = build("sheets", "v4", credentials=credentials)
 
     # 데이터 가져오기
-    events = Event.objects.filter(generation=generation).order_by("date", "start_time")
+    events = Event.objects.filter(generation=generation).order_by(
+        "date", "start_datetime"
+    )
     generation_mappings = GenMember.objects.filter(
         generation=generation
     ).select_related("member__user")

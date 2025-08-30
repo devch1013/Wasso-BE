@@ -16,6 +16,7 @@ class ClubService:
         name: str,
         image,
         description: str,
+        short_description: str,
         generation_data: dict,
     ):
         print("clubName", name)
@@ -26,6 +27,7 @@ class ClubService:
             name=name,
             image=image,
             description=description,
+            short_description=short_description,
         )
 
         invite_code = "".join(random.choices(string.digits, k=6))

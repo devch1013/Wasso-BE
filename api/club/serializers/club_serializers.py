@@ -65,6 +65,9 @@ class ClubInfoSerializer(serializers.Serializer):
 class ClubCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     image = serializers.ImageField(required=False, allow_null=True, default=None)
+    short_description = serializers.CharField(
+        max_length=255, required=False, allow_null=True
+    )
     description = serializers.CharField(max_length=255, required=False, allow_null=True)
     generation = GenerationCreateSerializer()
 

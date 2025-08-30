@@ -69,6 +69,7 @@ class ClubView(ModelViewSet):
             user=self.request.user,
             name=serializer.validated_data["name"],
             image=serializer.validated_data["image"],
+            short_description=serializer.validated_data["short_description"],
             description=serializer.validated_data["description"],
             generation_data=serializer.validated_data["generation"],
         )

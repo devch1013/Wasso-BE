@@ -15,6 +15,7 @@ class ClubInfoSerializer(serializers.Serializer):
     club_id = serializers.IntegerField(source="club.id")
     club_name = serializers.CharField(source="club.name")
     club_image = serializers.ImageField(source="club.image")
+    club_short_description = serializers.CharField(source="club.short_description")
     club_description = serializers.CharField(source="club.description")
     generations = serializers.SerializerMethodField()
     current_generation = GenerationInfoSerializer(

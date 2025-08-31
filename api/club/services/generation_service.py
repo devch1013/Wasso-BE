@@ -2,6 +2,7 @@ from django.db.models import Case, Count, F, IntegerField, OuterRef, Subquery, W
 
 from api.club.models import Generation, GenMember
 from api.club.models.member import Member
+from api.club.services.apply_service import ApplyService
 from api.event.models import Attendance
 from api.userapp.models import User
 from common.utils.notion import NotionAttendanceManager
@@ -117,6 +118,7 @@ class GenerationService:
     @classmethod
     def toggle_auto_approve(cls, generation: Generation):
         generation.auto_approve = not generation.auto_approve
+        ApplyService.apply_all(generation)
         generation.save()
         return generation
 

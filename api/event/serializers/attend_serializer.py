@@ -71,6 +71,7 @@ class AbsentApplySerializer(serializers.ModelSerializer):
             "reason",
             "status",
             "is_approved",
+            "is_rejected",
             "created_at",
             "updated_at",
             "approved_by",
@@ -78,6 +79,7 @@ class AbsentApplySerializer(serializers.ModelSerializer):
         read_only_fields = [
             "id",
             "is_approved",
+            "is_rejected",
             "created_at",
             "updated_at",
             "approved_by",

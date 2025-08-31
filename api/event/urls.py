@@ -15,12 +15,12 @@ urlpatterns = [
     ),
     path(
         "edit-request/<int:pk>/",
-        views.EditRequestView.as_view({"post": "approve"}),
+        views.EditRequestView.as_view({"post": "approve", "delete": "reject"}),
         name="event-edit-request-approve",
     ),
     path(
         "absent-apply/<int:pk>/",
-        views.AbsentApplyView.as_view({"post": "approve"}),
+        views.AbsentApplyView.as_view({"post": "approve", "delete": "reject"}),
         name="absent-apply-approve",
     ),
     path(

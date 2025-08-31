@@ -1,8 +1,9 @@
+from .absent_apply import AbsentApply
+from .attendance import Attendance
+from .edit_request import EditRequest
+from .enums import AbsentApplyStatus, AttendanceStatus, AttendanceType
 from .event import Event
 from .notice import Notice
-from .absent_apply import AbsentApply
-from .enums import AttendanceType, AttendanceStatus, AbsentApplyStatus
-from .attendance import Attendance
 
 __all__ = [
     Event,
@@ -12,4 +13,5 @@ __all__ = [
     AttendanceStatus,
     AbsentApplyStatus,
     Attendance,
+    EditRequest,
 ]

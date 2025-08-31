@@ -8,6 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 from api.club.models import GenMember
 from api.event.models import AbsentApply, Event
 from api.event.serializers import AbsentApplyCreateSerializer, AbsentApplySerializer
+from api.event.service.event_service import EventService
 from common.component.fcm_component import FCMComponent
 from common.component.notification_template import NotificationTemplate
 from common.component.user_selector import UserSelector
@@ -142,9 +143,15 @@ class AbsentApplyView(GenericViewSet):
             )
 
             # Approve the absent application
-            absent_apply.is_approved = True
-            absent_apply.approved_by = approve_gen_member
-            absent_apply.save()
+            absent_apply.approve(approve_gen_member)
+
+            EventService.change_attendance_status(
+                absent_apply.event.id,
+                absent_apply.gen_member.member.id,
+                absent_apply.status,
+                request.user,
+                send_notification=False,
+            )
 
             # Return the updated absent application
             result = AbsentApplySerializer(absent_apply)
@@ -172,5 +179,47 @@ class AbsentApplyView(GenericViewSet):
             logger.error(f"Error approving absent application: {str(e)}")
             return Response(
                 {"detail": "An error occurred while approving the absent application."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    def reject(self, request, *args, **kwargs):
+        """
+        결석 신청 반려
+        """
+        try:
+            # Get the absent apply by its ID from the URL
+            # Get the absent apply by its ID from the URL
+            absent_apply_id = kwargs.get("pk")
+            absent_apply: AbsentApply = AbsentApply.objects.get(id=absent_apply_id)
+            approve_gen_member = GenMember.objects.get(
+                member__user=request.user, generation=absent_apply.event.generation
+            )
+
+            # Approve the absent application
+            absent_apply.reject(approve_gen_member)
+            result = AbsentApplySerializer(absent_apply)
+            fcm_component.send_to_user(
+                absent_apply.gen_member.member.user,
+                NotificationTemplate.ABSENT_APPLY_REJECT.get_title(
+                    status=absent_apply.get_status_display()
+                ),
+                NotificationTemplate.ABSENT_APPLY_REJECT.get_body(
+                    event_name=absent_apply.event.title,
+                    status=absent_apply.get_status_display(),
+                ),
+                data=NotificationTemplate.ABSENT_APPLY_REJECT.get_deeplink_data(
+                    event_id=absent_apply.event.id,
+                ),
+            )
+            return Response(result.data, status=status.HTTP_200_OK)
+        except AbsentApply.DoesNotExist:
+            return Response(
+                {"detail": "Absent application not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            logger.error(f"Error rejecting absent application: {str(e)}")
+            return Response(
+                {"detail": "An error occurred while rejecting the absent application."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

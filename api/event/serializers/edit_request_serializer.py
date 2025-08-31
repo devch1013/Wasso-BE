@@ -20,6 +20,7 @@ class EditRequestSerializer(serializers.ModelSerializer):
             "reason",
             "status",
             "is_approved",
+            "is_rejected",
             "approved_by",
             "created_at",
             "updated_at",

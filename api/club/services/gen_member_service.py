@@ -87,6 +87,7 @@ class GenMemberService:
                 "title": event.title,
                 "date": event.date,
                 "start_time": event.start_time,
+                "start_datetime": event.start_datetime,
                 "attendance": None,
             }
 

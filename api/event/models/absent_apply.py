@@ -14,6 +14,7 @@ class AbsentApply(models.Model):
         default=AttendanceStatus.PRESENT,
     )
     is_approved = models.BooleanField(default=False)
+    is_rejected = models.BooleanField(default=False)
     approved_by = models.ForeignKey(
         GenMember,
         on_delete=models.CASCADE,
@@ -29,3 +30,13 @@ class AbsentApply(models.Model):
 
     def get_status_display(self):
         return AttendanceStatus(self.status).label
+
+    def reject(self, gen_member: GenMember):
+        self.is_rejected = True
+        self.approved_by = gen_member
+        self.save()
+
+    def approve(self, gen_member: GenMember):
+        self.is_approved = True
+        self.approved_by = gen_member
+        self.save()

@@ -12,8 +12,11 @@ from api.event.serializers.edit_request_serializer import (
     EditRequestSerializer,
 )
 from api.event.service.edit_request_service import EditRequestService
+from api.event.service.event_service import EventService
 from common.component.fcm_component import FCMComponent
 from common.component.notification_template import NotificationTemplate
+
+fcm_component = FCMComponent()
 
 
 class EditRequestView(GenericViewSet):
@@ -81,33 +84,39 @@ class EditRequestView(GenericViewSet):
         """
         결석 신청 승인
         """
-        fcm_component = FCMComponent()
+
         try:
             # Get the absent apply by its ID from the URL
             absent_apply_id = kwargs.get("pk")
-            absent_apply = EditRequest.objects.get(id=absent_apply_id)
+            edit_request = EditRequest.objects.get(id=absent_apply_id)
             approve_gen_member = GenMember.objects.get(
-                member__user=request.user, generation=absent_apply.event.generation
+                member__user=request.user, generation=edit_request.event.generation
             )
 
             # Approve the absent application
-            absent_apply.is_approved = True
-            absent_apply.approved_by = approve_gen_member
-            absent_apply.save()
+            edit_request.approve(approve_gen_member)
+
+            EventService.change_attendance_status(
+                edit_request.event.id,
+                edit_request.gen_member.member.id,
+                edit_request.status,
+                request.user,
+                send_notification=False,
+            )
 
             # Return the updated absent application
-            result = EditRequestSerializer(absent_apply)
+            result = EditRequestSerializer(edit_request)
             fcm_component.send_to_user(
-                absent_apply.gen_member.member.user,
+                edit_request.gen_member.member.user,
                 NotificationTemplate.EDIT_REQUEST_APPROVE.get_title(
-                    status=absent_apply.get_status_display()
+                    status=edit_request.get_status_display()
                 ),
                 NotificationTemplate.EDIT_REQUEST_APPROVE.get_body(
-                    event_name=absent_apply.event.title,
-                    status=absent_apply.get_status_display(),
+                    event_name=edit_request.event.title,
+                    status=edit_request.get_status_display(),
                 ),
                 data=NotificationTemplate.EDIT_REQUEST_APPROVE.get_deeplink_data(
-                    event_id=absent_apply.event.id,
+                    event_id=edit_request.event.id,
                 ),
             )
             return Response(result.data, status=status.HTTP_200_OK)
@@ -121,5 +130,47 @@ class EditRequestView(GenericViewSet):
             logger.error(f"Error approving absent application: {str(e)}")
             return Response(
                 {"detail": "An error occurred while approving the absent application."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    def reject(self, request, *args, **kwargs):
+        """
+        결석 신청 반려
+        """
+        try:
+            # Get the absent apply by its ID from the URL
+            # Get the absent apply by its ID from the URL
+            absent_apply_id = kwargs.get("pk")
+            edit_request: EditRequest = EditRequest.objects.get(id=absent_apply_id)
+            approve_gen_member = GenMember.objects.get(
+                member__user=request.user, generation=edit_request.event.generation
+            )
+
+            # Approve the absent application
+            edit_request.reject(approve_gen_member)
+            result = EditRequestSerializer(edit_request)
+            fcm_component.send_to_user(
+                edit_request.gen_member.member.user,
+                NotificationTemplate.EDIT_REQUEST_REJECT.get_title(
+                    status=edit_request.get_status_display()
+                ),
+                NotificationTemplate.EDIT_REQUEST_REJECT.get_body(
+                    event_name=edit_request.event.title,
+                    status=edit_request.get_status_display(),
+                ),
+                data=NotificationTemplate.EDIT_REQUEST_REJECT.get_deeplink_data(
+                    event_id=edit_request.event.id,
+                ),
+            )
+            return Response(result.data, status=status.HTTP_200_OK)
+        except EditRequest.DoesNotExist:
+            return Response(
+                {"detail": "Absent application not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            logger.error(f"Error rejecting absent application: {str(e)}")
+            return Response(
+                {"detail": "An error occurred while rejecting the absent application."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

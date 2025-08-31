@@ -196,7 +196,11 @@ class EventService:
 
     @staticmethod
     def change_attendance_status(
-        event_id: int, member_id: int, status: int, user: User
+        event_id: int,
+        member_id: int,
+        status: int,
+        user: User,
+        send_notification: bool = True,
     ):
         # 가장 최근의 attendance 레코드를 가져옴
         attendance = (
@@ -224,17 +228,18 @@ class EventService:
                 is_modified=True,
             )
             # 새로 생성된 경우에는 알림을 보냄
-            fcm_component.send_to_user(
-                attendance.generation_mapping.member.user,
-                NotificationTemplate.ATTENDANCE_CHANGE.get_title(),
-                NotificationTemplate.ATTENDANCE_CHANGE.get_body(
-                    event_name=attendance.event.title,
-                    attendance_status=AttendanceStatus(status).label,
-                ),
-                data=NotificationTemplate.ATTENDANCE_CHANGE.get_deeplink_data(
-                    event_id=event.id,
-                ),
-            )
+            if send_notification:
+                fcm_component.send_to_user(
+                    attendance.generation_mapping.member.user,
+                    NotificationTemplate.ATTENDANCE_CHANGE.get_title(),
+                    NotificationTemplate.ATTENDANCE_CHANGE.get_body(
+                        event_name=attendance.event.title,
+                        attendance_status=AttendanceStatus(status).label,
+                    ),
+                    data=NotificationTemplate.ATTENDANCE_CHANGE.get_deeplink_data(
+                        event_id=event.id,
+                    ),
+                )
 
         return attendance
 

@@ -69,6 +69,7 @@ def club_with_member(test_users, mock_storage):
         name="테스트클럽",
         image=None,
         description="테스트 클럽 설명",
+        short_description="테스트 클럽 설명",
         generation_data={
             "name": "1기",
             "start_date": date.today(),
@@ -87,6 +88,7 @@ def generation_with_apply(test_users, mock_storage):
         user=user1,
         name="신청테스트클럽",
         image=None,
+        short_description="가입 신청 테스트용",
         description="가입 신청 테스트용",
         generation_data={"name": "1기", "start_date": date.today()},
     )
@@ -108,6 +110,7 @@ def club_with_members(test_users, mock_storage):
         name="멤버테스트클럽",
         image=None,
         description="멤버 테스트용",
+        short_description="멤버 테스트용",
         generation_data={"name": "1기", "start_date": date.today()},
     )
 
@@ -148,6 +151,7 @@ def multiple_generations(test_users, mock_storage):
         name="다기수클럽",
         image=None,
         description="여러 기수 테스트용",
+        short_description="여러 기수 테스트용",
         generation_data={
             "name": "1기",
             "start_date": date.today() - timedelta(days=365),

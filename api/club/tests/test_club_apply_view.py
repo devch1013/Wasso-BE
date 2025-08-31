@@ -4,6 +4,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
+from api.club.club_url_names import ClubUrlNames
 from api.club.models import ClubApply
 from api.club.services.club_service import ClubService
 from common.exceptions import ErrorCode
@@ -19,7 +20,7 @@ class TestClubApplyListView:
         """가입 신청 목록 조회 성공 테스트"""
         generation, applies = generation_with_apply
 
-        url = reverse("club-apply-info")
+        url = reverse("apply-list")
         response = authenticated_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK
@@ -29,7 +30,7 @@ class TestClubApplyListView:
         """내 가입 신청 목록 조회 테스트"""
         generation, applies = generation_with_apply
 
-        url = reverse("club-applies-list")
+        url = reverse(ClubUrlNames.Apply.LIST)
         response = authenticated_client_2.get(url)
 
         assert response.status_code == status.HTTP_200_OK

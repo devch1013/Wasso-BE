@@ -1,4 +1,5 @@
 from api.club.models import GenMember, Role
+from api.club.models.club_apply import ClubApply
 from api.event.models import Attendance, Event
 from api.event.models.enums import AttendanceStatus
 from api.event.serializers import AttendanceSerializer
@@ -37,9 +38,13 @@ class GenMemberService:
     def delete_gen_member(gen_member: GenMember):
         if gen_member.role.is_superuser():
             raise CustomException(ErrorCode.OWNER_CANNOT_BE_DELETED)
+        ClubApply.objects.filter(
+            user=gen_member.member.user, generation=gen_member.generation
+        ).delete()
         if gen_member.get_siblings().count() == 0:
             gen_member.member.delete()
-        gen_member.delete()
+        else:
+            gen_member.delete()
 
     @classmethod
     def get_gen_member_attendances(cls, gen_member_id: int):

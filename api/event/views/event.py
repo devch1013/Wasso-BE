@@ -97,10 +97,12 @@ class EventViewSet(
         """
         모든 이벤트 정보
         """
-        member = Member.objects.get(user=request.user)
+        member = Member.objects.filter(user=request.user)
+        club_ids = member.values_list("club_id", flat=True)
+        print(club_ids)
         events = Event.objects.filter(
-            generation__club__id=member.club.id, generation__activated=True
-        ).order_by("start_datetime")
+            generation__club__id__in=club_ids, generation__activated=True
+        ).order_by("-start_datetime")
         serializer = EventListForPCSerializer(events, many=True)
         return Response(serializer.data)
 

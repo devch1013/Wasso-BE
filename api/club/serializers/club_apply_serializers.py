@@ -10,6 +10,7 @@ from api.userapp.models import User
 class GenerationSimpleInfoSerializer(serializers.ModelSerializer):
     club_name = serializers.CharField(source="club.name")
     generation_name = serializers.CharField(source="name")
+    club_short_description = serializers.CharField(source="club.short_description")
     club_description = serializers.CharField(source="club.description")
     club_image = serializers.ImageField(source="club.image")
     auto_approve = serializers.BooleanField()
@@ -21,6 +22,7 @@ class GenerationSimpleInfoSerializer(serializers.ModelSerializer):
         fields = [
             "generation_name",
             "club_name",
+            "club_short_description",
             "club_description",
             "club_image",
             "auto_approve",

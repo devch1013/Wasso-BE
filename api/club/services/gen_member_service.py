@@ -43,8 +43,7 @@ class GenMemberService:
         ).delete()
         if gen_member.get_siblings().count() == 0:
             gen_member.member.delete()
-        else:
-            gen_member.delete()
+        gen_member.delete()
 
     @classmethod
     def get_gen_member_attendances(cls, gen_member_id: int):

@@ -52,7 +52,7 @@ class Role(models.Model):
         role.club = club
         role.role_manage = False
         role.event_manage = True
-        role.member_manage = True
+        role.member_manage = False
         role.signup_accept = True
         role.club_info_manage = False
         role.generation_change = False

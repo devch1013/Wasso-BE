@@ -5,17 +5,22 @@ from common.component.deeplinks import DeepLink
 
 class NotificationTemplate(Enum):
     CLUB_APPLY = (
-        "동아리 가입 신청",
-        "{username}님이 동아리 가입을 요청했습니다.",
+        "그룹 가입 신청",
+        "{username}님이 그룹 가입을 요청했습니다.",
         DeepLink.CLUB_APPLY,
     )
+    CLUB_JOIN = (
+        "그룹 가입",
+        "{username}님이 그룹에 가입했습니다.",
+        DeepLink.MAIN,
+    )
     CLUB_APPLY_ACCEPT = (
-        "[{club_name}] 동아리 가입 신청",
+        "[{club_name}] 그룹 가입 신청",
         "{club_name} 가입이 승인되었습니다.",
         DeepLink.MAIN,
     )
     CLUB_APPLY_REJECT = (
-        "[{club_name}] 동아리 가입 신청",
+        "[{club_name}] 그룹 가입 신청",
         "{club_name} 가입이 거절되었습니다.",
         DeepLink.MAIN,
     )
@@ -30,8 +35,8 @@ class NotificationTemplate(Enum):
         DeepLink.EVENT,
     )
     MEMBER_ROLE_CHANGE = (
-        "동아리의 권한이 변경되었습니다.",
-        "[{club_name}] 동아리의 권한이 {role_name}으로 변경되었습니다.",
+        "그룹의 권한이 변경되었습니다.",
+        "[{club_name}] 그룹의 권한이 {role_name}으로 변경되었습니다.",
         DeepLink.MAIN,
     )
     ABSENT_APPLY = (

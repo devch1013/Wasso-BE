@@ -31,16 +31,23 @@ class ApplyService:
         if ClubApply.objects.filter(user=user, generation=generation).exists():
             raise CustomException(ErrorCode.ALREADY_APPLIED)
 
-        if generation.auto_approve:
-            cls.join_generation(user, generation)
-            return
-
-        ClubApply.objects.create(user=user, generation=generation)
-
         notice_users = UserSelector.get_users_by_role(
             generation=generation,
             signup_accept=True,
         )
+
+        if generation.auto_approve:
+            cls.join_generation(user, generation)
+            result = fcm_component.send_to_users(
+                notice_users,
+                NotificationTemplate.CLUB_JOIN.get_title(),
+                NotificationTemplate.CLUB_JOIN.get_body(username=user.username),
+                data=NotificationTemplate.CLUB_JOIN.get_deeplink_data(),
+            )
+            return
+
+        ClubApply.objects.create(user=user, generation=generation)
+
         result = fcm_component.send_to_users(
             notice_users,
             NotificationTemplate.CLUB_APPLY.get_title(),

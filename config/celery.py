@@ -4,7 +4,7 @@ from celery import Celery
 from celery.schedules import crontab
 
 # Django 설정 모듈 설정
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.django.dev")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.django.prod")
 
 app = Celery("wasso")
 

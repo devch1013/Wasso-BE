@@ -1,4 +1,5 @@
 from .absent_apply import AbsentApply
+from .abusing import Abusing
 from .attendance import Attendance
 from .edit_request import EditRequest
 from .enums import AbsentApplyStatus, AttendanceStatus, AttendanceType
@@ -14,4 +15,5 @@ __all__ = [
     AbsentApplyStatus,
     Attendance,
     EditRequest,
+    Abusing,
 ]

@@ -49,6 +49,7 @@ urlpatterns = [
     path("users/", include("api.userapp.urls")),
     path("clubs/", include("api.club.urls")),
     path("events/", include("api.event.urls")),
+    path("notion/", include("api.notion.urls")),
     path("health/", health_check, name="health_check"),
     path("versions/", VersionView.as_view(), name="version"),
     # Swagger URLs

@@ -284,17 +284,26 @@ class EventAttendanceSerializer(serializers.ModelSerializer):
         }
 
         # Sort members by:
-        # 1. First, members with non-approved absent_apply (is_approved=False) come first
+        # 1. First, members with non-approved absent_apply or edit_request (is_approved=False) come first
         # 2. Then sort by surname and name
         def sort_key(member):
             has_non_approved_absent_apply = False
+            has_non_approved_edit_request = False
+
             if member.id in absent_apply_map:
                 has_non_approved_absent_apply = (
                     absent_apply_map[member.id].is_approved is False
                 )
 
+            if member.id in edit_requests_map:
+                has_non_approved_edit_request = (
+                    edit_requests_map[member.id].is_approved is False
+                )
+
             return (
-                not has_non_approved_absent_apply,  # False comes first in sorting
+                not (
+                    has_non_approved_absent_apply or has_non_approved_edit_request
+                ),  # False comes first in sorting
                 member.member.user.username[0],  # Then sort by surname
                 member.member.user.username[1:],  # Then by name
             )

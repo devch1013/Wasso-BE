@@ -46,6 +46,7 @@ class Attendance(models.Model):
         blank=True,
         related_name="attendances",
     )
+    is_master_qr = models.BooleanField(default=False)
 
     class Meta:
         db_table = "attendances"

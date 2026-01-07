@@ -101,9 +101,13 @@ class EventService:
     @staticmethod
     def check_qr_code(serializer: CheckQRCodeSerializer, event: Event, user: User):
         # TODO: 캐싱하기
-        valid_code = HashTimeGenerator.auto_generate_code_list(event.qr_code)
-        if serializer.validated_data.get("qr_code") not in valid_code:
-            raise CustomException(ErrorCode.INVALID_QR_CODE)
+        is_master_qr = False
+        if serializer.validated_data.get("qr_code") == event.qr_code:
+            is_master_qr = True
+        else:
+            valid_code = HashTimeGenerator.auto_generate_code_list(event.qr_code)
+            if serializer.validated_data.get("qr_code") not in valid_code:
+                raise CustomException(ErrorCode.INVALID_QR_CODE)
 
         try:
             generation_mapping = GenMember.objects.get(
@@ -151,6 +155,7 @@ class EventService:
             longitude=serializer.validated_data.get("longitude", None),
             is_modified=False,
             unique_token=unique_token,
+            is_master_qr=is_master_qr,
         )
 
         if unique_token:

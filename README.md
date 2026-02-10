@@ -1,6 +1,6 @@
 # Wasso
 
-<!-- App logo: add image here (e.g. ./docs/logo.png) -->
+<img width="736" height="290" alt="full-logo" src="https://github.com/user-attachments/assets/ab5a61d6-9d85-4788-baa9-2255509e3b1d" />
 
 **Wasso** is an attendance management app. Check in easily, manage events, and share attendance pages via QR.
 
@@ -26,3 +26,4 @@
 
 - Developed by a single developer; design support from others.
 - This repo is the **backend** (Django API) for the Wasso app.
+
